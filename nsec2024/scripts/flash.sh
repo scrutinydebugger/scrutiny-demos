@@ -1,8 +1,9 @@
 #/bin/bash
 SCRIPT_DIR=$(realpath "$(dirname ${BASH_SOURCE[0]})")
-cd "$SCRIPT_DIR" 
+ROOT_DIR=$SCRIPT_DIR/..
+cd "$ROOT_DIR" 
 
-source common.sh
+source $SCRIPT_DIR/common.sh
 BINNAME=scrutiny-nsec2024.hex
 BINPATH=./build/$BINNAME
 DEFAULT_PORT=/dev/ttyACM0

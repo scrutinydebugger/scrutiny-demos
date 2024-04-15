@@ -18,7 +18,7 @@ FetchContent_Declare(
   scrutiny-embedded
 
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        nsec_demo
+  GIT_TAG        nsec2024_demo
 )
 FetchContent_MakeAvailable(scrutiny-embedded)
 
