@@ -12,7 +12,7 @@ include(cmake/arduino_upload.cmake)
 include(FetchContent)
 
 set(SCRUTINY_ENABLE_DATALOGGING 1)
-set(SCRUTINY_SUPPORT_64BITS 1)
+set(SCRUTINY_SUPPORT_64BITS 0) 
 
 FetchContent_Declare(
   scrutiny-embedded
@@ -44,7 +44,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     scrutiny-embedded
     )
 
-
+set(ALIAS_DIR ${CMAKE_CURRENT_LIST_DIR}/aliases)
 set(WORKDIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_sfd)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     BYPRODUCTS ${PROJECT_NAME}.sfd  ${PROJECT_NAME}.elf
@@ -52,9 +52,11 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND scrutiny elf2varmap $<TARGET_FILE:${PROJECT_NAME}> --output ${WORKDIR} --loglevel error
     COMMAND scrutiny get-firmware-id $<TARGET_FILE:${PROJECT_NAME}> --output ${WORKDIR} 
     COMMAND scrutiny tag-firmware-id $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.elf
-    COMMAND scrutiny make-metadata --output ${WORKDIR} --project-name ${PROJECT_NAME} --version "V1.0.0" --author "Pier-Yves Lessard"
-    # scrutiny add-alias ${WORKDIR} --file alias1.json
-    # scrutiny add-alias ${WORKDIR} --file alias2.json
+    COMMAND scrutiny make-metadata --output ${WORKDIR} 
+        --project-name "${PROJECT_NAME}"
+        --version "V1.0.0" 
+        --author "Pier-Yves Lessard"
+    COMMAND scrutiny add-alias ${WORKDIR} --file ${ALIAS_DIR}/alias1.json
     COMMAND scrutiny make-sfd ${WORKDIR} ${PROJECT_NAME}.sfd
 )
 

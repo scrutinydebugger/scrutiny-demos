@@ -17,4 +17,5 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 #RUN pip3 install scrutinydebugger
-RUN  git clone --depth 1 -b nsec2024_demo https://github.com/scrutinydebugger/scrutiny-python /tmp/scrutiny-python && pip3 install -e /tmp/scrutiny-python
+RUN  git clone --depth 1 -b add-alias-does-not-load-sfd-storage-if-not-needed https://github.com/scrutinydebugger/scrutiny-python /tmp/scrutiny-python \
+    && pip3 install -e /tmp/scrutiny-python
