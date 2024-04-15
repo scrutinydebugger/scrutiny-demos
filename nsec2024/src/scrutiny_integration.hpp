@@ -1,3 +1,11 @@
+//    scrutiny_integration.hpp
+//        Glue code between the scrutiny lib and the application
+//
+//   - License : MIT - See LICENSE file.
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//   Copyright (c) 2021 Scrutiny Debugger
+
 #ifndef SCRUTINY_INTEGRATION_HPP
 #define SCRUTINY_INTEGRATION_HPP
 

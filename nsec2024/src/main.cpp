@@ -1,3 +1,12 @@
+//    main.cpp
+//        NortSec 2024 demo. 
+//        Scrutiny demonstration used during nsec2024 talk
+//
+//   - License : MIT - See LICENSE file.
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//   Copyright (c) 2021 Scrutiny Debugger
+
 #include <stdio.h>
 #include <Arduino.h>
 #include "scrutiny.hpp"

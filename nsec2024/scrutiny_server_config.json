@@ -3,7 +3,7 @@
         "response_timeout": 1.0,
         "link_type": "serial",
         "link_config": {
-            "portname": "/home/py/scrutiny-embedded/projects/nsec2024_demo/x",
+            "portname": "/dev/ttyACM0",
             "baudrate": 115200,
             "stopbits": 1,
             "databits": 8,

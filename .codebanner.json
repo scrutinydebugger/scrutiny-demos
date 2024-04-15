@@ -1,0 +1,29 @@
+{
+    "folders": [
+        "nsec2024"
+    ],
+    "include_patterns": [
+        "*.cpp",
+        "*.hpp"
+    ],
+    "exclude_patterns": [
+        "**/build/**/*"
+    ],
+    "license": "MIT - See LICENSE file",
+    "project": "Scrutiny Debugger",
+    "repo": "github.com/scrutinydebugger/scrutiny-demos",
+    "copyright_owner": "Scrutiny Debugger",
+    "copyright_start_date": "2021",
+    "copyright_end_date": null,
+    "files": {
+        "nsec2024/src/main.cpp": {
+            "docstring": "NortSec 2024 demo. \nScrutiny demonstration used during nsec2024 talk"
+        },
+        "nsec2024/src/scrutiny_integration.cpp": {
+            "docstring": "Glue code between the scrutiny lib and the application"
+        },
+        "nsec2024/src/scrutiny_integration.hpp": {
+            "docstring": "Glue code between the scrutiny lib and the application"
+        }
+    }
+}
