@@ -6,8 +6,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION 0)  # Prevent adding -flto, incompatible with -g 
 
 include(cmake/arduino_core.cmake)
-include(cmake/arduino_hex.cmake)
-include(cmake/arduino_upload.cmake)
 
 include(FetchContent)
 
@@ -16,7 +14,6 @@ set(SCRUTINY_SUPPORT_64BITS 0)
 
 FetchContent_Declare(
   scrutiny-embedded
-
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
   GIT_TAG        nsec2024_demo
 )
@@ -42,7 +39,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX "_untagged.elf")
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     ArduinoCore
     scrutiny-embedded
-    )
+)
 
 set(ALIAS_DIR ${CMAKE_CURRENT_LIST_DIR}/aliases)
 set(WORKDIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_sfd)
@@ -68,7 +65,8 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         --no-change-warnings --change-section-lma 
         .eeprom=0
         ${PROJECT_NAME}.elf
-        ${PROJECT_NAME}.eep)
+        ${PROJECT_NAME}.eep
+)
 
 add_custom_command(TARGET ${PROJECT_NAME}  POST_BUILD
     DEPENDS ${PROJECT_NAME}.elf
