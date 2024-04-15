@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "AVR",
+            "compileCommands": "${workspaceFolder}/build/compileCommands.json",
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "includePath": ["/usr/share/arduino/hardware/arduino/avr/cores/arduino/"]
+        }
+    ],
+    "version": 4
+}
