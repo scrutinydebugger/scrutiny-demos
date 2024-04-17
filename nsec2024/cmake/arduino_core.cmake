@@ -60,6 +60,22 @@ target_include_directories(ArduinoCore PUBLIC
     ${ARDUINO_CORE_PATH}
     ${ARDUINO_AVR_PATH}/variants/${ARDUINO_VARIANT}
 )
+
+add_library(ArduinoWire STATIC 
+    ${ARDUINO_LIBRARIES_PATH}/Wire/src/Wire.cpp
+    ${ARDUINO_LIBRARIES_PATH}/Wire/src/utility/twi.c
+)
+
+target_include_directories(ArduinoWire PRIVATE
+    ${ARDUINO_LIBRARIES_PATH}/Wire/src/utility
+)
+
+target_include_directories(ArduinoWire PUBLIC
+    ${ARDUINO_LIBRARIES_PATH}/Wire/src
+)
+
+target_link_libraries(ArduinoWire PUBLIC ArduinoCore)
+
 if(ARDUINO_USB)
     target_compile_definitions(ArduinoCore PUBLIC
         USB_VID=${ARDUINO_USB_VID}

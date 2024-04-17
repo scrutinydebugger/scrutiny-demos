@@ -12,12 +12,16 @@
 #include "scrutiny.hpp"
 #include "scrutiny_integration.hpp"
 
+#include <Wire.h>
+
 constexpr uint32_t MILLION{ 1000000 };
 constexpr uint32_t TASK_100HZ_TIME_US{ MILLION/100 };
 constexpr uint32_t TASK_1HZ_TIME_US{ MILLION/1 };
 
 void setup() {
     Serial.begin(115200);
+    Wire.begin();
+    Wire.setClock(200000);
     pinMode(LED_BUILTIN, OUTPUT);
     nsec2024_demo_config_scrutiny();
 }
@@ -26,6 +30,12 @@ void task_100hz(){
     static volatile uint32_t var_100hz=0;
     var_100hz++;
     task_100hz_loop_handler.process();
+
+    Wire.beginTransmission(0x28);
+    Wire.write(0x08);
+    Wire.endTransmission();
+    Wire.requestFrom(0x28, 6);
+
 }
 
 void task_1hz(){
