@@ -24,6 +24,14 @@ constexpr uint32_t TASK_1HZ_TIME_US{ MILLION/1 };
 
 BNO055::Driver bno055;
 
+struct IMUData{
+    BNO055::XYZ<uint16_t> accelerometer;
+    BNO055::XYZ<uint16_t> gyroscope;
+    BNO055::XYZ<uint16_t> magnetometer;
+};
+
+IMUData IMU_data;
+
 void twi_slave_tx_callback(void){
 }
 
@@ -55,7 +63,7 @@ void setup() {
     twi_attachSlaveRxEvent(twi_slave_rx_callback); // default callback must exist
     twi_attachMasterRxEvent(twi_master_rx_callback); // default callback must exist
     twi_attachMasterTxEvent(twi_master_tx_callback); // default callback must exist
-    twi_setFrequency(100000);
+    twi_setFrequency(400000);
 
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(PIN_BNO055_RESET, OUTPUT);     
@@ -70,14 +78,16 @@ void setup() {
     bno055.init(BNO055_I2C_ADDR);
     bno055.wait_ready(1000);
     bno055.read_info(); 
-    bno055.initiate_continuous_read();
 }
 
-uint8_t buftemp[8];
 void task_100hz(){
     static volatile uint32_t var_100hz=0;
     digitalWrite(A1, 1);
     var_100hz++;
+    IMU_data.accelerometer = bno055.get_accel();
+    IMU_data.gyroscope = bno055.get_gyro();
+    IMU_data.magnetometer = bno055.get_mag();
+    bno055.initiate_interrupt_read(BNO055::Driver::InterruptReadMode::SINGLE);
     task_100hz_loop_handler.process();
     digitalWrite(A1, 0);
 }

@@ -13,9 +13,8 @@ namespace BNO055{
         m_last_error_code{0},
         m_error{Driver::Error::NO_INIT},
         m_double_buffer_flag{false},
-        m_continuous_read_state{ContinuousReadState::IDLE},
-        m_continuous_read_buffer{0U},
-        m_continuous_read_size{0U},
+        m_interrupt_read_state{InterruptReadState::IDLE},
+        m_interrupt_read_size{0U},
         m_acc{ XYZ<uint16_t>{0,0,0}, XYZ<uint16_t>{0,0,0}},
         m_gyro{ XYZ<uint16_t>{0,0,0}, XYZ<uint16_t>{0,0,0}},
         m_mag{ XYZ<uint16_t>{0,0,0}, XYZ<uint16_t>{0,0,0}}
@@ -24,48 +23,53 @@ namespace BNO055{
 
     void Driver::twi_rx_callback(uint8_t *data, int len){
         uint8_t const write_index = db_get_write_index();
-        if (m_continuous_read_state == ContinuousReadState::READ_ACCEL){
+        if (m_interrupt_read_state == InterruptReadState::READ_ACCEL){
             if (len != 6){
-                m_continuous_read_state = ContinuousReadState::ERROR;
+                m_interrupt_read_state = InterruptReadState::ERROR;
             } else {
                 m_acc[write_index].x = make_u16(data[0], data[1]);
                 m_acc[write_index].y = make_u16(data[2], data[3]);
                 m_acc[write_index].z = make_u16(data[4], data[5]);
                 initiate_read_gyro();
             }
-        } else if (m_continuous_read_state == ContinuousReadState::READ_GYRO){
+        } else if (m_interrupt_read_state == InterruptReadState::READ_GYRO){
             if (len != 6){
-                m_continuous_read_state = ContinuousReadState::ERROR;
+                m_interrupt_read_state = InterruptReadState::ERROR;
             } else {
                 m_gyro[write_index].x = make_u16(data[0], data[1]);
                 m_gyro[write_index].y = make_u16(data[2], data[3]);
                 m_gyro[write_index].z = make_u16(data[4], data[5]);
                 initiate_read_mag();
             }
-        } else if (m_continuous_read_state == ContinuousReadState::READ_MAG){
+        } else if (m_interrupt_read_state == InterruptReadState::READ_MAG){
             if (len != 6){
-                m_continuous_read_state = ContinuousReadState::ERROR;
+                m_interrupt_read_state = InterruptReadState::ERROR;
             } else {
                 m_mag[write_index].x = make_u16(data[0], data[1]);
                 m_mag[write_index].y = make_u16(data[2], data[3]);
                 m_mag[write_index].z = make_u16(data[4], data[5]);
-                initiate_read_accel();
+                
+                if (m_interrupt_read_mode == InterruptReadMode::CONTINUOUS){
+                    initiate_read_accel();
+                } else {
+                    m_interrupt_read_state = InterruptReadState::IDLE;
+                }
             }
         }
 
-        if (m_continuous_read_state != ContinuousReadState::ERROR){
+        if (m_interrupt_read_state != InterruptReadState::ERROR){
             db_swap_buffers();
         }
     }
 
     void Driver::twi_tx_callback(){
 
-        if (m_continuous_read_state == ContinuousReadState::READ_ACCEL
-            || m_continuous_read_state == ContinuousReadState::READ_GYRO
-            || m_continuous_read_state == ContinuousReadState::READ_MAG
+        if (m_interrupt_read_state == InterruptReadState::READ_ACCEL
+            || m_interrupt_read_state == InterruptReadState::READ_GYRO
+            || m_interrupt_read_state == InterruptReadState::READ_MAG
             ){
             // size = 6. SendStop = 1. Block = 0.
-            twi_readFrom(m_i2c_addr, const_cast<uint8_t*>(m_continuous_read_buffer), 6, 1, 0);    
+            twi_readFrom(m_i2c_addr, nullptr, 6, 1, 0);    // Non blocking read does not require a buffer
         }
 
     }
@@ -76,8 +80,8 @@ namespace BNO055{
         m_i2c_addr = i2c_addr;
         m_error = Driver::Error::NOT_READY;
         m_last_error_code=0;
-        m_continuous_read_state = ContinuousReadState::IDLE;
-        m_continuous_read_size=0;
+        m_interrupt_read_state = InterruptReadState::IDLE;
+        m_interrupt_read_size=0;
 
         m_chip_info = ChipInfo{0,0,0,0,0};
         for (int i=0; i<2; i++){
@@ -88,12 +92,11 @@ namespace BNO055{
     }
 
     bool Driver::wait_ready(uint32_t const timeout_ms) {
-        digitalWrite(A4, 0);
         uint32_t tstart=millis();
         uint8_t chip_id = 0;
 
-        if (m_continuous_read_state != ContinuousReadState::IDLE){
-            set_error(Error::CONTINUOUS_READ_ENABLED);
+        if (m_interrupt_read_state != InterruptReadState::IDLE){
+            set_error(Error::INTERRUPT_READ_ENABLED);
         }
 
         if (! (m_error == Error::NO_ERROR || m_error==Error::NOT_READY) ){
@@ -101,6 +104,7 @@ namespace BNO055{
         }
 
         while (true) {
+            // Read may fail here. It is not a hard error.
             if (read_register(RegisterAddress_Page0::CHIP_ID, &chip_id) && chip_id == CHIP_ID){
                 break;
             }
@@ -108,6 +112,26 @@ namespace BNO055{
             if (millis() - tstart >= timeout_ms){
                 goto wait_ready_err;
             }
+        }
+        
+        // Wait for end of of system init and end of POST
+        while (true) {
+            if (!read_register(RegisterAddress_Page0::SYS_STATUS, (uint8_t*)&m_sys_status_at_boot)){
+                goto wait_ready_err;
+            }
+            if (m_sys_status_at_boot == Registers::SYS_STATUS::SystemIdle
+            || m_sys_status_at_boot == Registers::SYS_STATUS::SystemError){
+                break;
+            }
+            delay(10);
+            if (millis() - tstart >= timeout_ms){
+                goto wait_ready_err;
+            }
+        }
+
+        if (m_sys_status_at_boot == Registers::SYS_STATUS::SystemError){
+            read_register(BNO055::RegisterAddress_Page0::SYS_ERR, (uint8_t*)&m_sys_error_at_boot);
+            goto wait_ready_err;
         }
 
         
@@ -125,13 +149,60 @@ namespace BNO055{
         unit_reg.bits.GYR_Unit = AngularRateUnits::DegreesPerSec;
         unit_reg.bits.ORI_Android_Windows = OrientationMode::Android;
         unit_reg.bits.TEMP_Unit = TemperatureUnit::Celsius;
-        write_register(RegisterAddress_Page0::UNIT_SEL, unit_reg.val);
+        if (!write_register(RegisterAddress_Page0::UNIT_SEL, unit_reg.val)){
+            goto wait_ready_err;
+        }
 
         // Power mode
         Registers::PWR_MODE power_mode_reg;
         power_mode_reg.val=0;
         power_mode_reg.bits.Power_Mode = PowerMode::NormalMode;
-        write_register(RegisterAddress_Page0::PWR_MODE, power_mode_reg.val, true);
+        if (!write_register(RegisterAddress_Page0::PWR_MODE, power_mode_reg.val)){
+            goto wait_ready_err;
+        }
+
+        // Switch to page 1
+        if (!write_register(PAGE_ID_ADDR, 1)){
+            goto wait_ready_err;
+        }
+
+        // Power mode
+        Registers::ACC_Config acc_config;
+        acc_config.val=0;
+        acc_config.bits.ACC_BW = AccelerometerBandwidth::BW_15_63Hz;
+        acc_config.bits.ACC_PWR_Mode = AccelerometerPowerMode::Normal;
+        acc_config.bits.ACC_Range = AccelerometerGRange::Range_4G;
+        if (!write_register(RegisterAddress_Page1::ACC_Config, acc_config.val)){
+            goto wait_ready_err;
+        }
+
+        Registers::GYR_Config_0 gyr_config0;
+        gyr_config0.val=0;
+        gyr_config0.bits.GYR_Bandwidth = GyroscopeBandwidth::BW_12Hz;
+        gyr_config0.bits.GYR_Range = GyroscopeRange::Range_500dps;
+        if (!write_register(RegisterAddress_Page1::GYR_Config_0, gyr_config0.val)){
+            goto wait_ready_err;
+        }
+
+        Registers::GYR_Config_1 gyr_config1;
+        gyr_config1.val=0;
+        gyr_config1.bits.GYR_Power_Mode = GyroscopeOperationMode::Normal;   // PowerMode = OperationMode. Following datasheet naming
+        if (!write_register(RegisterAddress_Page1::GYR_Config_1, gyr_config1.val)){
+            goto wait_ready_err;
+        }
+
+        Registers::MAG_Config mag_config;
+        mag_config.val=0;
+        mag_config.bits.MAG_Power_Nmode = MagnetometerPowerMode::Normal;
+        mag_config.bits.MAG_OPR_Mode = MagnetometerOperationMode::Regular;
+        mag_config.bits.MAG_Data_output_rate = MagnetometerDataOutputRate::Rate_15Hz;
+        if (!write_register(RegisterAddress_Page1::MAG_Config, mag_config.val)){
+            goto wait_ready_err;
+        }
+
+        if (!write_register(PAGE_ID_ADDR, 0)){
+            goto wait_ready_err;
+        }
 
         // Set Accelerometer / Magnetometer / Gyro mode
         if (!write_register(RegisterAddress_Page0::OPR_MODE, OperatingMode::AMG)){
@@ -139,7 +210,29 @@ namespace BNO055{
         }
         delay(10); // 7ms per datasheet
         
+        // Wait for sensors to start
+        while (true) {
+            if (!read_register(RegisterAddress_Page0::SYS_STATUS, (uint8_t*)&m_sys_status_at_boot)){
+                goto wait_ready_err;
+            }
+            if (m_sys_status_at_boot != Registers::SYS_STATUS::SystemIdle)
+            {
+                break;
+            }
+            delay(10);
+            if (millis() - tstart >= timeout_ms){
+                goto wait_ready_err;
+            }
+        }
+
+        if (m_sys_status_at_boot == Registers::SYS_STATUS::SystemError){
+            if (!read_register(BNO055::RegisterAddress_Page0::SYS_ERR, (uint8_t*)&m_sys_error_at_boot)){
+                goto wait_ready_err;
+            };
+        }
+
         clear_error();
+        digitalWrite(A4, 1);
         return true;
 
     wait_ready_err:
@@ -164,7 +257,6 @@ namespace BNO055{
         twi_setTimeoutInMicros(timeout_us, 0);
         m_last_error_code = twi_writeTo(m_i2c_addr, const_cast<uint8_t*>(&reg), 1, 1, 1);
         if (m_last_error_code != 0){
-            digitalWrite(A4, 1);
             goto read_registers_err;
         }
         qty_read = twi_readFrom(m_i2c_addr, buffer, size, 1, 1);
@@ -173,14 +265,14 @@ namespace BNO055{
         }
         return true;
 
-read_registers_err:
+    read_registers_err:
         twi_releaseBus();
         return false;
     }
 
     void Driver::read_info(){
-        if (m_continuous_read_state != ContinuousReadState::IDLE){
-            set_error(Error::CONTINUOUS_READ_ENABLED);
+        if (m_interrupt_read_state != InterruptReadState::IDLE){
+            set_error(Error::INTERRUPT_READ_ENABLED);
         }
         if (is_error()){
             return;
@@ -215,34 +307,35 @@ read_registers_err:
         return m_mag[db_get_read_index()];
     }
 
-    void Driver::initiate_continuous_read(){
-        if (m_error == Error::NO_ERROR){
+    void Driver::initiate_interrupt_read(InterruptReadMode const mode){
+        if (m_error == Error::NO_ERROR && m_interrupt_read_state == InterruptReadState::IDLE){
+            m_interrupt_read_mode = mode;
             m_double_buffer_flag = false;
             initiate_read_accel();
         }
     }
 
-    void Driver::stop_continuous_read(){
-        if (m_continuous_read_state != ContinuousReadState::IDLE){
+    void Driver::stop_interrupt_read(){
+        if (m_interrupt_read_state != InterruptReadState::IDLE){
             twi_releaseBus();
-            m_continuous_read_state=ContinuousReadState::IDLE;
+            m_interrupt_read_state=InterruptReadState::IDLE;
         }
     }
 
     void Driver::initiate_read_accel(){
-        m_continuous_read_state = ContinuousReadState::READ_ACCEL;
+        m_interrupt_read_state = InterruptReadState::READ_ACCEL;
         uint8_t data[1] = {BNO055::RegisterAddress_Page0::ACC_DATA_X_LSB};
         twi_writeTo(m_i2c_addr, data, 1, 0, 0);
     }
 
     void Driver::initiate_read_gyro(){
-        m_continuous_read_state = ContinuousReadState::READ_GYRO;
+        m_interrupt_read_state = InterruptReadState::READ_GYRO;
         uint8_t data[1] = {BNO055::RegisterAddress_Page0::GYR_DATA_X_LSB};
         twi_writeTo(m_i2c_addr, data, 1, 0, 0);
     }
 
     void Driver::initiate_read_mag(){
-        m_continuous_read_state = ContinuousReadState::READ_MAG;
+        m_interrupt_read_state = InterruptReadState::READ_MAG;
         uint8_t data[1] = {BNO055::RegisterAddress_Page0::MAG_DATA_X_LSB};
         twi_writeTo(m_i2c_addr, data, 1, 0, 0);
     }
