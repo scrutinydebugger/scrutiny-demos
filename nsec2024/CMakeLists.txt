@@ -23,7 +23,6 @@ add_compile_options(
     -Os
     -Wall 
     -Wextra 
-    -pedantic 
     -Werror 
     -gdwarf-4
 )
@@ -33,12 +32,20 @@ target_link_libraries(scrutiny-embedded PUBLIC ArduinoCore) # Will inherit the b
 add_executable(${PROJECT_NAME} 
     src/main.cpp
     src/scrutiny_integration.cpp
+    src/bno055.cpp
+    src/twi/twi.c
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX "_untagged.elf")
 
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+    src
+    src/twi
+)
+
+
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     ArduinoCore
-    ArduinoWire
     scrutiny-embedded
 )
 
@@ -53,7 +60,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND scrutiny tag-firmware-id $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.elf
     COMMAND scrutiny make-metadata --output ${WORKDIR} 
         --project-name "${PROJECT_NAME}"
-        --version "V1.0.0" 
+        --version "1.0.0" 
         --author "Pier-Yves Lessard"
     COMMAND scrutiny add-alias ${WORKDIR} --file ${ALIAS_DIR}/alias1.json
     COMMAND scrutiny make-sfd ${WORKDIR} ${PROJECT_NAME}.sfd

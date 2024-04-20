@@ -3,166 +3,196 @@
 
 #include <stdint.h>
 
+#include "twi.h"
+
 namespace BNO055{
-    
-    enum class ReagisterAddress_Page0 : uint8_t{
-        AXIS_MAP_SIGN = 0x42,
-        AXIS_MAP_CONFIG = 0x41,
-        TEMP_SOURCE = 0x40,
-        SYS_TRIGGER = 0x3F,
-        PWR_MODE = 0x3E,
-        OPR_MODE = 0x3D,
-        UNIT_SEL = 0x3B,
-        SYS_ERR = 0x3A,
-        
-        SYS_STATUS = 0x39,
-        SYS_CLK_STATUS = 0x38,
-        INT_STA = 0x37,
-        ST_RESULT = 0x36,
-        CALIB_STAT = 0x35,
-        TEMP = 0x34,
-        GRV_Data_Z_MSB = 0x33,
-        GRV_Data_Z_LSB = 0x32,
-        GRV_Data_Y_MSB = 0x31,
-        GRV_Data_Y_LSB = 0x30,
-        GRV_Data_X_MSB = 0x2F,
-        GRV_Data_X_LSB = 0x2E,
-        LIA_Data_Z_MSB = 0x2D,
-        LIA_Data_Z_LSB = 0x2C,
-        LIA_Data_Y_MSB = 0x2B,
-        LIA_Data_Y_LSB = 0x2A,
-        LIA_Data_X_MSB = 0x29,
-        LIA_Data_X_LSB = 0x28,
-        QUA_Data_z_MSB = 0x27,
-        QUA_Data_z_LSB = 0x26,
-        QUA_Data_y_MSB = 0x25,
-        QUA_Data_y_LSB = 0x24,
-        QUA_Data_x_MSB = 0x23,
-        QUA_Data_x_LSB = 0x22,
-        QUA_Data_w_MSB = 0x21,
-        QUA_Data_w_LSB = 0x20,
-        EUL_Pitch_MSB = 0x1F,
-        EUL_Pitch_LSB = 0x1E,
-        EUL_Roll_MSB = 0x1D,
-        EUL_Roll_LSB = 0x1C,
-        EUL_Heading_MSB = 0x1B,
-        EUL_Heading_LSB = 0x1A,
-        GYR_DATA_Z_MSB = 0x19,
-        GYR_DATA_Z_LSB = 0x18,
-        GYR_DATA_Y_MSB = 0x17,
-        GYR_DATA_Y_LSB = 0x16,
-        GYR_DATA_X_MSB = 0x15,
-        GYR_DATA_X_LSB = 0x14,
-        MAG_DATA_Z_MSB = 0x13,
-        MAG_DATA_Z_LSB = 0x12,
-        MAG_DATA_Y_MSB = 0x11,
-        MAG_DATA_Y_LSB = 0x10,
-        MAG_DATA_X_MSB = 0xF,
-        MAG_DATA_X_LSB = 0xE,
-        ACC_DATA_Z_MSB = 0xD,
-        ACC_DATA_Z_LSB = 0xC,
-        ACC_DATA_Y_MSB = 0xB,
-        ACC_DATA_Y_LSB = 0xA,
-        ACC_DATA_X_MSB = 0x9,
-        ACC_DATA_X_LSB = 0x8,
-        Page_ID = 0x7,
-        BL_Rev_ID = 0x6,
-        SW_REV_ID_MSB = 0x5,
-        SW_REV_ID_LSB = 0x4,
-        GYR_ID = 0x3,
-        MAG_ID = 0x2,
-        ACC_ID = 0x1,
-        CHIP_ID  = 0x0,
-    };
 
-    enum class ReagisterAddress_Page1 : uint8_t{
-        GYR_AM_SET = 0x1F,
-        GYR_AM_THRES = 0x1E,
-        GYR_DUR_Z = 0x1D,
-        GYR_HR_Z_SET = 0x1C,
-        GYR_DUR_Y = 0x1B,
-        GYR_HR_Y_SET = 0x1A,
-        GYR_DUR_X = 0x19,
-        GYR_HR_X_SET = 0x18,
-        GYR_INT_SETING = 0x17,
-        ACC_NM_SET = 0x16,
-        ACC_NM_THRE = 0x15,
-        ACC_HG_THRES = 0x14,
-        ACC_HG_DURATION = 0x13,
-        ACC_INT_Set = 0x12,
-        ACC_AM_THRES = 0x11,
-        INT_EN = 0x10,
-        INT_MSK = 0xF,
-        GYRO_AME = 0xE,
-        GYR_Sleep_Config = 0xD,
-        ACC_Sleep_Config = 0xC,
-        GYR_Config_1 = 0xB,
-        GYR_Config_0 = 0xA,
-        MAG_Config = 0x9,
-        ACC_Config = 0x8,
-        Page_ID = 0x7
-    };
+    constexpr uint8_t CHIP_ID{ 0xA0 };
+    constexpr uint8_t PAGE_ID_ADDR{ 0x07 };
+    namespace RegisterAddress_Page0 {
+        enum Vals{
+            AXIS_MAP_SIGN = 0x42,
+            AXIS_MAP_CONFIG = 0x41,
+            TEMP_SOURCE = 0x40,
+            SYS_TRIGGER = 0x3F,
+            PWR_MODE = 0x3E,
+            OPR_MODE = 0x3D,
+            UNIT_SEL = 0x3B,
+            SYS_ERR = 0x3A,
+            
+            SYS_STATUS = 0x39,
+            SYS_CLK_STATUS = 0x38,
+            INT_STA = 0x37,
+            ST_RESULT = 0x36,
+            CALIB_STAT = 0x35,
+            TEMP = 0x34,
+            GRV_Data_Z_MSB = 0x33,
+            GRV_Data_Z_LSB = 0x32,
+            GRV_Data_Y_MSB = 0x31,
+            GRV_Data_Y_LSB = 0x30,
+            GRV_Data_X_MSB = 0x2F,
+            GRV_Data_X_LSB = 0x2E,
+            LIA_Data_Z_MSB = 0x2D,
+            LIA_Data_Z_LSB = 0x2C,
+            LIA_Data_Y_MSB = 0x2B,
+            LIA_Data_Y_LSB = 0x2A,
+            LIA_Data_X_MSB = 0x29,
+            LIA_Data_X_LSB = 0x28,
+            QUA_Data_z_MSB = 0x27,
+            QUA_Data_z_LSB = 0x26,
+            QUA_Data_y_MSB = 0x25,
+            QUA_Data_y_LSB = 0x24,
+            QUA_Data_x_MSB = 0x23,
+            QUA_Data_x_LSB = 0x22,
+            QUA_Data_w_MSB = 0x21,
+            QUA_Data_w_LSB = 0x20,
+            EUL_Pitch_MSB = 0x1F,
+            EUL_Pitch_LSB = 0x1E,
+            EUL_Roll_MSB = 0x1D,
+            EUL_Roll_LSB = 0x1C,
+            EUL_Heading_MSB = 0x1B,
+            EUL_Heading_LSB = 0x1A,
+            GYR_DATA_Z_MSB = 0x19,
+            GYR_DATA_Z_LSB = 0x18,
+            GYR_DATA_Y_MSB = 0x17,
+            GYR_DATA_Y_LSB = 0x16,
+            GYR_DATA_X_MSB = 0x15,
+            GYR_DATA_X_LSB = 0x14,
+            MAG_DATA_Z_MSB = 0x13,
+            MAG_DATA_Z_LSB = 0x12,
+            MAG_DATA_Y_MSB = 0x11,
+            MAG_DATA_Y_LSB = 0x10,
+            MAG_DATA_X_MSB = 0xF,
+            MAG_DATA_X_LSB = 0xE,
+            ACC_DATA_Z_MSB = 0xD,
+            ACC_DATA_Z_LSB = 0xC,
+            ACC_DATA_Y_MSB = 0xB,
+            ACC_DATA_Y_LSB = 0xA,
+            ACC_DATA_X_MSB = 0x9,
+            ACC_DATA_X_LSB = 0x8,
+            Page_ID = 0x7,
+            BL_Rev_ID = 0x6,
+            SW_REV_ID_MSB = 0x5,
+            SW_REV_ID_LSB = 0x4,
+            GYR_ID = 0x3,
+            MAG_ID = 0x2,
+            ACC_ID = 0x1,
+            CHIP_ID  = 0x0,
+        };
+    }
 
-    namespace Registers {
+    namespace RegisterAddress_Page1 {
+        enum Vals{
+            GYR_AM_SET = 0x1F,
+            GYR_AM_THRES = 0x1E,
+            GYR_DUR_Z = 0x1D,
+            GYR_HR_Z_SET = 0x1C,
+            GYR_DUR_Y = 0x1B,
+            GYR_HR_Y_SET = 0x1A,
+            GYR_DUR_X = 0x19,
+            GYR_HR_X_SET = 0x18,
+            GYR_INT_SETING = 0x17,
+            ACC_NM_SET = 0x16,
+            ACC_NM_THRE = 0x15,
+            ACC_HG_THRES = 0x14,
+            ACC_HG_DURATION = 0x13,
+            ACC_INT_Set = 0x12,
+            ACC_AM_THRES = 0x11,
+            INT_EN = 0x10,
+            INT_MSK = 0xF,
+            GYRO_AME = 0xE,
+            GYR_Sleep_Config = 0xD,
+            ACC_Sleep_Config = 0xC,
+            GYR_Config_1 = 0xB,
+            GYR_Config_0 = 0xA,
+            MAG_Config = 0x9,
+            ACC_Config = 0x8,
+            Page_ID = 0x7
+        };
+    }
 
-        enum class CalibrationStatus : uint8_t {
+
+    namespace CalibrationStatus{
+        enum Vals{
             NotCalibrated=0,
             Invalid1=1,
             Invalid2=2,
             FullyCalibrated=3
         };
+    }
 
-        enum class SelfTestResult : uint8_t {
+    namespace SelfTestResult{
+        enum Vals{
             Failed=0,
             Passed=1
         };
+    }
 
-        enum class InterruptStatus : uint8_t {
+    namespace InterruptStatus{
+        enum Vals{
             NotTriggered=0,
             Triggered=1
         };
+    }
 
-        enum class InterruptEnable : uint8_t {
+    namespace InterruptEnable{
+        enum Vals{
             Disabled=0,
             Enabled=1
         };
+    }
 
-        enum class ClockCalibStatus : uint8_t {
+    namespace ClockCalibStatus{
+        enum Vals{
             FreeToConfigure=0,
             CalibrationInProgress=1
         };
+    }
 
-        enum class OrientationMode : uint8_t{
+    namespace OrientationMode{
+        enum Vals{
             Windows = 0,
             Android = 1
         };
-        
-        enum class TemperatureUnit : uint8_t{
+    }
+    
+    namespace TemperatureUnit{
+        enum Vals{
             Celsius = 0,
             Fahrenheit = 1
         };
-        
-        enum class EulerUnits : uint8_t{
+    }
+    
+    namespace EulerUnits{
+        enum Vals{
             Degrees = 0,
             Radians = 1
         };
-        
-        enum class AngularRateUnits : uint8_t{
+    }
+    
+    namespace AngularRateUnits{
+        enum Vals{
             DegreesPerSec = 0,
             RadiansPerSec = 1
         };
+    }
         
-        enum class AccelerationUnits : uint8_t{
+    namespace AccelerationUnits{
+        enum Vals{
             MeterPerSec2 = 0,
             MilligG = 1
         };
-        
-        enum class MotionInterruptMode : uint8_t{
+    }
+    
+    namespace MotionInterruptMode{
+        enum Vals{
             NoMotion = 0,
             SlowMotion = 1
         };
+    }
 
-        enum class SystemStatusCode : uint8_t {
+    namespace SystemStatusCode{
+        enum Vals{
             SystemIdle=0,
             SystemError=1,
             InitializingPeripherals=2,
@@ -171,8 +201,10 @@ namespace BNO055{
             SensorFusionAlgorithmRunning=5,
             SystemRunningWithoutSensorFusion=6
         };
+    }
 
-        enum class SystemErrorCode : uint8_t {
+    namespace SystemErrorCode{
+        enum Vals{
             NoError=0,
             PeripheralInitError=1,
             SystemInitError=2,
@@ -185,8 +217,10 @@ namespace BNO055{
             FusionAlgorithmError=9,
             SensorConfigurationError=0xA,
         };
+    }
 
-        enum class OperatingMode : uint8_t {
+    namespace OperatingMode{
+        enum Vals{
             CONFIGMODE = 0,
             ACCONLY = 1,
             MAGONLY = 2,
@@ -201,38 +235,48 @@ namespace BNO055{
             NDOF_FMC_OFF = 0xB,
             NDOF = 0xC
         };
+    }
 
-        enum class AxisRepresentation : uint8_t {
+    namespace AxisRepresentation{
+        enum Vals{
             XAxis = 0,
             YAxis = 1,
             ZAxis = 2,
             Invalid = 3
         };
+    }
 
-        enum class AxisSign : uint8_t {
+    namespace AxisSign{
+        enum Vals{
             Positive = 0,
             Negative = 1
-        };
+        };  
+    }
 
-        enum class TempSource : uint8_t {
+    namespace TempSource{
+        enum Vals{
             Accelerometer = 0,
             Gyroscope = 1,
             Invalid2 = 2,
             Invalid3 = 3
         };
+    }
 
-        enum class AccelerometerPowerMode : uint8_t{
+    namespace AccelerometerPowerMode {
+        enum Vals{
             Normal = 0,
             Suspend = 1,
-            LowPoer1 = 2,
+            LowPower1 = 2,
             Standby = 3,
             LowPower2 = 4,
             DeepSuspend = 5,
             Invalid6= 6,
             Invalid7 = 7
         };
+    }
 
-        enum class AccelerometerBandwidth : uint8_t{
+    namespace AccelerometerBandwidth {
+        enum Vals{
             BW_7_81Hz = 0,
             BW_15_63Hz = 1,
             BW_31_25Hz = 2,
@@ -242,23 +286,29 @@ namespace BNO055{
             BW_500Hz= 6,
             BW_1000Hz = 7
         };
+    }
 
-        enum class AccelerometerGRange : uint8_t{
+    namespace AccelerometerGRange {
+        enum Vals {
             Range_2G = 0,
             Range_4G = 1,
             Range_8G = 2,
             Range_16G = 3
         };
+    }
 
-        enum class GyroscopeRange : uint8_t{
+    namespace GyroscopeRange {
+        enum Vals{
             Range_2000dps = 0,
             Range_1000dps = 1,
             Range_500dps = 2,
             Range_250dps = 3,
             Range_125dps = 4
         };
+    }
 
-        enum class GyroscopeBandwidth : uint8_t{
+    namespace GyroscopeBandwidth {
+        enum Vals{
             BW_523Hz = 0,
             BW_230Hz = 1,
             BW_116Hz = 2,
@@ -268,30 +318,38 @@ namespace BNO055{
             BW_64Hz = 6,
             BW_32Hz = 7
         };
+    }
 
-        enum class GyroscopeOperationMode : uint8_t{
+    namespace GyroscopeOperationMode {
+        enum Vals{
             Normal = 0,
             FastPowerUp = 1,
             DeepSuspend = 2,
             Suspend = 3,
             AdvancedPwoerSave = 4
         };
+    }
 
-        enum class MagnetometerPowerMode : uint8_t{
+    namespace MagnetometerPowerMode {
+        enum Vals{
             Normal = 0,
             Sleep = 1,
             Suspend = 2,
             ForceMode = 3
         };
+    }
 
-        enum class MagnetometerOperationMode : uint8_t{
+    namespace MagnetometerOperationMode{
+        enum Vals{
             LowPower = 0,
             Regular = 1,
             EhancedRegular = 2,
             HighAccuracy = 3
         };
+    }
 
-        enum class MagnetometerDataOutputRate : uint8_t{
+    namespace MagnetometerDataOutputRate{
+        enum Vals{
             Rate_2Hz = 0,
             Rate_6Hz = 1,
             Rate_8Hz = 2,
@@ -301,8 +359,10 @@ namespace BNO055{
             Rate_25Hz = 6,
             Rate_30Hz = 7
         };
+    }
 
-        enum class AccelerometerSleepDuration : uint8_t {
+    namespace AccelerometerSleepDuration{
+        enum Vals{
             Duration_500ns_0 = 0,
             Duration_500ns_1 = 1,
             Duration_500ns_2 = 2,
@@ -320,13 +380,17 @@ namespace BNO055{
             Duration_500ms = 14,
             Duration_1ms_15 = 15
         };
+    }
 
-        enum class AccelerometerSleepTimerMode : uint8_t {
+    namespace AccelerometerSleepTimerMode{
+        enum Vals{
             EventDriven=0,
             Equidistant=1
         };
+    }
 
-        enum class GyroscopeAutoSleepDuration : uint8_t {
+    namespace GyroscopeAutoSleepDuration{
+        enum Vals{
             NotAllowed=0,
             Duration_4ms=1,
             Duration_5ms=2,
@@ -334,10 +398,12 @@ namespace BNO055{
             Duration_10ms=4,
             Duration_15ms=5,
             Duration_20ms=6,
-            Duration_40ms=7,
+            Duration_40ms=7
         };
+    }
 
-        enum class GyroscopeSleepDuration : uint8_t {
+    namespace GyroscopeSleepDuration{
+        enum Vals{
             Duration_2ms=0,
             Duration_4ms=1,
             Duration_5ms=2,
@@ -345,44 +411,53 @@ namespace BNO055{
             Duration_10ms=4,
             Duration_15ms=5,
             Duration_18ms=6,
-            Duration_20ms=7,
+            Duration_20ms=7
         };
+    }
 
-        enum class GyroscopeAwakeDuration : uint8_t {
+    namespace GyroscopeAwakeDuration{
+        enum Vals{
             Duration_8Samples = 0,
             Duration_16Samples = 1,
             Duration_32Samples = 2,
             Duration_64Samples = 3,
         };
+    }
 
-        enum class PowerMode : uint8_t {
+    namespace PowerMode{
+        enum Vals{
             NormalMode = 0,
             LowPowerMode = 1,
             SuspendMode = 2,
             Invalid3 = 3
         };
+    }
 
-        enum class OscillatorType : uint8_t {
+    namespace OscillatorType{
+        enum Vals{
             Internal = 0,
             External = 1
         };
+    }
 
+#pragma pack(push,1)
+    namespace Registers {
 
         union ACC_Config{   // Page 1 - 0x08
             struct {
-                AccelerometerPowerMode ACC_PWR_Mode:3;
-                AccelerometerBandwidth ACC_BW:3;
-                AccelerometerGRange ACC_Range:2;
-            } bits;
+                AccelerometerPowerMode::Vals ACC_PWR_Mode:3;
+                AccelerometerBandwidth::Vals ACC_BW:3;
+                AccelerometerGRange::Vals ACC_Range:2;
+            } bits; 
             uint8_t val;
         };
 
         union MAG_Config{   // Page 1 - 0x09
             struct{
                 uint8_t _padding:1;
-                MagnetometerPowerMode MAG_Power_mode:2;
-                MagnetometerOperationMode MAG_OPR_Mode:2;
-                MagnetometerDataOutputRate MAG_Data_output_rate:3;
+                MagnetometerPowerMode::Vals MAG_Power_Nmode:2;
+                MagnetometerOperationMode::Vals MAG_OPR_Mode:2;
+                MagnetometerDataOutputRate::Vals MAG_Data_output_rate:3;
             } bits;
             uint8_t val;
         };
@@ -390,8 +465,8 @@ namespace BNO055{
         union GYR_Config_0{ // Page 1 - 0x0A
             struct{
                 uint8_t _padding:2;
-                GyroscopeBandwidth GYR_Bandwidth:3;
-                GyroscopeRange GYR_Range:3;
+                GyroscopeBandwidth::Vals GYR_Bandwidth:3;
+                GyroscopeRange::Vals GYR_Range:3;
             } bits;
             uint8_t val;
         };
@@ -399,7 +474,7 @@ namespace BNO055{
         union GYR_Config_1{  // Page 1 - 0x0B
             struct{
                 uint8_t _padding:5;
-                GyroscopeOperationMode GYR_Power_Mode:3;
+                GyroscopeOperationMode::Vals GYR_Power_Mode:3;
             } bits;
             uint8_t val;
         };
@@ -407,8 +482,8 @@ namespace BNO055{
         union ACC_Sleep_Config{ // Page 1 - 0x0C
             struct{
                 uint8_t _padding:3;
-                AccelerometerSleepDuration SLP_DURATION:4;
-                AccelerometerSleepTimerMode SLP_MODE:1;
+                AccelerometerSleepDuration::Vals SLP_DURATION:4;
+                AccelerometerSleepTimerMode::Vals SLP_MODE:1;
             } bits;
             uint8_t val;
         };
@@ -416,20 +491,20 @@ namespace BNO055{
         union GYR_Sleep_Config{ // Page 1 - 0x0D
             struct{
                 uint8_t _padding:2;
-                GyroscopeAutoSleepDuration AUTO_SLP_DURATION:3;
-                GyroscopeSleepDuration SLP_DURATION:3;
+                GyroscopeAutoSleepDuration::Vals AUTO_SLP_DURATION:3;
+                GyroscopeSleepDuration::Vals SLP_DURATION:3;
             } bits;
             uint8_t val;
         };
 
         union INT_MSK{ // Page 1 - 0x0F
             struct{
-                InterruptEnable ACC_NM:1;
-                InterruptEnable ACC_AM:1;
-                InterruptEnable ACC_HIGH_G:1;
+                InterruptEnable::Vals ACC_NM:1;
+                InterruptEnable::Vals ACC_AM:1;
+                InterruptEnable::Vals ACC_HIGH_G:1;
                 uint8_t _padding1:1;
-                InterruptEnable GYR_HIGH_RATE:1;
-                InterruptEnable GYRO_AM:1;
+                InterruptEnable::Vals GYR_HIGH_RATE:1;
+                InterruptEnable::Vals GYRO_AM:1;
                 uint8_t _padding2:2;
             } bits;
             uint8_t val;
@@ -437,12 +512,12 @@ namespace BNO055{
 
         union INT_EN{ // Page 1 - 0x10
             struct{
-                InterruptEnable ACC_NM:1;
-                InterruptEnable ACC_AM:1;
-                InterruptEnable ACC_HIGH_G:1;
+                InterruptEnable::Vals ACC_NM:1;
+                InterruptEnable::Vals ACC_AM:1;
+                InterruptEnable::Vals ACC_HIGH_G:1;
                 uint8_t _padding1:1;
-                InterruptEnable GYR_HIGH_RATE:1;
-                InterruptEnable GYRO_AM:1;
+                InterruptEnable::Vals GYR_HIGH_RATE:1;
+                InterruptEnable::Vals GYRO_AM:1;
                 uint8_t _padding2:2;
             } bits;
             uint8_t val;
@@ -451,12 +526,12 @@ namespace BNO055{
 
         union ACC_INT_SETTINGS{ // Page 1 - 0x12
             struct{
-                InterruptEnable HG_Z_AXIS:1;
-                InterruptEnable HG_Y_AXIS:1;
-                InterruptEnable HG_X_AXIS:1;
-                InterruptEnable AM_NM_Z_AXIS:1;
-                InterruptEnable AM_NM_Y_AXIS:1;
-                InterruptEnable AM_NM_X_AXIS:1;
+                InterruptEnable::Vals HG_Z_AXIS:1;
+                InterruptEnable::Vals HG_Y_AXIS:1;
+                InterruptEnable::Vals HG_X_AXIS:1;
+                InterruptEnable::Vals AM_NM_Z_AXIS:1;
+                InterruptEnable::Vals AM_NM_Y_AXIS:1;
+                InterruptEnable::Vals AM_NM_X_AXIS:1;
                 uint8_t AM_DUR:2;
             } bits;
             uint8_t val;
@@ -466,21 +541,21 @@ namespace BNO055{
             struct{
                 uint8_t _padding:1;
                 uint8_t NO_SLOW_MOTION_DURATION:6;
-                MotionInterruptMode SM_NM:1;
+                MotionInterruptMode::Vals SM_NM:1;
             } bits;
             uint8_t val;
         };
 
         union GYR_INT_SETTING{ // Page 1 - 0x17
             struct{ 
-                InterruptEnable HR_FILT:1;
-                InterruptEnable AM_FILT:1;
-                InterruptEnable HR_Z_AXIS:1;
-                InterruptEnable HR_Y_AXIS:1;
-                InterruptEnable HR_X_AXIS:1;
-                InterruptEnable AM_Z_AXIS:1;
-                InterruptEnable AM_Y_AXIS :1;
-                InterruptEnable AM_X_AXIS:1;
+                InterruptEnable::Vals HR_FILT:1;
+                InterruptEnable::Vals AM_FILT:1;
+                InterruptEnable::Vals HR_Z_AXIS:1;
+                InterruptEnable::Vals HR_Y_AXIS:1;
+                InterruptEnable::Vals HR_X_AXIS:1;
+                InterruptEnable::Vals AM_Z_AXIS:1;
+                InterruptEnable::Vals AM_Y_AXIS :1;
+                InterruptEnable::Vals AM_X_AXIS:1;
             } bits;
             uint8_t val;
         };
@@ -525,7 +600,7 @@ namespace BNO055{
         union GYR_AM_SET{ // Page 1 - 0x1F
             struct{ 
                 uint8_t _padding:4;
-                GyroscopeAwakeDuration AWAKE_DURATION:2;
+                GyroscopeAwakeDuration::Vals AWAKE_DURATION:2;
                 uint8_t SLOPE_SAMPLES:2;
             } bits;
             uint8_t val;
@@ -533,10 +608,10 @@ namespace BNO055{
 
         union CALIB_STAT{ // Page 0 - 0x35
             struct{ 
-                CalibrationStatus SYS_CALIB_STATUS:2;
-                CalibrationStatus GYR_CALIB_STATUS:2;
-                CalibrationStatus ACC_CALIB_STATUS:2;
-                CalibrationStatus MAG_CALIB_STATUS:2;
+                CalibrationStatus::Vals SYS_CALIB_STATUS:2;
+                CalibrationStatus::Vals GYR_CALIB_STATUS:2;
+                CalibrationStatus::Vals ACC_CALIB_STATUS:2;
+                CalibrationStatus::Vals MAG_CALIB_STATUS:2;
             } bits;
             uint8_t val;
         };
@@ -544,22 +619,22 @@ namespace BNO055{
         union ST_RESULT{ // Page 0 - 0x36
             struct{ 
                 uint8_t _padding:4;
-                SelfTestResult ST_MCU:1;
-                SelfTestResult ST_GYR:1;
-                SelfTestResult ST_MAG:1;
-                SelfTestResult ST_ACC:1;
+                SelfTestResult::Vals ST_MCU:1;
+                SelfTestResult::Vals ST_GYR:1;
+                SelfTestResult::Vals ST_MAG:1;
+                SelfTestResult::Vals ST_ACC:1;
             } bits;
             uint8_t val;
         };
 
         union INT_STA{ // Page 0 - 0x37
             struct{ 
-                InterruptStatus ACC_NM:1;
-                InterruptStatus ACC_AM:1;
-                InterruptStatus ACC_HIGH_G:1;
+                InterruptStatus::Vals ACC_NM:1;
+                InterruptStatus::Vals ACC_AM:1;
+                InterruptStatus::Vals ACC_HIGH_G:1;
                 uint8_t _padding1: 1;
-                InterruptStatus GYR_HIGH_RATE:1;
-                InterruptStatus GYRO_AM:1;
+                InterruptStatus::Vals GYR_HIGH_RATE:1;
+                InterruptStatus::Vals GYRO_AM:1;
                 uint8_t _padding2: 2;
             } bits;
             uint8_t val;
@@ -568,46 +643,46 @@ namespace BNO055{
         union SYS_CLK_STATUS { // Page 0 - 0x38
             struct{ 
                 uint8_t _padding: 7;
-                ClockCalibStatus ST_MAIN_CLK:1;
+                ClockCalibStatus::Vals ST_MAIN_CLK:1;
             } bits;
             uint8_t val;
         };
 
-        typedef SystemStatusCode SYS_STATUS;
-        typedef SystemErrorCode SYS_ERR;
+        typedef SystemStatusCode::Vals SYS_STATUS;
+        typedef SystemErrorCode::Vals SYS_ERR;
 
         union UNIT_SEL { // Page 0 - 0x3B
-            struct{ 
-                OrientationMode ORI_Android_Windows: 1;
-                uint8_t _padding1: 2;
-                TemperatureUnit TEMP_Unit: 1;
-                uint8_t _padding2: 1;
-                EulerUnits EUL_Unit: 1;
-                AngularRateUnits GYR_Unit: 1;
-                AccelerationUnits ACC_Unit: 1;
-            } bits;
             uint8_t val;
+            struct{ 
+                OrientationMode::Vals ORI_Android_Windows: 1;
+                uint8_t _padding1: 2;
+                TemperatureUnit::Vals TEMP_Unit: 1;
+                uint8_t _padding2: 1;
+                EulerUnits::Vals EUL_Unit: 1;
+                AngularRateUnits::Vals GYR_Unit: 1;
+                AccelerationUnits::Vals ACC_Unit: 1;
+            } bits;
         };
 
         union OPR_MODE { // Page 0 - 0x3D
+            uint8_t val;
             struct{ 
                 uint8_t _padding: 4;
-                OperatingMode Operation_Mode: 4;
+                OperatingMode::Vals Operation_Mode: 4;
             } bits;
-            uint8_t val;
         };
 
         union PWR_MODE { // Page 0 - 0x3E
             struct{ 
                 uint8_t _padding: 6;
-                PowerMode Power_Mode: 2;
+                PowerMode::Vals Power_Mode: 2;
             } bits;
             uint8_t val;
         };
 
         union SYS_TRIGGER { // Page 0 - 0x3F
             struct{ 
-                OscillatorType CLK_SEL: 1;
+                OscillatorType::Vals CLK_SEL: 1;
                 bool RST_INT: 1;
                 bool RST_SYS: 1;
                 uint8_t _padding: 4;
@@ -619,7 +694,7 @@ namespace BNO055{
         union TEMP_SOURCE { // Page 0 - 0x40
             struct{ 
                 uint8_t _padding: 6;
-                TempSource TEMP_Source: 2;
+                TempSource::Vals TEMP_Source: 2;
             } bits;
             uint8_t val;
         };
@@ -627,23 +702,148 @@ namespace BNO055{
         union AXIS_MAP_CONFIG { // Page 0 - 0x41
             struct{ 
                 uint8_t _padding: 2;
-                AxisRepresentation Remapped_Z_Axis: 2;
-                AxisRepresentation Remapped_Y_Axis: 2;
-                AxisRepresentation Remapped_X_Axis: 2;
+                AxisRepresentation::Vals Remapped_Z_Axis: 2;
+                AxisRepresentation::Vals Remapped_Y_Axis: 2;
+                AxisRepresentation::Vals Remapped_X_Axis: 2;
             } bits;
             uint8_t val;
         };
 
-        union AXIS_MAP_CONFIG { // Page 0 - 0x42
+        union AXIS_MAP_SIGN { // Page 0 - 0x42
             struct{ 
                 uint8_t _padding: 5;
-                AxisSign Remapped_X_Axis_Sign: 1;
-                AxisSign Remapped_Y_Axis_Sign: 1;
-                AxisSign Remapped_Z_Axis_Sign: 1;
+                AxisSign::Vals Remapped_X_Axis_Sign: 1;
+                AxisSign::Vals Remapped_Y_Axis_Sign: 1;
+                AxisSign::Vals Remapped_Z_Axis_Sign: 1;
             } bits;
             uint8_t val;
         };
     }
+#pragma pack(pop)
+
+    template<typename T> 
+    struct XYZ {
+        XYZ(T x, T y, T z){
+            x = x;
+            y = y;
+            z = z;
+        }
+
+        XYZ(XYZ<T> const & other){
+            // copy constructor
+            x=other.x;
+            y=other.y;
+            z=other.z;
+        }
+
+        XYZ(volatile XYZ<T> const & other){
+            // copy constructor
+            x=other.x;
+            y=other.y;
+            z=other.z;
+        }
+
+        T x;
+        T y;
+        T z;
+    };
+    
+    class Driver{
+    public:
+        enum class Error{
+            NO_ERROR,
+            NO_INIT,
+            NOT_READY,
+            FAILED_READ_INFO,
+            CONTINUOUS_READ_ENABLED
+        };
+
+        enum class ContinuousReadState: uint8_t {
+            IDLE,
+            READ_ACCEL,
+            READ_GYRO,
+            READ_MAG,
+            ERROR
+        };
+
+        struct ChipInfo {
+            uint8_t acc_chip_id;
+            uint8_t gyro_chip_id;
+            uint8_t mag_chip_id;
+            uint16_t sw_revision;
+            uint8_t bootloader_version;
+        } ;
+
+        Driver();
+        void init(uint8_t i2c_addr);
+        bool wait_ready(uint32_t const timeout_ms);
+        void read_info();
+
+        XYZ<uint16_t> get_accel() volatile;
+        XYZ<uint16_t> get_gyro() volatile;
+        XYZ<uint16_t> get_mag() volatile;
+
+        void twi_rx_callback(uint8_t *data, int len);
+        void twi_tx_callback();
+        void initiate_continuous_read();
+        void stop_continuous_read();
+
+        inline bool is_error() const {
+            return m_error != Error::NO_ERROR;
+        }
+
+    private:
+        uint8_t m_i2c_addr;
+        uint8_t m_last_error_code;
+        Error m_error;
+
+
+
+        ChipInfo m_chip_info;
+
+        // Continuous read stuff
+        volatile bool m_double_buffer_flag;
+        volatile ContinuousReadState m_continuous_read_state;
+        volatile uint8_t m_continuous_read_buffer[8];
+        volatile uint8_t m_continuous_read_size;
+
+        volatile XYZ<uint16_t> m_acc[2];
+        volatile XYZ<uint16_t> m_gyro[2];
+        volatile XYZ<uint16_t> m_mag[2];
+
+
+        bool write_register(uint8_t const reg, uint8_t const val, bool block=true, uint32_t timeout_us=1000);
+        bool read_register(uint8_t const reg, uint8_t *val, bool block=true, bool timeout_us=1000) ;
+        bool read_registers(uint8_t const reg, uint8_t * constbuffer, int size, bool block, uint32_t timeout_us) ;
+
+        void initiate_read_accel();
+        void initiate_read_gyro();
+        void initiate_read_mag();
+
+        inline uint8_t db_get_read_index() volatile {
+            return (m_double_buffer_flag) ? 0 : 1;
+        }
+
+        inline uint8_t db_get_write_index() volatile {
+            return (m_double_buffer_flag) ? 1 : 0;
+        }
+
+        inline void db_swap_buffers() {
+            m_double_buffer_flag = !m_double_buffer_flag;
+        }
+
+        inline uint16_t make_u16(uint8_t lsb, uint8_t msb){
+            return static_cast<uint16_t>(lsb) | (static_cast<uint16_t>(msb) << 8);
+        }
+
+        inline void set_error(Error const error) {
+            m_error = error;
+        };
+
+        inline void clear_error() {
+            m_error = Error::NO_ERROR;
+        };
+    };
 }
 
 #endif  //BNO055_HPP
