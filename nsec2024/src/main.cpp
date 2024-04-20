@@ -55,7 +55,7 @@ void setup() {
     twi_attachSlaveRxEvent(twi_slave_rx_callback); // default callback must exist
     twi_attachMasterRxEvent(twi_master_rx_callback); // default callback must exist
     twi_attachMasterTxEvent(twi_master_tx_callback); // default callback must exist
-    twi_setFrequency(400000);
+    twi_setFrequency(100000);
 
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(PIN_BNO055_RESET, OUTPUT);     
@@ -63,6 +63,7 @@ void setup() {
     pinMode(A1, OUTPUT);     
     pinMode(A2, OUTPUT);     
     pinMode(A3, OUTPUT);     
+    pinMode(A4, OUTPUT);     
     digitalWrite(PIN_BNO055_RESET, HIGH);  // Remove the reset signal
     nsec2024_demo_config_scrutiny();
     

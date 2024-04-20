@@ -88,6 +88,7 @@ namespace BNO055{
     }
 
     bool Driver::wait_ready(uint32_t const timeout_ms) {
+        digitalWrite(A4, 0);
         uint32_t tstart=millis();
         uint8_t chip_id = 0;
 
@@ -95,7 +96,7 @@ namespace BNO055{
             set_error(Error::CONTINUOUS_READ_ENABLED);
         }
 
-        if (m_error != Error::NO_ERROR){
+        if (! (m_error == Error::NO_ERROR || m_error==Error::NOT_READY) ){
             goto wait_ready_err;
         }
 
@@ -109,6 +110,7 @@ namespace BNO055{
             }
         }
 
+        
         // Set Accelerometer / Magnetometer / Gyro mode
         if (!write_register(RegisterAddress_Page0::OPR_MODE, OperatingMode::CONFIGMODE)){
             goto wait_ready_err;
@@ -148,26 +150,28 @@ namespace BNO055{
 
     bool Driver::write_register(uint8_t const reg, uint8_t const val, bool block, uint32_t timeout_us)  {
         uint8_t data[2] { reg, val};
-        twi_setTimeoutInMicros(timeout_us, true);
+        twi_setTimeoutInMicros(timeout_us, 0);
         m_last_error_code = twi_writeTo(m_i2c_addr, data, sizeof(data), (int) block, 1);
         return (m_last_error_code == 0);
     }
     
-    bool Driver::read_register(uint8_t const reg, uint8_t *val, bool block, bool timeout_us) {
-        return read_registers(reg, val, 1, block, timeout_us);
+    bool Driver::read_register(uint8_t const reg, uint8_t *val, uint32_t timeout_us) {
+        return read_registers(reg, val, 1, timeout_us);
     }
 
-    bool Driver::read_registers(uint8_t const reg, uint8_t* buffer, int size, bool block, uint32_t timeout_us)  {
+    bool Driver::read_registers(uint8_t const reg, uint8_t* buffer, int size, uint32_t timeout_us)  {
         uint8_t qty_read;
-        twi_setTimeoutInMicros(timeout_us, 1);
-        m_last_error_code = twi_writeTo(m_i2c_addr, const_cast<uint8_t*>(&reg), 1, (int) block, 0);
+        twi_setTimeoutInMicros(timeout_us, 0);
+        m_last_error_code = twi_writeTo(m_i2c_addr, const_cast<uint8_t*>(&reg), 1, 1, 1);
         if (m_last_error_code != 0){
+            digitalWrite(A4, 1);
             goto read_registers_err;
         }
-        qty_read = twi_readFrom(m_i2c_addr, buffer, size, 1, (int)block);
-        if (block && qty_read != size){
+        qty_read = twi_readFrom(m_i2c_addr, buffer, size, 1, 1);
+        if (qty_read != size){
             goto read_registers_err;
         }
+        return true;
 
 read_registers_err:
         twi_releaseBus();
@@ -183,7 +187,7 @@ read_registers_err:
         }
         uint8_t buffer[6];
         write_register(PAGE_ID_ADDR, 0);
-        if (read_registers(RegisterAddress_Page0::ACC_ID, buffer, 6, true, 5000)){
+        if (read_registers(RegisterAddress_Page0::ACC_ID, buffer, 6, 5000)){
             m_chip_info.acc_chip_id = buffer[0];
             m_chip_info.mag_chip_id = buffer[1];
             m_chip_info.gyro_chip_id = buffer[2];
@@ -212,13 +216,17 @@ read_registers_err:
     }
 
     void Driver::initiate_continuous_read(){
-        m_double_buffer_flag = false;
-        initiate_read_accel();
+        if (m_error == Error::NO_ERROR){
+            m_double_buffer_flag = false;
+            initiate_read_accel();
+        }
     }
 
     void Driver::stop_continuous_read(){
-        twi_releaseBus();
-        m_continuous_read_state=ContinuousReadState::IDLE;
+        if (m_continuous_read_state != ContinuousReadState::IDLE){
+            twi_releaseBus();
+            m_continuous_read_state=ContinuousReadState::IDLE;
+        }
     }
 
     void Driver::initiate_read_accel(){

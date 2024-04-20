@@ -813,8 +813,8 @@ namespace BNO055{
 
 
         bool write_register(uint8_t const reg, uint8_t const val, bool block=true, uint32_t timeout_us=1000);
-        bool read_register(uint8_t const reg, uint8_t *val, bool block=true, bool timeout_us=1000) ;
-        bool read_registers(uint8_t const reg, uint8_t * constbuffer, int size, bool block, uint32_t timeout_us) ;
+        bool read_register(uint8_t const reg, uint8_t *val, uint32_t timeout_us=1000) ;
+        bool read_registers(uint8_t const reg, uint8_t * constbuffer, int size,  uint32_t timeout_us) ;
 
         void initiate_read_accel();
         void initiate_read_gyro();
