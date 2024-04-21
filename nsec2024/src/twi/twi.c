@@ -18,7 +18,8 @@
 
   Modified 2012 by Todd Krein (todd@krein.org) to implement repeated starts
   Modified 2020 by Greyson Christoforo (grey@christoforo.net) to implement timeouts
-  Modified 2024 by Pier-Yves Lessard to (py.lessard@gmail.com) to allow non-blocking read.
+  Modified 2024 by Pier-Yves Lessard to (py.lessard@gmail.com) to allow non-blocking read. 
+    - Modifications marked with PYLESSARD_MODIFS #define
 */
 
 #include <math.h>
@@ -43,10 +44,12 @@
 
 static volatile uint8_t twi_state;
 static volatile uint8_t twi_slarw;
-static volatile uint8_t twi_blocking_read;
 static volatile uint8_t twi_sendStop;			// should the transaction end with a stop
 static volatile uint8_t twi_inRepStart;			// in the middle of a repeated start
 
+#ifdef PYLESSARD_MODIFS
+static volatile uint8_t twi_blocking_read;
+#endif
 // twi_timeout_us > 0 prevents the code from getting stuck in various while loops here
 // if twi_timeout_us == 0 then timeout checking is disabled (the previous Wire lib behavior)
 // at some point in the future, the default twi_timeout_us value could become 25000
@@ -58,9 +61,12 @@ static volatile bool twi_timed_out_flag = false;  // a timeout has been seen
 static volatile bool twi_do_reset_on_timeout = false;  // reset the TWI registers on timeout
 
 static void (*twi_onSlaveTransmit)(void);
-static void (*twi_onMasterTransmit)(void);
 static void (*twi_onSlaveReceive)(uint8_t*, int);
+
+#ifdef PYLESSARD_MODIFS
+static void (*twi_onMasterTransmit)(void);
 static void (*twi_onMasterReceive)(uint8_t*, int);
+#endif
 
 static uint8_t twi_masterBuffer[TWI_BUFFER_LENGTH];
 static volatile uint8_t twi_masterBufferIndex;
@@ -160,7 +166,11 @@ void twi_setFrequency(uint32_t frequency)
  *          sendStop: Boolean indicating whether to send a stop at the end
  * Output   number of bytes read
  */
+#ifdef PYLESSARD_MODIFS
 uint8_t twi_readFrom(uint8_t address, uint8_t* data, uint8_t length, uint8_t sendStop, uint8_t block)
+#else
+uint8_t twi_readFrom(uint8_t address, uint8_t* data, uint8_t length, uint8_t sendStop)
+#endif
 {
   uint8_t i;
 
@@ -179,7 +189,9 @@ uint8_t twi_readFrom(uint8_t address, uint8_t* data, uint8_t length, uint8_t sen
   }
   twi_state = TWI_MRX;
   twi_sendStop = sendStop;
+  #ifdef PYLESSARD_MODIFS
   twi_blocking_read = block;
+  #endif
   // reset error state (0xFF.. no error occurred)
   twi_error = 0xFF;
 
@@ -219,7 +231,9 @@ uint8_t twi_readFrom(uint8_t address, uint8_t* data, uint8_t length, uint8_t sen
   }
 
   // wait for read operation to complete
+#ifdef PYLESSARD_MODIFS  
   if (block){
+#endif    
     startMicros = micros();
     while(TWI_MRX == twi_state){
       if((twi_timeout_us > 0ul) && ((micros() - startMicros) > twi_timeout_us)) {
@@ -236,7 +250,9 @@ uint8_t twi_readFrom(uint8_t address, uint8_t* data, uint8_t length, uint8_t sen
     for(i = 0; i < length; ++i){
       data[i] = twi_masterBuffer[i];
     }
+#ifdef PYLESSARD_MODIFS    
   }
+#endif
   return length;
 }
 
@@ -275,6 +291,17 @@ uint8_t twi_writeTo(uint8_t address, uint8_t* data, uint8_t length, uint8_t wait
       return (5);
     }
   }
+#ifdef PYLESSARD_MODIFS
+  // Make sure we are not waiting for a stop condition. Wait state in ISR have been removed
+  // becaus eit was blocking for > 200us
+  while(TWCR & _BV(TWSTO)){ //
+    if((twi_timeout_us > 0ul) && ((micros() - startMicros) > twi_timeout_us)) {
+      twi_handleTimeout(twi_do_reset_on_timeout);
+      return (5);
+    }
+  }
+#endif
+  
   twi_state = TWI_MTX;
   twi_sendStop = sendStop;
   // reset error state (0xFF.. no error occurred)
@@ -393,6 +420,7 @@ void twi_attachSlaveTxEvent( void (*function)(void) )
 }
 
 
+#ifdef PYLESSARD_MODIFS
 /*
 Master callback added by Pier-Yves Lessard for nsec2024 demo
 */
@@ -405,7 +433,7 @@ void twi_attachMasterRxEvent( void (*function)(uint8_t*, int)  )
 {
   twi_onMasterReceive = function;
 }
-
+#endif
 
 
 /* 
@@ -438,6 +466,10 @@ void twi_stop(void)
   // wait for stop condition to be executed on bus
   // TWINT is not set after a stop condition!
   // We cannot use micros() from an ISR, so approximate the timeout with cycle-counted delays
+#ifndef PYLESSARD_MODIFS 
+  // This section is disabled because it keeps the CPU stuck in the
+  // ISR for way too long, > 200us. Interfere with Uart
+
   const uint8_t us_per_loop = 8;
   uint32_t counter = (twi_timeout_us + us_per_loop - 1)/us_per_loop; // Round up
   while(TWCR & _BV(TWSTO)){
@@ -451,6 +483,7 @@ void twi_stop(void)
       }
     }
   }
+#endif
 
   // update twi state
   twi_state = TWI_READY;
@@ -526,7 +559,10 @@ bool twi_manageTimeoutFlag(bool clear_flag){
 
 ISR(TWI_vect)
 {
+#ifdef PYLESSARD_MODIFS  
+  // For logic analyzer debug
   digitalWrite(A0, 1);
+#endif  
   switch(TW_STATUS){
     // All Master
     case TW_START:     // sent start condition
@@ -556,9 +592,11 @@ ISR(TWI_vect)
          TWCR = _BV(TWINT) | _BV(TWSTA)| _BV(TWEN) ;
          twi_state = TWI_READY;
         }
+#ifdef PYLESSARD_MODIFS        
         if (twi_state == TWI_READY){
           twi_onMasterTransmit();
         }
+#endif        
       }
       break;
     case TW_MT_SLA_NACK:  // address sent, nack received
@@ -600,10 +638,11 @@ ISR(TWI_vect)
         TWCR = _BV(TWINT) | _BV(TWSTA)| _BV(TWEN) ;
         twi_state = TWI_READY;
       }
-
+#ifdef PYLESSARD_MODIFS
       if (twi_blocking_read==0 && twi_state == TWI_READY && twi_timed_out_flag==0){
         twi_onMasterReceive(twi_masterBuffer, twi_masterBufferIndex);
       }
+#endif      
       break;
     case TW_MR_SLA_NACK: // address sent, nack received
       twi_stop();
@@ -696,6 +735,7 @@ ISR(TWI_vect)
       twi_stop();
       break;
   }
-
+#ifdef PYLESSARD_MODIFS
   digitalWrite(A0, 0);
+#endif
 }

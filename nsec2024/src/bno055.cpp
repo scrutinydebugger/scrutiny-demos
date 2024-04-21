@@ -14,50 +14,18 @@ namespace BNO055{
         m_error{Driver::Error::NO_INIT},
         m_double_buffer_flag{false},
         m_interrupt_read_state{InterruptReadState::IDLE},
-        m_interrupt_read_size{0U},
-        m_acc{ XYZ<uint16_t>{0,0,0}, XYZ<uint16_t>{0,0,0}},
-        m_gyro{ XYZ<uint16_t>{0,0,0}, XYZ<uint16_t>{0,0,0}},
-        m_mag{ XYZ<uint16_t>{0,0,0}, XYZ<uint16_t>{0,0,0}}
+        m_acc{ 0,0,0 },
+        m_gyro{ 0,0,0 },
+        m_mag{ 0,0,0 }
     {
     }
 
     void Driver::twi_rx_callback(uint8_t *data, int len){
         uint8_t const write_index = db_get_write_index();
-        if (m_interrupt_read_state == InterruptReadState::READ_ACCEL){
-            if (len != 6){
-                m_interrupt_read_state = InterruptReadState::ERROR;
-            } else {
-                m_acc[write_index].x = make_u16(data[0], data[1]);
-                m_acc[write_index].y = make_u16(data[2], data[3]);
-                m_acc[write_index].z = make_u16(data[4], data[5]);
-                initiate_read_gyro();
-            }
-        } else if (m_interrupt_read_state == InterruptReadState::READ_GYRO){
-            if (len != 6){
-                m_interrupt_read_state = InterruptReadState::ERROR;
-            } else {
-                m_gyro[write_index].x = make_u16(data[0], data[1]);
-                m_gyro[write_index].y = make_u16(data[2], data[3]);
-                m_gyro[write_index].z = make_u16(data[4], data[5]);
-                initiate_read_mag();
-            }
-        } else if (m_interrupt_read_state == InterruptReadState::READ_MAG){
-            if (len != 6){
-                m_interrupt_read_state = InterruptReadState::ERROR;
-            } else {
-                m_mag[write_index].x = make_u16(data[0], data[1]);
-                m_mag[write_index].y = make_u16(data[2], data[3]);
-                m_mag[write_index].z = make_u16(data[4], data[5]);
-                
-                if (m_interrupt_read_mode == InterruptReadMode::CONTINUOUS){
-                    initiate_read_accel();
-                } else {
-                    m_interrupt_read_state = InterruptReadState::IDLE;
-                }
-            }
-        }
-
-        if (m_interrupt_read_state != InterruptReadState::ERROR){
+        if (!m_i2c_data_available){
+            memcpy((uint8_t*)m_i2c_rx_buffer[write_index], data, len);
+            m_i2c_data_available = true;
+            m_i2c_data_len = len;
             db_swap_buffers();
         }
     }
@@ -74,6 +42,55 @@ namespace BNO055{
 
     }
 
+    void Driver::process(){
+        if (m_i2c_data_available)
+        {
+            volatile uint8_t * readbuf = m_i2c_rx_buffer[db_get_read_index()];
+            if (m_interrupt_read_state == InterruptReadState::READ_ACCEL){
+                if (m_i2c_data_len != 6){
+                    m_interrupt_read_state = InterruptReadState::ERROR;
+                } else {
+                    m_acc.x = make_i16(readbuf[0], readbuf[1]);
+                    m_acc.y = make_i16(readbuf[2], readbuf[3]);
+                    m_acc.z = make_i16(readbuf[4], readbuf[5]);
+                    initiate_read_gyro();
+                }
+            } else if (m_interrupt_read_state == InterruptReadState::READ_GYRO){
+                if (m_i2c_data_len != 6){
+                    m_interrupt_read_state = InterruptReadState::ERROR;
+                } else {
+                    m_gyro.x = make_i16(readbuf[0], readbuf[1]);
+                    m_gyro.y = make_i16(readbuf[2], readbuf[3]);
+                    m_gyro.z = make_i16(readbuf[4], readbuf[5]);
+                    //initiate_read_mag();
+                    if (m_interrupt_read_mode == InterruptReadMode::CONTINUOUS){
+                        initiate_read_accel();
+                    } else {
+                        m_interrupt_read_state = InterruptReadState::IDLE;
+                    }
+                }
+            } 
+            /*
+            else if (m_interrupt_read_state == InterruptReadState::READ_MAG){
+                if (m_i2c_data_len != 6){
+                    m_interrupt_read_state = InterruptReadState::ERROR;
+                } else {
+                    m_mag.x = make_i16(readbuf[0], readbuf[1]);
+                    m_mag.y = make_i16(readbuf[2], readbuf[3]);
+                    m_mag.z = make_i16(readbuf[4], readbuf[5]);
+                    
+                    if (m_interrupt_read_mode == InterruptReadMode::CONTINUOUS){
+                        initiate_read_accel();
+                    } else {
+                        m_interrupt_read_state = InterruptReadState::IDLE;
+                    }
+                }
+            }
+            */
+            m_i2c_data_available = false;
+        }
+    }
+
 
     void Driver::init(uint8_t i2c_addr)
     {
@@ -81,14 +98,13 @@ namespace BNO055{
         m_error = Driver::Error::NOT_READY;
         m_last_error_code=0;
         m_interrupt_read_state = InterruptReadState::IDLE;
-        m_interrupt_read_size=0;
 
         m_chip_info = ChipInfo{0,0,0,0,0};
-        for (int i=0; i<2; i++){
-            m_acc[i].x = m_acc[i].y = m_acc[i].z = 0;
-            m_gyro[i].x = m_gyro[i].y = m_gyro[i].z = 0;
-            m_mag[i].x = m_mag[i].y = m_mag[i].z = 0;
-        }
+        m_acc.x = m_acc.y = m_acc.z = 0;
+        m_gyro.x = m_gyro.y = m_gyro.z = 0;
+        m_mag.x = m_mag.y = m_mag.z = 0;
+        m_i2c_data_available = false;
+        m_i2c_data_len = 0;
     }
 
     bool Driver::wait_ready(uint32_t const timeout_ms) {
@@ -292,19 +308,16 @@ namespace BNO055{
 
     }
 
-    XYZ<uint16_t> Driver::get_accel() volatile {
-        // Return a copy. Index is read once, so no race conditions should happen.
-        return m_acc[db_get_read_index()];
+    XYZ<int16_t> Driver::get_accel() {
+        return m_acc;   // Return a copy
     }
 
-    XYZ<uint16_t> Driver::get_gyro() volatile {
-        // Return a copy. Index is read once, so no race conditions should happen.
-        return m_gyro[db_get_read_index()];
+    XYZ<int16_t> Driver::get_gyro() {
+        return m_gyro;  // Return a copy
     }
 
-    XYZ<uint16_t> Driver::get_mag() volatile {
-        // Return a copy. Index is read once, so no race conditions should happen.
-        return m_mag[db_get_read_index()];
+    XYZ<int16_t> Driver::get_mag() { 
+        return m_mag;   // Return a copy
     }
 
     void Driver::initiate_interrupt_read(InterruptReadMode const mode){

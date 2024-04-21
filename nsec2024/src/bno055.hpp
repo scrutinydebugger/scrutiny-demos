@@ -723,28 +723,17 @@ namespace BNO055{
 
     template<typename T> 
     struct XYZ {
-        XYZ(){
-
-        };
+        XYZ() = default;
         XYZ(T x, T y, T z){
             x = x;
             y = y;
             z = z;
         }
 
-        XYZ(XYZ<T> const & other){
-            // copy constructor
-            x=other.x;
-            y=other.y;
-            z=other.z;
-        }
-
-        XYZ(volatile XYZ<T> const & other){
-            // copy constructor
-            x=other.x;
-            y=other.y;
-            z=other.z;
-        }
+        XYZ(XYZ<T> const & other) = default;
+        XYZ(volatile XYZ<T> const & other) {
+            XYZ(const_cast<XYZ<T> const&>(other));
+        };
 
         T x;
         T y;
@@ -769,6 +758,15 @@ namespace BNO055{
             ERROR
         };
 
+        enum class ChipModule: uint8_t {
+            
+            ACCELEROMETER=1,
+            GYROSCOPE=2,
+            MAGNETOMETER=4
+        };
+
+
+
         enum class InterruptReadMode: uint8_t {
             SINGLE,
             CONTINUOUS
@@ -787,14 +785,15 @@ namespace BNO055{
         bool wait_ready(uint32_t const timeout_ms);
         void read_info();
 
-        XYZ<uint16_t> get_accel() volatile;
-        XYZ<uint16_t> get_gyro() volatile;
-        XYZ<uint16_t> get_mag() volatile;
+        XYZ<int16_t> get_accel();
+        XYZ<int16_t> get_gyro();
+        XYZ<int16_t> get_mag();
 
         void twi_rx_callback(uint8_t *data, int len);
         void twi_tx_callback();
         void initiate_interrupt_read(InterruptReadMode mode);
         void stop_interrupt_read();
+        void process();
 
         inline bool is_error() const {
             return m_error != Error::NO_ERROR;
@@ -807,20 +806,20 @@ namespace BNO055{
         BNO055::Registers::SYS_STATUS m_sys_status_at_boot;
         BNO055::Registers::SYS_ERR m_sys_error_at_boot;
 
-
-
         ChipInfo m_chip_info;
 
         // Continuous read stuff
         volatile bool m_double_buffer_flag;
         volatile InterruptReadState m_interrupt_read_state;
-        volatile uint8_t m_interrupt_read_size;
         volatile InterruptReadMode m_interrupt_read_mode;
 
-        volatile XYZ<uint16_t> m_acc[2];
-        volatile XYZ<uint16_t> m_gyro[2];
-        volatile XYZ<uint16_t> m_mag[2];
+        XYZ<int16_t> m_acc;
+        XYZ<int16_t> m_gyro;
+        XYZ<int16_t> m_mag;
 
+        volatile uint8_t m_i2c_rx_buffer[2][8];
+        volatile bool m_i2c_data_available;
+        volatile uint8_t m_i2c_data_len;
 
         bool write_register(uint8_t const reg, uint8_t const val, bool block=true, uint32_t timeout_us=1000);
         bool read_register(uint8_t const reg, uint8_t *val, uint32_t timeout_us=1000) ;
@@ -842,8 +841,8 @@ namespace BNO055{
             m_double_buffer_flag = !m_double_buffer_flag;
         }
 
-        inline uint16_t make_u16(uint8_t lsb, uint8_t msb){
-            return static_cast<uint16_t>(lsb) | (static_cast<uint16_t>(msb) << 8);
+        inline int16_t make_i16(uint8_t lsb, uint8_t msb){
+            return static_cast<int16_t>(static_cast<uint16_t>(lsb) | (static_cast<uint16_t>(msb) << 8));
         }
 
         inline void set_error(Error const error) {

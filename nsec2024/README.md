@@ -25,4 +25,22 @@ git clone --depth 1 -b nsec2024_demo https://github.com/scrutinydebugger/scrutin
 scrutiny launch-server --config scrutiny_server_config.json # Make sure to adjust the serial port name in that configuration
 ```
 
+## Intercepting the communication
 
+Install interceptty
+
+```bash
+git clone https://github.com/nochkin/interceptty
+cd interceptty
+./configure
+make
+sudo make install
+./test
+```
+
+Hook interceptty on the device used as a serial port. ``scripts/setup_debug_port.sh`` will use the same ``ARDUINO_PORT`` variable as the flash scripts and will create a device named tty_debug.  A file named ``tty_debug.log`` will be create by interceptty
+
+```bash
+./scripts/setup_debug_port.sh
+scrutiny launch-server --config scrutiny_server_config.json # Port must be changed to ./tty_debug
+```

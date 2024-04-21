@@ -18,6 +18,7 @@
 
   Modified 2020 by Greyson Christoforo (grey@christoforo.net) to implement timeouts
   Modified 2024 by Pier-Yves Lessard to (py.lessard@gmail.com) to allow non-blocking read.
+    - Modifications marked with PYLESSARD_MODIFS #define
 */
 
 #ifndef twi_h
@@ -44,18 +45,27 @@ extern "C" {
   #define TWI_MTX   2
   #define TWI_SRX   3
   #define TWI_STX   4
+
+  // Enable modifications by Pier-Yves Lessard for this porject.
+  #define PYLESSARD_MODIFS
   
   void twi_init(void);
   void twi_disable(void);
   void twi_setAddress(uint8_t);
   void twi_setFrequency(uint32_t);
+  #ifdef PYLESSARD_MODIFS
   uint8_t twi_readFrom(uint8_t, uint8_t*, uint8_t, uint8_t, uint8_t);
+  #else
+  uint8_t twi_readFrom(uint8_t, uint8_t*, uint8_t, uint8_t);
+  #endif
   uint8_t twi_writeTo(uint8_t, uint8_t*, uint8_t, uint8_t, uint8_t);
   uint8_t twi_transmit(const uint8_t*, uint8_t);
   void twi_attachSlaveRxEvent( void (*)(uint8_t*, int) );
-  void twi_attachMasterRxEvent( void (*)(uint8_t*, int) );
   void twi_attachSlaveTxEvent( void (*)(void) );
+  #ifdef PYLESSARD_MODIFS
+  void twi_attachMasterRxEvent( void (*)(uint8_t*, int) );
   void twi_attachMasterTxEvent( void (*)(void) );
+  #endif
   void twi_reply(uint8_t);
   void twi_stop(void);
   void twi_releaseBus(void);
