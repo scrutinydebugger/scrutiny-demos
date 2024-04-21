@@ -112,12 +112,12 @@ void task_1hz(){
 
 
 void loop() {
-    static volatile uint32_t timestmap_millis;
+    static volatile uint32_t timestamp_millis;
     static uint32_t last_timestamp_us = micros();
     static uint32_t last_timestamp_task_1hz_us = micros();
     static uint32_t last_timestamp_task_100hz_us = micros();
-    timestmap_millis = millis();
-    (void)(timestmap_millis);
+    timestamp_millis = millis();
+    (void)(timestamp_millis);
 
     uint32_t const timestamp_us = micros();
 

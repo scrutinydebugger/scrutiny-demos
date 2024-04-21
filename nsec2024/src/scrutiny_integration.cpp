@@ -23,7 +23,7 @@ scrutiny::LoopHandler *scrutiny_loops[] = {
 };
 
 static scrutiny::Config config;
-scrutiny::MainHandler main_handler;
+static scrutiny::MainHandler main_handler;
 
 /// @brief Function that initializes the scrutiny library for this demo.
 void nsec2024_demo_config_scrutiny()
