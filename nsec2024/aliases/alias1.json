@@ -1,3 +1,49 @@
 {
+    "IMU/Accelerometer/MilliG/Accel_X (mG)":{
+        "target" : "/global/IMU_data/accelerometer/x"
+    },
+    "IMU/Accelerometer/MilliG/Accel_Y (mG)":{
+        "target" : "/global/IMU_data/accelerometer/y"
+    },
+    "IMU/Accelerometer/MilliG/Accel_Z (mG)":{
+        "target" : "/global/IMU_data/accelerometer/z"
+    },
+
+    "IMU/Accelerometer/si/Accel_X (N)":{
+        "target" : "/global/IMU_data/accelerometer/x",
+        "gain" : 0.00981
+    },
+    "IMU/Accelerometer/si/Accel_Y (N)":{
+        "target" : "/global/IMU_data/accelerometer/y",
+        "gain" : 0.00981
+    },
+    "IMU/Accelerometer/si/Accel_Z (N)":{
+        "target" : "/global/IMU_data/accelerometer/z",
+        "gain" : 0.00981
+    },
     
+
+    "IMU/Gyroscope/Degree/Gyro_X (dps)":{
+        "target" : "/global/IMU_data/gyroscope/x"
+    },
+    "IMU/Gyroscope/Degree/Gyro_Y (dps)":{
+        "target" : "/global/IMU_data/gyroscope/y"
+    },
+    "IMU/Gyroscope/Degree/Gyro_Z (dps)":{
+        "target" : "/global/IMU_data/gyroscope/z"
+    },
+
+    "IMU/Gyroscope/Radians/Gyro_X (radps)":{
+        "target" : "/global/IMU_data/gyroscope/x",
+        "gain": 0.0174532925199432957692
+    },
+    "IMU/Gyroscope/Radians/Gyro_Y (radps)":{
+        "target" : "/global/IMU_data/gyroscope/y",
+        "gain": 0.0174532925199432957692
+    },
+    "IMU/Gyroscope/Radians/Gyro_Z (radps)":{
+        "target" : "/global/IMU_data/gyroscope/z",
+        "gain": 0.0174532925199432957692
+    } 
+
 }

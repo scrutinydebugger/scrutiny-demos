@@ -54,6 +54,8 @@ set(ALIAS_DIR ${CMAKE_CURRENT_LIST_DIR}/aliases)
 set(WORKDIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_sfd)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     BYPRODUCTS ${PROJECT_NAME}.sfd  ${PROJECT_NAME}.elf
+    DEPENDS ${ALIAS_DIR}/alias1.json    # FIXME : This dependency does nothing
+    COMMAND ${CMAKE_COMMAND} -E rm -rf ${WORKDIR}   # add_alias appends to workfolder. We want a new empty one.
     COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKDIR}
     COMMAND scrutiny elf2varmap $<TARGET_FILE:${PROJECT_NAME}> --output ${WORKDIR} --loglevel error
     COMMAND scrutiny get-firmware-id $<TARGET_FILE:${PROJECT_NAME}> --output ${WORKDIR} 
@@ -64,6 +66,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         --author "Pier-Yves Lessard"
     COMMAND scrutiny add-alias ${WORKDIR} --file ${ALIAS_DIR}/alias1.json
     COMMAND scrutiny make-sfd ${WORKDIR} ${PROJECT_NAME}.sfd
+    COMMAND ${CMAKE_COMMAND} -E rm -rf ${WORKDIR}
     COMMAND ${CMAKE_OBJCOPY} --strip-debug ${PROJECT_NAME}.elf  # Once we have the SFD, we can strip the debug symbols.
 )
 

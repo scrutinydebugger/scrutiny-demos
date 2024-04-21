@@ -9,11 +9,6 @@ source $SCRIPT_DIR/common.sh
 
 [ -z ${ARDUINO_PATH:+x} ] && fatal "ARDUINO_PATH must be set"
 
-echo $PATH
-which avr-gcc
-echo allo
-avr-gcc --version
-
 info "ARDUINO_PATH=$ARDUINO_PATH"
 mkdir -p build
 cmake -G Ninja \
