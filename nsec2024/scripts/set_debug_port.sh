@@ -11,4 +11,5 @@ if [ -z ${ARDUINO_PORT:+x} ]; then
     ARDUINO_PORT=$DEFAULT_PORT
 fi
 
-interceptty $ARDUINO_PORT $ROOT_DIR/tty_debug  -v -T -o tty_debug.log -s "speed 115200"
+# -hup prevents resetting the Arduino board on port open
+interceptty $ARDUINO_PORT $ROOT_DIR/tty_debug  -v -T -o tty_debug.log -s "speed 115200 -hup"

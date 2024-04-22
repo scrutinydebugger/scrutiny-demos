@@ -46,4 +46,5 @@ scrutiny launch-server --config scrutiny_server_config.json # Port must be chang
 ```
 
 ## Precisions
- - The server configuration includes a start delay of 1 sec. It is to avoid triggering the arduino bootloader when opening the port
+ - The server configuration includes a start delay of 1 sec. It is to avoid triggering the arduino bootloader when opening the port. 
+The delay can be removed after calling ``stty -hupcl /dev/ttyXXXX``. Doing so avoid triggering the CTS line and resetting the board when the port is open.
