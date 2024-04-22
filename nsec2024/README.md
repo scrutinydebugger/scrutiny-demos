@@ -44,3 +44,6 @@ Hook interceptty on the device used as a serial port. ``scripts/setup_debug_port
 ./scripts/setup_debug_port.sh
 scrutiny launch-server --config scrutiny_server_config.json # Port must be changed to ./tty_debug
 ```
+
+## Precisions
+ - The server configuration includes a start delay of 1 sec. It is to avoid triggering the arduino bootloader when opening the port

@@ -66,7 +66,6 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         --author "Pier-Yves Lessard"
     COMMAND scrutiny add-alias ${WORKDIR} --file ${ALIAS_DIR}/alias1.json
     COMMAND scrutiny make-sfd ${WORKDIR} ${PROJECT_NAME}.sfd
-    COMMAND ${CMAKE_COMMAND} -E rm -rf ${WORKDIR}
     COMMAND ${CMAKE_OBJCOPY} --strip-debug ${PROJECT_NAME}.elf  # Once we have the SFD, we can strip the debug symbols.
 )
 

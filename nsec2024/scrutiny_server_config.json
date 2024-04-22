@@ -1,5 +1,13 @@
 {
-    "device_config": {
+    "name": "nsec2024 demo",
+    "api": {
+        "client_interface_type": "websocket",
+        "client_interface_config": {
+            "host": "localhost",
+            "port": 8765
+        }
+    },
+    "device": {
         "response_timeout": 1.0,
         "link_type": "serial",
         "link_config": {
@@ -7,7 +15,8 @@
             "baudrate": 115200,
             "stopbits": 1,
             "databits": 8,
-            "parity": "none"
-        }
+            "parity": "none",
+            "start_delay":1.0
+        }   
     }
 }
