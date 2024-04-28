@@ -742,7 +742,7 @@ namespace BNO055{
     
     class Driver{
     public:
-        enum class Error{
+        enum class Error : uint8_t{
             NO_ERROR,
             NO_INIT,
             NOT_READY,
@@ -757,15 +757,6 @@ namespace BNO055{
             READ_MAG,
             ERROR
         };
-
-        enum class ChipModule: uint8_t {
-            
-            ACCELEROMETER=1,
-            GYROSCOPE=2,
-            MAGNETOMETER=4
-        };
-
-
 
         enum class InterruptReadMode: uint8_t {
             SINGLE,

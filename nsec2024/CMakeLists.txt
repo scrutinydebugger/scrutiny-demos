@@ -98,3 +98,4 @@ add_custom_command(TARGET ${PROJECT_NAME}  POST_BUILD
         -A --mcu=${ARDUINO_MCU}
         ${PROJECT_NAME}.elf
 )
+
