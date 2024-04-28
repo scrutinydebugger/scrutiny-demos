@@ -15,11 +15,11 @@ uint8_t scrutiny_tx_buffer[128];
 uint8_t scrutiny_datalogging_buffer[4096];  // Allow as much as possible. Could use the linker script to allocate the "remaining memory"
 scrutiny::VariableFrequencyLoopHandler task_idle_loop_handler("Idle");
 scrutiny::FixedFrequencyLoopHandler task_100hz_loop_handler(1e7/100); 
-scrutiny::FixedFrequencyLoopHandler task_1hz_loop_handler(1e7/1); 
+scrutiny::FixedFrequencyLoopHandler task_20hz_loop_handler(1e7/20); 
 scrutiny::LoopHandler *scrutiny_loops[] = {
     &task_idle_loop_handler,
     &task_100hz_loop_handler,
-    &task_1hz_loop_handler,
+    &task_20hz_loop_handler,
 };
 
 static scrutiny::Config config;

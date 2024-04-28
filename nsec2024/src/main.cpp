@@ -20,6 +20,7 @@ constexpr uint8_t BNO055_I2C_ADDR{ 0x28 };
 constexpr uint8_t PIN_BNO055_RESET{ 7 };
 constexpr uint32_t MILLION{ 1000000 };
 constexpr uint32_t TASK_100HZ_TIME_US{ MILLION/100 };
+constexpr uint32_t TASK_20HZ_TIME_US{ MILLION/20 };
 constexpr uint32_t TASK_1HZ_TIME_US{ MILLION/1 };
 
 BNO055::Driver bno055;
@@ -66,7 +67,7 @@ void twi_master_tx_callback(void){
 
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(120200);
     
     twi_init();
     twi_attachSlaveTxEvent(twi_slave_tx_callback); // default callback must exist
@@ -107,7 +108,10 @@ void task_1hz(){
 
     digitalWrite(LED_BUILTIN, led_state);
     led_state = (led_state == LOW) ? HIGH : LOW;
-    task_1hz_loop_handler.process();
+}
+
+void task_20hz(){
+    task_20hz_loop_handler.process();
 }
 
 
@@ -115,6 +119,7 @@ void loop() {
     static volatile uint32_t timestamp_millis;
     static uint32_t last_timestamp_us = micros();
     static uint32_t last_timestamp_task_1hz_us = micros();
+    static uint32_t last_timestamp_task_20hz_us = micros();
     static uint32_t last_timestamp_task_100hz_us = micros();
     timestamp_millis = millis();
     (void)(timestamp_millis);
@@ -124,6 +129,11 @@ void loop() {
     if (timestamp_us - last_timestamp_task_100hz_us >= TASK_100HZ_TIME_US){
         task_100hz();   // Could be in a different thread
         last_timestamp_task_100hz_us = timestamp_us;
+    }
+
+    if (timestamp_us - last_timestamp_task_20hz_us >= TASK_20HZ_TIME_US){
+        task_20hz();     // Could be in a different thread
+        last_timestamp_task_20hz_us = timestamp_us;
     }
 
     if (timestamp_us - last_timestamp_task_1hz_us >= TASK_1HZ_TIME_US){
