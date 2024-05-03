@@ -1,29 +1,35 @@
 {
     "folders": [
-        "nsec2024"
+        "src"
     ],
     "include_patterns": [
         "*.cpp",
         "*.hpp"
     ],
     "exclude_patterns": [
-        "**/build/**/*"
+        "build/**/*"
     ],
     "license": "MIT - See LICENSE file",
     "project": "Scrutiny Debugger",
     "repo": "github.com/scrutinydebugger/scrutiny-demos",
     "copyright_owner": "Scrutiny Debugger",
-    "copyright_start_date": "2021",
+    "copyright_start_date": "2024",
     "copyright_end_date": null,
     "files": {
-        "nsec2024/src/main.cpp": {
+        "src/main.cpp": {
             "docstring": "NortSec 2024 demo. \nScrutiny demonstration used during nsec2024 talk"
         },
-        "nsec2024/src/scrutiny_integration.cpp": {
+        "src/scrutiny_integration.cpp": {
             "docstring": "Glue code between the scrutiny lib and the application"
         },
-        "nsec2024/src/scrutiny_integration.hpp": {
+        "src/scrutiny_integration.hpp": {
             "docstring": "Glue code between the scrutiny lib and the application"
+        },
+        "src/bno055.hpp": {
+            "docstring": "Piece of driver for the BNO055 9-axis IMU module\n Only the features required for this demo are implemented"
+        },
+        "src/bno055.cpp": {
+            "docstring": "Piece of driver for the BNO055 9-axis IMU module\n Only the features required for this demo are implemented"
         }
     }
 }

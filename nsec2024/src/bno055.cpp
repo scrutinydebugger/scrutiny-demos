@@ -1,3 +1,12 @@
+//    bno055.cpp
+//        Piece of driver for the BNO055 9-axis IMU module
+//        Only the features required for this demo are implemented
+//
+//   - License : MIT - See LICENSE file.
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//   Copyright (c) 2024 Scrutiny Debugger
+
 #include "bno055.hpp"
 #include <stdint.h>
 #include <Arduino.h>
