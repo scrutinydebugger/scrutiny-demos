@@ -561,7 +561,7 @@ ISR(TWI_vect)
 {
 #ifdef PYLESSARD_MODIFS  
   // For logic analyzer debug
-  digitalWrite(A0, 1);
+  //digitalWrite(A0, 1);
 #endif  
   switch(TW_STATUS){
     // All Master
@@ -736,6 +736,6 @@ ISR(TWI_vect)
       break;
   }
 #ifdef PYLESSARD_MODIFS
-  digitalWrite(A0, 0);
+  //digitalWrite(A0, 0);
 #endif
 }

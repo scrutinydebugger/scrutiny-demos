@@ -1,49 +1,62 @@
 {
     "IMU/Accelerometer/MilliG/Accel_X (mG)":{
-        "target" : "/global/IMU_data/accelerometer/x"
+        "target" : "/global/bno055/m_acc/x"
     },
     "IMU/Accelerometer/MilliG/Accel_Y (mG)":{
-        "target" : "/global/IMU_data/accelerometer/y"
+        "target" : "/global/bno055/m_acc/y"
     },
     "IMU/Accelerometer/MilliG/Accel_Z (mG)":{
-        "target" : "/global/IMU_data/accelerometer/z"
+        "target" : "/global/bno055/m_acc/z"
     },
 
     "IMU/Accelerometer/si/Accel_X (N)":{
-        "target" : "/global/IMU_data/accelerometer/x",
+        "target" : "/global/bno055/m_acc/x",
         "gain" : 0.00981
     },
     "IMU/Accelerometer/si/Accel_Y (N)":{
-        "target" : "/global/IMU_data/accelerometer/y",
+        "target" : "/global/bno055/m_acc/y",
         "gain" : 0.00981
     },
     "IMU/Accelerometer/si/Accel_Z (N)":{
-        "target" : "/global/IMU_data/accelerometer/z",
+        "target" : "/global/bno055/m_acc/z",
         "gain" : 0.00981
     },
     
 
     "IMU/Gyroscope/Degree/Gyro_X (dps)":{
-        "target" : "/global/IMU_data/gyroscope/x"
+        "target" : "/global/bno055/m_gyro/x"
     },
     "IMU/Gyroscope/Degree/Gyro_Y (dps)":{
-        "target" : "/global/IMU_data/gyroscope/y"
+        "target" : "/global/bno055/m_gyro/y"
     },
     "IMU/Gyroscope/Degree/Gyro_Z (dps)":{
-        "target" : "/global/IMU_data/gyroscope/z"
+        "target" : "/global/bno055/m_gyro/z"
     },
 
     "IMU/Gyroscope/Radians/Gyro_X (radps)":{
-        "target" : "/global/IMU_data/gyroscope/x",
+        "target" : "/global/bno055/m_gyro/x",
         "gain": 0.0174532925199432957692
     },
     "IMU/Gyroscope/Radians/Gyro_Y (radps)":{
-        "target" : "/global/IMU_data/gyroscope/y",
+        "target" : "/global/bno055/m_gyro/y",
         "gain": 0.0174532925199432957692
     },
     "IMU/Gyroscope/Radians/Gyro_Z (radps)":{
-        "target" : "/global/IMU_data/gyroscope/z",
+        "target" : "/global/bno055/m_gyro/z",
         "gain": 0.0174532925199432957692
+    },
+
+    "IMU/ChipInfo/AccelerometerChipID":{
+        "target" : "/global/bno055/m_chip_info/acc_chip_id"
+    },
+    "IMU/ChipInfo/GyroscopeChipID":{
+        "target" : "/global/bno055/m_chip_info/gyro_chip_id"
+    },
+    "IMU/ChipInfo/MAgnetometerChipID":{
+        "target" : "/global/bno055/m_chip_info/mag_chip_id"
+    },
+    "IMU/ChipInfo/SoftwareRevision":{
+        "target" : "/global/bno055/m_chip_info/sw_revision"
     } 
 
 }

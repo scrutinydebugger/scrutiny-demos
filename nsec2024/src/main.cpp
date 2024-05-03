@@ -25,26 +25,6 @@ constexpr uint32_t TASK_1HZ_TIME_US{ MILLION/1 };
 
 BNO055::Driver bno055;
 
-// Glue code because scrutiny toolchain does not discover templated struct yet.
-struct IMU_XYZ{
-    IMU_XYZ() = default;
-    IMU_XYZ(BNO055::XYZ<int16_t> const &other){
-        x=other.x;
-        y=other.y;
-        z=other.z;
-    }
-    volatile int16_t x;
-    volatile int16_t y;
-    volatile int16_t z;
-};
-
-struct IMUData{
-    IMU_XYZ accelerometer;
-    IMU_XYZ gyroscope;
-};
-
-IMUData IMU_data;
-
 void twi_slave_tx_callback(void){
 }
 
@@ -95,8 +75,7 @@ void task_100hz(){
     static volatile uint32_t var_100hz=0;
     digitalWrite(A1, 1);
     var_100hz++;
-    bno055.initiate_interrupt_read(
-        BNO055::Driver::InterruptReadMode::SINGLE);
+    bno055.initiate_interrupt_read(BNO055::Driver::InterruptReadMode::SINGLE);
     task_100hz_loop_handler.process();
     digitalWrite(A1, 0);
 }
@@ -111,39 +90,39 @@ void task_1hz(){
 }
 
 void task_20hz(){
+    static volatile uint32_t task_20hz_counter=0;
+    static volatile bool task_20hz_counter_enable=false;
+    if (task_20hz_counter_enable){
+        task_20hz_counter++;
+    }
     task_20hz_loop_handler.process();
 }
 
 
 void loop() {
-    static volatile uint32_t timestamp_millis;
     static uint32_t last_timestamp_us = micros();
     static uint32_t last_timestamp_task_1hz_us = micros();
     static uint32_t last_timestamp_task_20hz_us = micros();
     static uint32_t last_timestamp_task_100hz_us = micros();
-    timestamp_millis = millis();
-    (void)(timestamp_millis);
 
     uint32_t const timestamp_us = micros();
 
     if (timestamp_us - last_timestamp_task_100hz_us >= TASK_100HZ_TIME_US){
-        task_100hz();   // Could be in a different thread
+        task_100hz();   // Could be in a different time domain (thread)
         last_timestamp_task_100hz_us = timestamp_us;
     }
 
     if (timestamp_us - last_timestamp_task_20hz_us >= TASK_20HZ_TIME_US){
-        task_20hz();     // Could be in a different thread
+        task_20hz();     // Could be in a different time domain (thread)
         last_timestamp_task_20hz_us = timestamp_us;
     }
 
     if (timestamp_us - last_timestamp_task_1hz_us >= TASK_1HZ_TIME_US){
-        task_1hz();     // Could be in a different thread
+        task_1hz();     // Could be in a different time domain (thread)
         last_timestamp_task_1hz_us = timestamp_us;
     }
 
-    bno055.process();
-    IMU_data.accelerometer = bno055.get_accel();
-    IMU_data.gyroscope = bno055.get_gyro();
+    bno055.process();   // Starts a new reading if the previous is complete
 
     uint32_t const timediff_100ns { (timestamp_us - last_timestamp_us) * 10};
     task_idle_loop_handler.process(timediff_100ns); // Variable Frequency loop. Need to provide the timestep
