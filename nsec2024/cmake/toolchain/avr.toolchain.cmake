@@ -8,6 +8,7 @@ set(ARDUINO_PATH "/usr/share/arduino" CACHE PATH "Path of the Arduino packages f
 # Derived paths
 set(ARDUINO_AVR_PATH ${ARDUINO_PATH}/hardware/arduino/avr)
 set(ARDUINO_CORE_PATH ${ARDUINO_AVR_PATH}/cores/arduino)
+set(ARDUINO_LIBRARIES_PATH ${ARDUINO_AVR_PATH}/libraries)
 set(ARDUINO_AVRDUDE_PATH ${ARDUINO_PATH}/hardware/tools/avrdude)
 set(ARDUINO_AVRDUDE_CONF ${ARDUINO_PATH}/hardware/tools/avrdude.conf)
 

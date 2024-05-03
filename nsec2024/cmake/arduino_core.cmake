@@ -60,6 +60,7 @@ target_include_directories(ArduinoCore PUBLIC
     ${ARDUINO_CORE_PATH}
     ${ARDUINO_AVR_PATH}/variants/${ARDUINO_VARIANT}
 )
+
 if(ARDUINO_USB)
     target_compile_definitions(ArduinoCore PUBLIC
         USB_VID=${ARDUINO_USB_VID}

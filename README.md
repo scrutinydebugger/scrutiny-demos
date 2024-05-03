@@ -1,2 +1,3 @@
 # scrutiny-demos
-Some demonstration projects that uses scrutiny
+
+A collection of demonstration project to showcase the Scrutiny Debugger framework

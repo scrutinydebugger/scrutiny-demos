@@ -2,9 +2,9 @@
     "configurations": [
         {
             "name": "AVR",
-            "compileCommands": "${workspaceFolder}/build/compileCommands.json",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/usr/bin/avr-gcc",
             "includePath": ["/usr/share/arduino/hardware/arduino/avr/cores/arduino/"]
         }
     ],
