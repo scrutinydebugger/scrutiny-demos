@@ -16,7 +16,7 @@ set(SCRUTINY_DATALOGGING_BUFFER_32BITS 0)
 FetchContent_Declare(
   scrutiny-embedded
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        reduce-datalogger-footprint
+  GIT_TAG        nsec2024_demo
 )
 FetchContent_MakeAvailable(scrutiny-embedded)
 
