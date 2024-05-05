@@ -22,6 +22,30 @@ scrutiny::LoopHandler *scrutiny_loops[] = {
     &task_20hz_loop_handler,
 };
 
+bool rpv_write_callback(const scrutiny::RuntimePublishedValue rpv, const scrutiny::AnyType *inval){
+    static uint32_t some_counter=0;
+    if (rpv.id == 0x1000 && rpv.type == scrutiny::VariableType::uint32){
+        some_counter += inval->uint32;
+    } else {
+        return false;   // failure
+    }
+    return true;    // success
+}
+
+bool rpv_read_callback(scrutiny::RuntimePublishedValue rpv, scrutiny::AnyType *outval){
+    if (rpv.id == 0x1000 && rpv.type == scrutiny::VariableType::uint32){
+        outval->uint32 = 0x12345678;
+    } else {
+        return false;   // failure
+    }
+    return true;    // success
+}
+
+scrutiny::RuntimePublishedValue rpvs[] = {
+    {0x1000, scrutiny::VariableType::uint32},
+};
+
+
 static scrutiny::Config config;
 static scrutiny::MainHandler main_handler;
 
@@ -35,6 +59,7 @@ void nsec2024_demo_config_scrutiny()
     config.display_name = "nsec2024_demo";
     config.set_datalogging_buffers(scrutiny_datalogging_buffer, sizeof(scrutiny_datalogging_buffer));
     config.set_loops(scrutiny_loops, sizeof(scrutiny_loops) / sizeof(scrutiny_loops[0]));
+    config.set_published_values(rpvs, sizeof(rpvs) / sizeof(rpvs[0]), rpv_read_callback, rpv_write_callback);
 
     main_handler.init(&config);
 }
