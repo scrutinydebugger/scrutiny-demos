@@ -16,6 +16,4 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-#RUN pip3 install scrutinydebugger
-RUN  git clone --depth 1 -b nsec2024_demo https://github.com/scrutinydebugger/scrutiny-python /tmp/scrutiny-python \
-    && pip3 install -e /tmp/scrutiny-python
+RUN pip3 install scrutinydebugger==0.2.1
