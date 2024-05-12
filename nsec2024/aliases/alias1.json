@@ -9,15 +9,15 @@
         "target" : "/global/bno055/m_acc/z"
     },
 
-    "IMU/Accelerometer/si/Accel_X (N)":{
+    "IMU/Accelerometer/si/Accel_X (m_s^2)":{
         "target" : "/global/bno055/m_acc/x",
         "gain" : 0.00981
     },
-    "IMU/Accelerometer/si/Accel_Y (N)":{
+    "IMU/Accelerometer/si/Accel_Y (m_s^2)":{
         "target" : "/global/bno055/m_acc/y",
         "gain" : 0.00981
     },
-    "IMU/Accelerometer/si/Accel_Z (N)":{
+    "IMU/Accelerometer/si/Accel_Z (m_s^2)":{
         "target" : "/global/bno055/m_acc/z",
         "gain" : 0.00981
     },
