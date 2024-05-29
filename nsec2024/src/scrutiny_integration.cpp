@@ -75,14 +75,14 @@ void nsec2024_demo_update_scrutiny_main(uint32_t const timestep_100ns)
     }
 
     uint16_t const nrx{ static_cast<uint16_t>(Serial.readBytes(buffer, toRead)) };
-    main_handler.comm()->receive_data(buffer, nrx);  
+    main_handler.receive_data(buffer, nrx);  
     
     main_handler.process(timestep_100ns);
 
-    unsigned int toSend{ static_cast<unsigned int>( main_handler.comm()->data_to_send())};
+    unsigned int toSend{ static_cast<unsigned int>( main_handler.data_to_send())};
     if (toSend > sizeof(buffer)){
         toSend = sizeof(buffer);
     }
-    main_handler.comm()->pop_data(buffer, toSend);
+    main_handler.pop_data(buffer, toSend);
     Serial.write(buffer, toSend);
 }
