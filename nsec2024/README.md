@@ -20,8 +20,8 @@ export ARDUINO_PORT=/dev/ttyACM0    # Change serial port
 
 ```bash
 # pip install scrutinydebugger # For latest release
-# scrutiny-python repo has a tag "nsec2024_demo" that points on the version used.
-git clone --depth 1 -b nsec2024_demo https://github.com/scrutinydebugger/scrutiny-python /tmp/scrutiny-python && pip3 install -e /tmp/scrutiny-python
+# scrutiny-main repo has a tag "nsec2024_demo" that points on the version used.
+git clone --depth 1 -b nsec2024_demo https://github.com/scrutinydebugger/scrutiny-main /tmp/scrutiny-main && pip3 install -e /tmp/scrutiny-main
 scrutiny launch-server --config scrutiny_server_config.json # Make sure to adjust the serial port name in that configuration
 ```
 
