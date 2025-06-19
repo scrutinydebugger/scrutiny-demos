@@ -25,7 +25,7 @@ export ARDUINO_PORT=/dev/ttyACM0    # Change serial port
 
 # Prebuilt binary
 
-The prbuilt binary, ready to be flashed + the Scrutiny Firmware File (.sfd) to be loaded onto the server are located in ``./prebuilt``
+The prebuilt binary (ready to be flashed) & the Scrutiny Firmware File (.sfd) to be loaded onto the server are located in ``./prebuilt``
 
 ## Running the server
 
@@ -59,4 +59,4 @@ scrutiny launch-server --config scrutiny_server_config.json # Port must be chang
 
  - The server configuration includes a start delay of 1 sec. It is to avoid triggering the arduino bootloader when opening the port. 
 The delay can be removed after calling ``stty -hupcl /dev/ttyXXXX``. Doing so avoid triggering the CTS line and resetting the board when the port is open.
- - The Arduino I2C library has been modified to enable reading by interrupt. The BNO55 is too slow to respond for a blocking stream.
+ - The Arduino I2C library has been modified to enable reading by interrupt. The BNO55 is too slow to respond for a blocking stream (It uses clock stretching).
