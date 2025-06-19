@@ -1,0 +1,48 @@
+$ ./scripts/build_in_docker.sh 
+[+] Building 22.8s (8/8) FINISHED                                                                                                                                                                      docker:default
+ => [internal] load build definition from Dockerfile                                                                                                                                                             0.0s
+ => => transferring dockerfile: 369B                                                                                                                                                                             0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:22.04                                                                                                                                                  0.1s
+ => [internal] load .dockerignore                                                                                                                                                                                0.0s
+ => => transferring context: 2B                                                                                                                                                                                  0.0s
+ => [1/4] FROM docker.io/library/ubuntu:22.04@sha256:01a3ee0b5e413cefaaffc6abe68c9c37879ae3cced56a8e088b1649e5b269eee                                                                                            0.0s
+ => CACHED [2/4] WORKDIR /tmp/                                                                                                                                                                                   0.0s
+ => CACHED [3/4] RUN apt-get update && apt-get install -y     ninja-build     cmake     git     wget     arduino     gcc-avr     avrdude     avr-libc     python3     python3-pip     && rm -rf /var/lib/apt/li  0.0s
+ => [4/4] RUN pip3 install scrutinydebugger==0.5.2                                                                                                                                                              17.8s
+ => exporting to image                                                                                                                                                                                           4.8s 
+ => => exporting layers                                                                                                                                                                                          4.7s 
+ => => writing image sha256:40ac8c2f582266bd97913bfcd7c514c06b68ed6f0a9443af4579d8198b692fb3                                                                                                                     0.0s 
+ => => naming to docker.io/library/scrutiny_nsec2024_demo                                                                                                                                                        0.0s 
+[Info] ARDUINO_PATH=/usr/share/arduino                                                                                                                                                                                
+-- Scrutiny datalogging is ENABLED                                                                                                                                                                                    
+-- Scrutiny support for 64bits is DISABLED
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/py/scrutiny/scrutiny-demos/nsec2024/build
+ninja: Entering directory `build'
+[1/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_config.cpp.obj
+[2/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_loop_handler.cpp.obj
+[3/14] Building CXX object CMakeFiles/scrutiny-nsec2024.dir/src/main.cpp.obj
+[4/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogging.cpp.obj
+[5/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/protocol/scrutiny_codec_v1_0.cpp.obj
+[6/14] Building CXX object CMakeFiles/scrutiny-nsec2024.dir/src/scrutiny_integration.cpp.obj
+[7/14] Building CXX object _deps/scrutiny-embedded-build/cwrapper/CMakeFiles/scrutiny-cwrapper.dir/scrutiny_cwrapper.cpp.obj
+[8/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogger.cpp.obj
+[9/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogger_raw_encoder.cpp.obj
+[10/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogging_trigger.cpp.obj
+[11/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_main_handler.cpp.obj
+[12/14] Linking CXX static library _deps/scrutiny-embedded-build/lib/libscrutiny-embedded.a
+[13/14] Linking CXX static library _deps/scrutiny-embedded-build/cwrapper/libscrutiny-cwrapper.a
+[14/14] Linking CXX executable scrutiny-nsec2024_untagged.elf
+[INFO] <get-firmware-id> Firmware ID 69fd2d89bfc4441509359606d13ebfa5 written to /home/py/scrutiny/scrutiny-demos/nsec2024/build/scrutiny-nsec2024_sfd/firmwareid
+[INFO] <tag-firmware-id> Binary scrutiny-nsec2024.elf tagged with firmware ID: 69fd2d89bfc4441509359606d13ebfa5
+[INFO] <make-metadata> Metadata file /home/py/scrutiny/scrutiny-demos/nsec2024/build/scrutiny-nsec2024_sfd/metadata.json written
+[INFO] <make-sfd> SFD File scrutiny-nsec2024.sfd written
+scrutiny-nsec2024.elf  :
+section                     size      addr
+.data                        176   8389120
+.text                      32414         0
+.bss                        5240   8389296
+.comment                      17         0
+.note.gnu.avr.deviceinfo      64         0
+Total                      37911
