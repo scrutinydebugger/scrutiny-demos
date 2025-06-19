@@ -1,10 +1,17 @@
-# NorthSec 2024 Demo
+# NorthSec 2024 Demo (Arduino Mega 2560)
 
-This project is a Arduino project used to demonstrate the Scrutiny framework during the 2024 edition of NorthSec
+This project is a Arduino project used to demonstrate the Scrutiny framework during the 2024 edition of the NorthSec conference (Montreal)
 
 
 https://nsec.io/session/2024-scrutiny-debugger-debug-test-and-configure-embedded-softwares-through-instrumentation.html
 
+## Required hardware:
+
+ - Arduino Mega 2560
+ - 9 Axis Motion Shield (Based on Bosch BNO55)
+ - USB cable
+
+  ![Northsec 2024 demo](images/nsec2024-board.png)
 
 ## Building the Arduino app
 
@@ -16,13 +23,16 @@ export ARDUINO_PORT=/dev/ttyACM0    # Change serial port
 ./scripts/flash
 ```
 
+# Prebuilt binary
+
+The prbuilt binary, ready to be flashed + the Scrutiny Firmware File (.sfd) to be loaded onto the server are located in ``./prebuilt``
+
 ## Running the server
 
 ```bash
-# pip install scrutinydebugger # For latest release
-# scrutiny-main repo has a tag "nsec2024_demo" that points on the version used.
-git clone --depth 1 -b nsec2024_demo https://github.com/scrutinydebugger/scrutiny-main /tmp/scrutiny-main && pip3 install -e /tmp/scrutiny-main
-scrutiny launch-server --config scrutiny_server_config.json # Make sure to adjust the serial port name in that configuration
+# pip install scrutinydebugger  # For latest release
+git clone --depth 1 -b v0.5.2 https://github.com/scrutinydebugger/scrutiny-main /tmp/scrutiny-main && pip3 install -e /tmp/scrutiny-main
+scrutiny server --config scrutiny_server_config.json    # Make sure to adjust the serial port name in that configuration
 ```
 
 ## Intercepting the communication
@@ -46,5 +56,7 @@ scrutiny launch-server --config scrutiny_server_config.json # Port must be chang
 ```
 
 ## Precisions
+
  - The server configuration includes a start delay of 1 sec. It is to avoid triggering the arduino bootloader when opening the port. 
 The delay can be removed after calling ``stty -hupcl /dev/ttyXXXX``. Doing so avoid triggering the CTS line and resetting the board when the port is open.
+ - The Arduino I2C library has been modified to enable reading by interrupt. The BNO55 is too slow to respond for a blocking stream.

@@ -1,7 +1,6 @@
 {
     "name": "nsec2024 demo",
     "api": {
-        "client_interface_type": "websocket",
         "client_interface_config": {
             "host": "localhost",
             "port": 8765

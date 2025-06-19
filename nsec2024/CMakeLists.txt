@@ -16,7 +16,7 @@ set(SCRUTINY_DATALOGGING_BUFFER_32BITS 0)
 FetchContent_Declare(
   scrutiny-embedded
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        nsec2024_demo
+  GIT_TAG        v0.1
 )
 FetchContent_MakeAvailable(scrutiny-embedded)
 
@@ -25,7 +25,7 @@ add_compile_options(
     -Wall 
     -Wextra 
     -Werror 
-    -gdwarf-4
+    -gdwarf-4   # Necessary for Scrutiny
 )
 
 target_link_libraries(scrutiny-embedded PUBLIC ArduinoCore) # Will inherit the build flags

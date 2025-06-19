@@ -1,5 +1,5 @@
 //    main.cpp
-//        NortSec 2024 demo. 
+//        NorthSec 2024 demo. 
 //        Scrutiny demonstration used during nsec2024 talk
 //
 //   - License : MIT - See LICENSE file.
@@ -12,6 +12,7 @@
 #include "scrutiny.hpp"
 #include "scrutiny_integration.hpp"
 #include "bno055.hpp"
+#include "math.h"
 
 #include "twi.h"
 
@@ -45,6 +46,21 @@ void twi_master_tx_callback(void){
     digitalWrite(A3, 0);
 }
 
+void func(float timestep)
+{
+    static volatile float sinewave = 0;
+    static volatile float sinewave_freq = 0;
+    static volatile float sinewave_phase = 0;
+
+    sinewave_phase += 2.0f * M_PI * sinewave_freq * timestep;
+    if (sinewave_phase >= 2.0f * M_PI)
+    {
+        sinewave_phase -= floor(sinewave_phase / 2.0f / M_PI) * 2.0f * M_PI;
+    }
+    sinewave = sin(sinewave_phase);
+    static_cast<void>(sinewave);
+}
+
 
 void setup() {
     Serial.begin(120200);
@@ -76,6 +92,7 @@ void task_100hz(){
     digitalWrite(A1, 1);
     var_100hz++;
     bno055.initiate_interrupt_read(BNO055::Driver::InterruptReadMode::SINGLE);
+    func(0.01);
     task_100hz_loop_handler.process();
     digitalWrite(A1, 0);
 }
