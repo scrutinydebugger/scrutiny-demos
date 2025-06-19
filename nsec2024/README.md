@@ -2,7 +2,6 @@
 
 This project is a Arduino project used to demonstrate the Scrutiny framework during the 2024 edition of the NorthSec conference (Montreal)
 
-
 https://nsec.io/session/2024-scrutiny-debugger-debug-test-and-configure-embedded-softwares-through-instrumentation.html
 
 ## Required hardware:
