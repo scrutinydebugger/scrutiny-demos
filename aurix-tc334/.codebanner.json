@@ -1,16 +1,33 @@
 {
-    "folders": ["scripts", "src", "include"],
+    "folders": [
+        "scripts",
+        "src",
+        "include"
+    ],
     "include_patterns": [
         "*.cpp",
         "*.hpp",
         "*.sh"
     ],
-    "exclude_patterns": [],
+    "exclude_patterns": [
+        "src/UART_VCOM.cpp",
+        "include/UART_VCOM.hpp"
+    ],
     "project": "Scrutiny Debugger",
     "repo": "github.com/scrutinydebugger/scrutiny-demos",
     "license": "MIT - See LICENSE file",
     "copyright_owner": "Scrutiny Debugger",
     "copyright_start_date": null,
     "copyright_end_date": null,
-    "files": {}
+    "files": {
+        "scripts/build.sh": {
+            "docstring": "A script that invokes Aurix GCC compiler provided with AURIX Development Studio\nMake sure to have the compiler, cmake and make in your paths"
+        },
+        "scripts/flash.sh": {
+            "docstring": "A script to flash to produced binary in the kit_a2g_tc334_lite dev board"
+        },
+        "src/main.cpp": {
+            "docstring": ""
+        }
+    }
 }

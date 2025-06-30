@@ -1,4 +1,14 @@
 #!/bin/bash
+
+#    build.sh
+#        A script that invokes Aurix GCC compiler provided with AURIX Development Studio
+#        Make sure to have the compiler, cmake and make in your paths
+#
+#   - License : MIT - See LICENSE file.
+#   - Project :  Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+#
+#   Copyright (c) 2025 Scrutiny Debugger
+
 set -euo pipefail
 
 SCRIPT_DIR=$(realpath "$(dirname ${BASH_SOURCE[0]})")
