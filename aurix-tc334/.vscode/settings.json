@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "uart_vcom.h": "c",
+        "ifx_cfg_ssw.h": "c",
+        "ifxasclin_asc.h": "c"
+    }
+}
