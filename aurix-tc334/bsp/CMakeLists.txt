@@ -1,3 +1,13 @@
+#    CMakeLists.txt
+#        A manually written CMake file on top of the auto-generated code (iLLD and hardware
+#        config) by AURIX Development Studio after creating a blank project for kit_a2g_tc334_lite.
+#        Does not ,ake eveything available, only the necessary drivers.
+#
+#   - License : MIT - See LICENSE file.
+#   - Project :  Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+#
+#   Copyright (c) 2025 Scrutiny Debugger
+
 cmake_minimum_required(VERSION 3.16.3)
 
 

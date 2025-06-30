@@ -1,3 +1,11 @@
+#    tricore-gcc.cmake
+#        A toolchain file to enable the Aurix GCC toolchain with cmake
+#
+#   - License : MIT - See LICENSE file.
+#   - Project :  Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+#
+#   Copyright (c) 2025 Scrutiny Debugger
+
 cmake_minimum_required(VERSION 3.16.3)
 
 include(CMakeForceCompiler)
@@ -23,7 +31,7 @@ set(CMAKE_ASM_COMPILER_WORKS 1)
 set(CMAKE_C_FLAGS "-Wall -Wextra -fmessage-length=0 -ffunction-sections -fdata-sections -mtc162 -MMD -MP" CACHE INTERNAL "C Flags")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS}" CACHE INTERNAL "C++ Flags")
 set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -x assembler-with-cpp" CACHE INTERNAL "ASM Flags")
-set(CMAKE_EXE_LINKER_FLAGS "-mtc162 -nocrt0" CACHE INTERNAL "Linker options")
+set(CMAKE_EXE_LINKER_FLAGS "-mtc162 -nocrt0 -Wl,--gc-sections" CACHE INTERNAL "Linker options")
 
 set(CMAKE_C_FLAGS_DEBUG  "-g -Og -DDEBUG" CACHE INTERNAL "C Debug Flags")
 set(CMAKE_CXX_FLAGS_DEBUG"-g -Og -DDEBUG" CACHE INTERNAL "C++ Debug Flags")

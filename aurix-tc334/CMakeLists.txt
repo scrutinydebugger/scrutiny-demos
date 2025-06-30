@@ -9,6 +9,19 @@ set(CMAKE_C_STANDARD 99)    # Mostly for LLD
 
 project(scrutiny-aurix-tc334)
 
+include(FetchContent)
+
+set(SCRUTINY_ENABLE_DATALOGGING 1)
+set(SCRUTINY_SUPPORT_64BITS 1) 
+set(SCRUTINY_DATALOGGING_BUFFER_32BITS 0)
+
+FetchContent_Declare(
+  scrutiny-embedded
+  GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
+  GIT_TAG        v0.2
+)
+FetchContent_MakeAvailable(scrutiny-embedded)
+
 add_subdirectory(bsp)
 
 add_executable(${PROJECT_NAME} 
@@ -26,6 +39,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wno-literal-suffix)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     bsp
+    scrutiny-embedded
     )
 
 # Linker Script

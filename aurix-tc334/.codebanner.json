@@ -2,12 +2,16 @@
     "folders": [
         "scripts",
         "src",
-        "include"
+        "include",
+        "toolchain",
+        "bsp"
     ],
     "include_patterns": [
         "*.cpp",
         "*.hpp",
-        "*.sh"
+        "*.sh",
+        "*.cmake",
+        "*CMakeLists.txt"
     ],
     "exclude_patterns": [
         "src/UART_VCOM.cpp",
@@ -28,6 +32,12 @@
         },
         "src/main.cpp": {
             "docstring": ""
+        },
+        "toolchain/tricore-gcc.cmake": {
+            "docstring": "A toolchain file to enable the Aurix GCC toolchain with cmake"
+        },
+        "bsp/CMakeLists.txt": {
+            "docstring": "A manually written CMake file on top of the auto-generated code (iLLD and hardware config) by AURIX Development Studio after creating a blank project for kit_a2g_tc334_lite.\n Does not ,ake eveything available, only the necessary drivers."
         }
     }
 }
