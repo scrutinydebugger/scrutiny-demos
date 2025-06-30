@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16.3)
 
-project(bsp)
+
 
 set(LIBRARIES_FOLDER ${CMAKE_CURRENT_LIST_DIR}/Libraries)
 set(CONFIG_FOLDER ${CMAKE_CURRENT_LIST_DIR}/Configurations)
@@ -9,9 +9,14 @@ set(ILLD_FOLDER ${LIBRARIES_FOLDER}/iLLD/TC3xx/Tricore)
 set(SERVICE_FOLDER ${LIBRARIES_FOLDER}/Service)
 
 FILE(GLOB ImplSources ${ILLD_FOLDER}/_Impl/*.c)
-FILE(GLOB PinMapsources ${ILLD_FOLDER}/_PinMap/TC33x/*.c)
+FILE(GLOB PinMapsources ${ILLD_FOLDER}/_PinMap/TC33x/*TQFP144.c)
 
-add_library(${PROJECT_NAME} STATIC 
+project(startup_code)
+
+
+project(bsp)
+
+add_library(${PROJECT_NAME} OBJECT 
     ${CONFIG_FOLDER}/Debug/sync_on_halt.c
     ${CONFIG_FOLDER}/Ifx_Cfg_Ssw.c
     ${CONFIG_FOLDER}/Ifx_Cfg_SswBmhd.c
@@ -80,3 +85,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${ILLD_FOLDER}/_PinMap/
     ${ILLD_FOLDER}/_PinMap/TC33x
 )
+
+# Code comes from Infineon. Suppress warnings that they cause
+target_compile_options(${PROJECT_NAME} PRIVATE -Wno-unused-parameter) 

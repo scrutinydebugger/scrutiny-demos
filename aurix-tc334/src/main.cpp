@@ -24,14 +24,21 @@
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  *********************************************************************************************************************/
+
+extern "C" 
+{
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
 #include "IfxScuWdt.h"
 #include "Ifx_Cfg_Ssw.h"
-#include "UART_VCOM.h"
+}
+
+#include "UART_VCOM.hpp"
 
 IFX_ALIGN(4) IfxCpu_syncEvent cpuSyncEvent= 0;
 
+
+extern "C"
 #if !defined(IFX_CFG_SSW_RETURN_FROM_MAIN)
 void core0_main (void)
 {
@@ -71,3 +78,4 @@ int core0_main (void)
     {
     }
 }
+

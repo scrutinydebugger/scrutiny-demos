@@ -1,0 +1,16 @@
+{
+    "folders": ["scripts", "src", "include"],
+    "include_patterns": [
+        "*.cpp",
+        "*.hpp",
+        "*.sh"
+    ],
+    "exclude_patterns": [],
+    "project": "Scrutiny Debugger",
+    "repo": "github.com/scrutinydebugger/scrutiny-demos",
+    "license": "MIT - See LICENSE file",
+    "copyright_owner": "Scrutiny Debugger",
+    "copyright_start_date": null,
+    "copyright_end_date": null,
+    "files": {}
+}

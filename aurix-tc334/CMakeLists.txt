@@ -4,14 +4,16 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/toolchain/tricore-gcc.cmake)
 set(LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/toolchain/Lcf_Gnuc_Tricore_Tc.lsl)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_C_STANDARD 99)    # Mostly for LLD
 
 project(scrutiny-aurix-tc334)
 
 add_subdirectory(bsp)
 
 add_executable(${PROJECT_NAME} 
-    src/main.c
-    src/UART_VCOM.c
+    src/main.cpp
+    src/UART_VCOM.cpp
     )
 set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf")
 
@@ -19,12 +21,20 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/include
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE bsp)
+# Infineon iLLD uses of __asm macros in their headers triggers C++11 warnings when we include them in a cpp source. 
+target_compile_options(${PROJECT_NAME} PRIVATE -Wno-literal-suffix) 
 
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+    bsp
+    )
+
+# Linker Script
 target_link_options(${PROJECT_NAME} PRIVATE -T${LINKER_SCRIPT})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.map)
 
+# Post builds 
+# Produce the .hex
 add_custom_command(TARGET ${PROJECT_NAME}  POST_BUILD
      DEPENDS ${PROJECT_NAME}.elf
      BYPRODUCTS ${PROJECT_NAME}.hex
@@ -35,6 +45,7 @@ add_custom_command(TARGET ${PROJECT_NAME}  POST_BUILD
         "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.hex"
      )
 
+# Produce the .lst
 add_custom_command(TARGET ${PROJECT_NAME}  POST_BUILD
      DEPENDS ${PROJECT_NAME}.elf
      BYPRODUCTS ${PROJECT_NAME}.lst
