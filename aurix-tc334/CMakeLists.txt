@@ -27,6 +27,7 @@ add_subdirectory(bsp)   # Contains drivers and board configuration. Mostly auto 
 add_executable(${PROJECT_NAME} 
     src/main.cpp
     src/board.cpp
+    src/task_controller.cpp
     src/scrutiny_integration.cpp
     )
 set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf")
