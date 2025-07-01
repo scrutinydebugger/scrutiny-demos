@@ -1,0 +1,26 @@
+#ifndef DEMO_TC334_BOARD_HPP
+#define DEMO_TC334_BOARD_HPP
+
+extern "C"
+{
+#include "IfxAsclin_Asc.h"
+}
+
+#define BOARD_ASCLIN0_SERIAL_PIN_RX IfxAsclin0_RXA_P14_1_IN
+#define BOARD_ASCLIN0_SERIAL_PIN_TX IfxAsclin0_TX_P14_0_OUT
+#define BOARD_ASCLIN0_INTPRIO_ASCLIN0_TX 19
+#define BOARD_ASCLIN0_TX_BUFFER_SIZE 128
+#define BOARD_ASCLIN0_BAUDRATE 115200
+
+#define BOARD_ISR_PRIORITY_GPT12_TIMER 6
+#define BOARD_ISR_PROVIDER_GPT12_TIMER IfxSrc_Tos_cpu0
+#define BOARD_LED1_PORT MODULE_P00
+#define BOARD_LED1_PIN 5
+#define BOARD_LED2_PORT MODULE_P00
+#define BOARD_LED2_PIN 6
+
+extern IfxAsclin_Asc g_asclin0;
+
+void init_board();
+
+#endif // DEMO_TC334_BOARD_HPP

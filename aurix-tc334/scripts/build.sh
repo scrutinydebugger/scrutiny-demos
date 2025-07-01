@@ -28,9 +28,12 @@ if [[ ! -z $CCACHE && $USE_CCACHE -eq 1 ]]; then
     echo "Building with ccache at: $CCACHE";
 fi
 
+CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:-Release}
+
 cmake  \
     -G "Unix Makefiles" \
     -DCMAKE_VERBOSE_MAKEFILE=0 \
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}  \
     $CCACHE_ARG \
     ..
 cmake --build . -j 12

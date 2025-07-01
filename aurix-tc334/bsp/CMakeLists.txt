@@ -59,6 +59,12 @@ add_library(${PROJECT_NAME} OBJECT
     ${ILLD_FOLDER}/Cpu/Std/IfxCpu.c
     ${ILLD_FOLDER}/Cpu/Irq/IfxCpu_Irq.c
     ${ILLD_FOLDER}/Cpu/Trap/IfxCpu_Trap.c
+    
+    ${ILLD_FOLDER}/Gpt12/Std/IfxGpt12.c
+    ${ILLD_FOLDER}/Gpt12/IncrEnc/IfxGpt12_IncrEnc.c
+
+    ${ILLD_FOLDER}/Port/Io/IfxPort_Io.c
+    ${ILLD_FOLDER}/Port/Std/IfxPort.c
 
     ${ILLD_FOLDER}/Scu/Std/IfxScuCcu.c
     ${ILLD_FOLDER}/Scu/Std/IfxScuEru.c
@@ -88,6 +94,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${ILLD_FOLDER}/Cpu/Std
     ${ILLD_FOLDER}/Cpu/Irq/
     ${ILLD_FOLDER}/Scu/Std
+    ${ILLD_FOLDER}/Gpt12/Std/
+    ${ILLD_FOLDER}/Gpt12/IncrEnc/
+    ${ILLD_FOLDER}/Port/Io
+    ${ILLD_FOLDER}/Port/Std
 
     ${ILLD_FOLDER}/_Lib/DataHandling
     ${ILLD_FOLDER}/_Lib/InternalMux
