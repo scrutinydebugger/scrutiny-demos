@@ -71,7 +71,10 @@ add_library(${PROJECT_NAME} OBJECT
     ${ILLD_FOLDER}/Scu/Std/IfxScuLbist.c
     ${ILLD_FOLDER}/Scu/Std/IfxScuRcu.c
     ${ILLD_FOLDER}/Scu/Std/IfxScuWdt.c
-
+    
+    ${ILLD_FOLDER}/Stm/Std/IfxStm.c
+    ${ILLD_FOLDER}/Stm/Timer/IfxStm_timer.c
+    
     ${ILLD_FOLDER}/Port/Io/IfxPort_Io.c
     ${ILLD_FOLDER}/Port/Std/IfxPort.c
     
@@ -98,6 +101,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${ILLD_FOLDER}/Gpt12/IncrEnc/
     ${ILLD_FOLDER}/Port/Io
     ${ILLD_FOLDER}/Port/Std
+    ${ILLD_FOLDER}/Stm/Std
+    ${ILLD_FOLDER}/Stm/Timer
 
     ${ILLD_FOLDER}/_Lib/DataHandling
     ${ILLD_FOLDER}/_Lib/InternalMux

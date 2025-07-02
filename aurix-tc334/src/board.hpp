@@ -14,6 +14,8 @@ extern "C"
 #include "IfxAsclin_Asc.h"
 }
 
+#include <stdint.h>
+
 #define BOARD_ASCLIN0_SERIAL_PIN_RX IfxAsclin0_RXA_P14_1_IN
 #define BOARD_ASCLIN0_SERIAL_PIN_TX IfxAsclin0_TX_P14_0_OUT
 #define BOARD_ASCLIN0_TX_BUFFER_SIZE 128
@@ -39,11 +41,23 @@ extern "C"
 #define BOARD_TASK_HIGHFREQ_IO_MODULE BOARD_X2_5_MODULE
 #define BOARD_TASK_HIGHFREQ_IO_PIN BOARD_X2_5_PIN
 
+#define STM_TARGET_FREQUENCY 20000000.0f // fsource = 300MHz. STMDIV = 15 (max) yields 20MHz.
+
 extern IfxAsclin_Asc g_asclin0;
 
 void init_board();
 
 void set_led1(bool val);
 void set_led2(bool val);
+
+inline uint32_t stm_timestamp()
+{
+    return IfxStm_getLower(&MODULE_STM0);
+}
+
+inline uint32_t stm_timestamp_diff_to_delta_100ns(uint32_t const timestamp_diff)
+{
+    return timestamp_diff >> 1; // Assumes that the STM runs at 20MHz
+}
 
 #endif // DEMO_TC334_BOARD_HPP

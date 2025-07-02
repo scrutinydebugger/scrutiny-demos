@@ -14,12 +14,13 @@ extern "C"
 }
 
 // #include "board.hpp"
+#include "IfxStm.h"
 #include "board.hpp"
 #include "scrutiny.hpp"
 #include "scrutiny_integration.hpp"
 #include "task_controller.hpp"
-
 #include <cstdint>
+#include <cstdio>
 
 IFX_ALIGN(4) IfxCpu_syncEvent cpuSyncEvent = 0;
 
@@ -59,13 +60,18 @@ extern "C"
     TaskController::get_task_highfreq()->enable();
     TaskController::get_task_lowfreq()->enable();
 
+    uint32_t last_timestamp = stm_timestamp();
     while (1)
     {
         // Overflow expected only if the task load is increased artificially by scrutiny
         bool const overflow = (TaskController::get_task_highfreq()->is_overflow() || TaskController::get_task_lowfreq()->is_overflow());
         set_led1(overflow);
 
-        // process_scrutiny_main(0);
+        uint32_t timestamp = stm_timestamp();
+        uint32_t const timediff_100ns = stm_timestamp_diff_to_delta_100ns(timestamp - last_timestamp);
+        task_idle_loop_handler.process(timediff_100ns);
+        process_scrutiny_main(timediff_100ns);
+        last_timestamp = timestamp;
     }
 }
 
@@ -73,26 +79,40 @@ void user_task_lowfreq()
 {
     // Runs at 1KHz
     IfxPort_setPinHigh(&BOARD_TASK_LOWFREQ_IO_MODULE, BOARD_TASK_LOWFREQ_IO_PIN);
+    static uint32_t last_timestamp = stm_timestamp();
 
     // The load variable below simulate work in the scheduler task.
     // It can be modified at runtime by scrutiny. Takes ~6.73ns per unit.
     static volatile uint32_t lowfreq_load = 10000;
     for (uint32_t i = 0; i < lowfreq_load; i++)
         ;
+
+    // Process scrutiny loop probe and measure the time precisely for it.
+    uint32_t const timestamp = stm_timestamp();
+    uint32_t const timediff_100ns = stm_timestamp_diff_to_delta_100ns(timestamp - last_timestamp);
+    task_lowfreq_loop_handler.process(timediff_100ns);
+    last_timestamp = timestamp;
+
     IfxPort_setPinLow(&BOARD_TASK_LOWFREQ_IO_MODULE, BOARD_TASK_LOWFREQ_IO_PIN);
-    // task_lowfreq_loop_handler.process();
 }
 
 void user_task_highfreq()
 {
     // Runs at 10KHz
     IfxPort_setPinHigh(&BOARD_TASK_HIGHFREQ_IO_MODULE, BOARD_TASK_HIGHFREQ_IO_PIN);
+    static uint32_t last_timestamp = stm_timestamp();
 
     // The load variable below simulate work in the scheduler task.
     // It can be modified at runtime by scrutiny. Takes ~6.73ns per unit.
     static volatile uint32_t highfreq_load = 1000; // Can be modified by scrutiny
     for (uint32_t i = 0; i < highfreq_load; i++)
         ;
+
+    // Process scrutiny loop probe and measure the time precisely for it.
+    uint32_t const timestamp = stm_timestamp();
+    uint32_t const timediff_100ns = stm_timestamp_diff_to_delta_100ns(timestamp - last_timestamp);
+    task_highfreq_loop_handler.process(timediff_100ns);
+    last_timestamp = timestamp;
+
     IfxPort_setPinLow(&BOARD_TASK_HIGHFREQ_IO_MODULE, BOARD_TASK_HIGHFREQ_IO_PIN);
-    // task_highfreq_loop_handler.process();
 }

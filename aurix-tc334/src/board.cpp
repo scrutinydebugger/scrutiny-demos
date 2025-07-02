@@ -45,6 +45,7 @@ void task_10khz();
 void init_io(void);
 void init_asclin0(void);
 void init_gpt12(void);
+void init_stm(void);
 
 void interrupt_gpt12_T2(void)
 {
@@ -85,6 +86,7 @@ void init_board()
     init_io();
     init_asclin0();
     init_gpt12();
+    init_stm();
 
     set_led1(false);
     set_led2(false);
@@ -155,6 +157,11 @@ void init_gpt12(void)
 
     IfxGpt12_T2_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
     IfxGpt12_T4_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
+}
+
+void init_stm(void)
+{
+    IfxScuCcu_setStmFrequency(STM_TARGET_FREQUENCY);
 }
 
 void set_led1(bool val)
