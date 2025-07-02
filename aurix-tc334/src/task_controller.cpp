@@ -1,3 +1,10 @@
+//    task_controller.cpp
+//        A lightweight task scheduler that abstract the timers
+//
+//   - License : MIT - See LICENSE file.
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//   Copyright (c) 2025 Scrutiny Debugger
 
 extern "C"
 {

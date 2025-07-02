@@ -81,7 +81,9 @@
         "xtr1common": "cpp",
         "xtree": "cpp",
         "xutility": "cpp",
-        "ifxport.h": "c"
+        "ifxport.h": "c",
+        "ifx_ssw_compilers.h": "c",
+        "ifx_ssw_legacyswcfg.h": "c"
     },
     "[cpp]": {
         "editor.formatOnSave": true,

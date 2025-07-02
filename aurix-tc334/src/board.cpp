@@ -1,3 +1,10 @@
+//    board.cpp
+//        The abstraction layer to configure the dev board (kit_a2g_tc334_lite)
+//
+//   - License : MIT - See LICENSE file.
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//   Copyright (c) 2025 Scrutiny Debugger
 
 extern "C"
 {
@@ -71,11 +78,6 @@ void interrupt_gpt12_T4(void)
         TaskController::exec_task(task);
         __rslcx(); // required because of __bisr
     }
-
-    if (!task->enabled())
-    {
-        //  IfxSrc_disable(src);
-    }
 }
 
 void init_board()
@@ -143,17 +145,13 @@ void init_gpt12(void)
     IfxGpt12_T4_setTimerValue(&MODULE_GPT120, TIMER4_VAL);
 
     // Initialize the interrupt
-    {
-        volatile Ifx_SRC_SRCR *t2_src = IfxGpt12_T2_getSrc(&MODULE_GPT120);
-        IfxSrc_init(t2_src, BOARD_ISR_PROVIDER_GPT12_TIMER, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
-        IfxSrc_enable(t2_src);
-    }
+    volatile Ifx_SRC_SRCR *t2_src = IfxGpt12_T2_getSrc(&MODULE_GPT120);
+    IfxSrc_init(t2_src, BOARD_ISR_PROVIDER_GPT12_TIMER, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
+    IfxSrc_enable(t2_src);
 
-    {
-        volatile Ifx_SRC_SRCR *t4_src = IfxGpt12_T4_getSrc(&MODULE_GPT120);
-        IfxSrc_init(t4_src, BOARD_ISR_PROVIDER_GPT12_TIMER, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
-        IfxSrc_enable(t4_src);
-    }
+    volatile Ifx_SRC_SRCR *t4_src = IfxGpt12_T4_getSrc(&MODULE_GPT120);
+    IfxSrc_init(t4_src, BOARD_ISR_PROVIDER_GPT12_TIMER, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
+    IfxSrc_enable(t4_src);
 
     IfxGpt12_T2_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
     IfxGpt12_T4_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);

@@ -15,6 +15,7 @@ extern "C"
 
 // #include "board.hpp"
 #include "board.hpp"
+#include "scrutiny.hpp"
 #include "scrutiny_integration.hpp"
 #include "task_controller.hpp"
 
@@ -79,6 +80,7 @@ void user_task_lowfreq()
     for (uint32_t i = 0; i < lowfreq_load; i++)
         ;
     IfxPort_setPinLow(&BOARD_TASK_LOWFREQ_IO_MODULE, BOARD_TASK_LOWFREQ_IO_PIN);
+    // task_lowfreq_loop_handler.process();
 }
 
 void user_task_highfreq()
@@ -92,4 +94,5 @@ void user_task_highfreq()
     for (uint32_t i = 0; i < highfreq_load; i++)
         ;
     IfxPort_setPinLow(&BOARD_TASK_HIGHFREQ_IO_MODULE, BOARD_TASK_HIGHFREQ_IO_PIN);
+    // task_highfreq_loop_handler.process();
 }

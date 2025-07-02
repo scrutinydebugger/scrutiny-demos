@@ -1,3 +1,11 @@
+//    task_controller.hpp
+//        A lightweight task scheduler that abstract the timers
+//
+//   - License : MIT - See LICENSE file.
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//   Copyright (c) 2025 Scrutiny Debugger
+
 #ifndef TASK_CONTROLLER_HPP
 #define TASK_CONTROLLER_HPP
 

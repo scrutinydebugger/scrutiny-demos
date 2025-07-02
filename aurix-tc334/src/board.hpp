@@ -1,3 +1,11 @@
+//    board.hpp
+//        The abstraction layer to configure the dev board (kit_a2g_tc334_lite)
+//
+//   - License : MIT - See LICENSE file.
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//   Copyright (c) 2025 Scrutiny Debugger
+
 #ifndef DEMO_TC334_BOARD_HPP
 #define DEMO_TC334_BOARD_HPP
 

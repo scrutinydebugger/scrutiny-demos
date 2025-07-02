@@ -1,15 +1,16 @@
 //    scrutiny_integration.cpp
-//        Glue code between the scrutiny lib and the application
+//        The app wrapper that integrates scrutiny in this demo by connecting the AscLin module
+//        (UART) to the scrutiny streams.
 //
 //   - License : MIT - See LICENSE file.
 //   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
 //
-//   Copyright (c) 2024 Scrutiny Debugger
+//   Copyright (c) 2025 Scrutiny Debugger
 
-#include "asclin0.hpp"
+#include "board.hpp"
 #include "scrutiny.hpp"
 #include <cstdint>
-#include <limits>
+// #include <limits>
 
 extern "C"
 {
@@ -18,15 +19,15 @@ extern "C"
 }
 
 uint8_t scrutiny_rx_buffer[64];
-uint8_t scrutiny_tx_buffer[ASCLIN0_TX_BUFFER_SIZE]; // Match the fifo size, we should be free of overrun
-uint8_t scrutiny_datalogging_buffer[4096];          // Allow as much as possible. Could use the linker script to allocate the "remaining memory"
+uint8_t scrutiny_tx_buffer[BOARD_ASCLIN0_TX_BUFFER_SIZE]; // Match the fifo size, we should be free of overrun
+uint8_t scrutiny_datalogging_buffer[4096];                // Allow as much as possible. Could use the linker script to allocate the "remaining memory"
 scrutiny::VariableFrequencyLoopHandler task_idle_loop_handler("Idle");
-scrutiny::FixedFrequencyLoopHandler task_1KHz_loop_handler(1e7 / 1000);
-scrutiny::FixedFrequencyLoopHandler task_10KHz_loop_handler(1e7 / 10000);
+scrutiny::FixedFrequencyLoopHandler task_lowfreq_loop_handler(1e7 / 1000);   // 1KHz
+scrutiny::FixedFrequencyLoopHandler task_highfreq_loop_handler(1e7 / 10000); // 10 KHz
 scrutiny::LoopHandler *scrutiny_loops[] = {
     &task_idle_loop_handler,
-    &task_1KHz_loop_handler,
-    &task_10KHz_loop_handler,
+    &task_lowfreq_loop_handler,
+    &task_highfreq_loop_handler,
 };
 
 static scrutiny::Config config;
@@ -57,7 +58,7 @@ void process_scrutiny_main(uint32_t const timestep_100ns)
     uint8_t buffer[32];
     Ifx_SizeT count;
 
-    static_assert(std::numeric_limits<Ifx_SizeT>::max() > sizeof(buffer));
+    // static_assert(std::numeric_limits<Ifx_SizeT>::max() > sizeof(buffer));
     count = sizeof(buffer);
     IfxAsclin_Asc_read(s_scrutiny_asclin, buffer, &count, 0);
     main_handler.receive_data(buffer, static_cast<uint16_t>(count));
