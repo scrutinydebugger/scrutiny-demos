@@ -18,13 +18,16 @@ extern "C"
 
 #define BOARD_ASCLIN0_SERIAL_PIN_RX IfxAsclin0_RXA_P14_1_IN
 #define BOARD_ASCLIN0_SERIAL_PIN_TX IfxAsclin0_TX_P14_0_OUT
-#define BOARD_ASCLIN0_TX_BUFFER_SIZE 128
+#define BOARD_ASCLIN0_TX_BUFFER_SIZE 256
+#define BOARD_ASCLIN0_RX_BUFFER_SIZE 128
+
 #define BOARD_ASCLIN0_BAUDRATE 115200
 
+#define BOARD_ISR_PRIORITY_ASCLIN0_RX 18
 #define BOARD_ISR_PRIORITY_ASCLIN0_TX 19
+
 #define BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz 6
 #define BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz 7 // Highest number = hughest priority
-#define BOARD_ISR_PROVIDER_GPT12_TIMER IfxSrc_Tos_cpu0
 
 #define BOARD_LED1_MODULE MODULE_P00
 #define BOARD_LED1_PIN 5
@@ -43,7 +46,17 @@ extern "C"
 
 #define STM_TARGET_FREQUENCY 20000000.0f // fsource = 300MHz. STMDIV = 15 (max) yields 20MHz.
 
+#define BOARD_ISR_PRIORITY_ASCLIN1_RX 15
+#define BOARD_ISR_PRIORITY_ASCLIN1_TX 16
+
+#define BOARD_ASCLIN1_TX_BUFFER_SIZE 256
+#define BOARD_ASCLIN1_RX_BUFFER_SIZE 128
+
+#define BOARD_ASCLIN1_SERIAL_PIN_RX IfxAsclin1_RXA_P15_1_IN
+#define BOARD_ASCLIN1_SERIAL_PIN_TX IfxAsclin1_TX_P15_1_OUT
+
 extern IfxAsclin_Asc g_asclin0;
+extern IfxAsclin_Asc g_asclin1;
 
 void init_board();
 
@@ -57,7 +70,7 @@ inline uint32_t stm_timestamp()
 
 inline uint32_t stm_timestamp_diff_to_delta_100ns(uint32_t const timestamp_diff)
 {
-    return timestamp_diff >> 1; // Assumes that the STM runs at 20MHz
+    return timestamp_diff >> 2; // Assumes that the STM runs at 20MHz
 }
 
 #endif // DEMO_TC334_BOARD_HPP

@@ -18,7 +18,7 @@ extern "C"
 #include "IfxAsclin_Asc.h"
 }
 
-void configure_scrutiny(IfxAsclin_Asc *const asclin);
+void configure_scrutiny();
 void process_scrutiny_main(uint32_t const diff_time_us);
 
 extern scrutiny::MainHandler scrutiny_main;

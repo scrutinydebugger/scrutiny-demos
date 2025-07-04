@@ -20,23 +20,42 @@ extern "C"
 #include <cstdint>
 
 IfxAsclin_Asc g_asclin0;
+IfxAsclin_Asc g_asclin1;
 
-/* The transfer buffers allocate memory for the data itself and for FIFO runtime variables.
- 8 more bytes have to be added to ensure a proper circular buffer handling independent from *the address to which the buffers have been located.
- */
-
+// Define buffer size based on Infineon UART examples
 uint8 g_asclin0_tx_buffer[BOARD_ASCLIN0_TX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
+uint8 g_asclin0_rx_buffer[BOARD_ASCLIN0_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
+uint8 g_asclin1_tx_buffer[BOARD_ASCLIN1_TX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
+uint8 g_asclin1_rx_buffer[BOARD_ASCLIN1_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 
-IFX_INTERRUPT(asclin0_Tx_ISR, 0, BOARD_ISR_PRIORITY_ASCLIN0_TX);
+IFX_INTERRUPT(interrupt_asclin0_tx, 0, BOARD_ISR_PRIORITY_ASCLIN0_TX);
+IFX_INTERRUPT(interrupt_asclin0_rx, 0, BOARD_ISR_PRIORITY_ASCLIN0_RX);
+IFX_INTERRUPT(interrupt_asclin1_tx, 0, BOARD_ISR_PRIORITY_ASCLIN1_TX);
+IFX_INTERRUPT(interrupt_asclin1_rx, 0, BOARD_ISR_PRIORITY_ASCLIN1_RX);
 IFX_INTERRUPT(interrupt_gpt12_T2, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
 IFX_INTERRUPT(interrupt_gpt12_T4, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
 
 static constexpr uint16_t TIMER2_VAL = 2500;
 static constexpr uint16_t TIMER4_VAL = 6250;
 
-void asclin0_Tx_ISR(void)
+void interrupt_asclin0_tx(void)
 {
     IfxAsclin_Asc_isrTransmit(&g_asclin0);
+}
+
+void interrupt_asclin0_rx(void)
+{
+    IfxAsclin_Asc_isrReceive(&g_asclin0);
+}
+
+void interrupt_asclin1_tx(void)
+{
+    IfxAsclin_Asc_isrTransmit(&g_asclin1);
+}
+
+void interrupt_asclin1_rx(void)
+{
+    IfxAsclin_Asc_isrReceive(&g_asclin1);
 }
 
 void task_1khz();
@@ -44,6 +63,7 @@ void task_10khz();
 
 void init_io(void);
 void init_asclin0(void);
+void init_asclin1(void);
 void init_gpt12(void);
 void init_stm(void);
 
@@ -85,6 +105,7 @@ void init_board()
 {
     init_io();
     init_asclin0();
+    init_asclin1();
     init_gpt12();
     init_stm();
 
@@ -103,14 +124,28 @@ void init_io(void)
 // ==== ASCLIN 0 ====
 void init_asclin0(void)
 {
-    IfxAsclin_Asc_Config ascConfig;
-    IfxAsclin_Asc_initModuleConfig(&ascConfig, BOARD_ASCLIN0_SERIAL_PIN_TX.module);
-    ascConfig.baudrate.baudrate = 115200;
-    ascConfig.interrupt.txPriority = BOARD_ISR_PRIORITY_ASCLIN0_TX;
-    ascConfig.interrupt.typeOfService = IfxCpu_Irq_getTos(IfxCpu_getCoreIndex());
+    IfxAsclin_Asc_Config config;
+    IfxAsclin_Asc_initModuleConfig(&config, &MODULE_ASCLIN0);
+    config.baudrate.baudrate = 115200;
 
-    ascConfig.txBuffer = &g_asclin0_tx_buffer;
-    ascConfig.txBufferSize = BOARD_ASCLIN0_TX_BUFFER_SIZE;
+    // Default of SamplePointPosition_3 with oversamp = 1 cause issues in receiving at 115200.
+    // Below configuration is reliable and taken from code example that receives data over UART (no just transmit).
+    config.baudrate.oversampling = IfxAsclin_OversamplingFactor_16;
+    config.bitTiming.medianFilter = IfxAsclin_SamplesPerBit_three;
+    config.bitTiming.samplePointPosition = IfxAsclin_SamplePointPosition_8;
+
+    config.interrupt.txPriority = BOARD_ISR_PRIORITY_ASCLIN0_TX;
+    config.interrupt.rxPriority = BOARD_ISR_PRIORITY_ASCLIN0_RX;
+    config.interrupt.typeOfService = IfxCpu_Irq_getTos(IfxCpu_getCoreIndex());
+
+    config.frame.parityBit = false;
+    config.frame.stopBit = IfxAsclin_StopBit_1;
+
+    config.txBuffer = &g_asclin0_tx_buffer;
+    config.txBufferSize = BOARD_ASCLIN0_TX_BUFFER_SIZE;
+
+    config.rxBuffer = &g_asclin0_rx_buffer;
+    config.rxBufferSize = BOARD_ASCLIN0_RX_BUFFER_SIZE;
 
     const IfxAsclin_Asc_Pins pins = {
         NULL_PTR,                              // CTS pin not used
@@ -123,9 +158,50 @@ void init_asclin0(void)
         IfxPort_OutputMode_pushPull,           // TX pin pushpull
         IfxPort_PadDriver_cmosAutomotiveSpeed1 // Pin driver
     };
-    ascConfig.pins = &pins;
+    config.pins = &pins;
 
-    IfxAsclin_Asc_initModule(&g_asclin0, &ascConfig);
+    IfxAsclin_Asc_initModule(&g_asclin0, &config);
+}
+
+void init_asclin1(void)
+{
+    IfxAsclin_Asc_Config config;
+    IfxAsclin_Asc_initModuleConfig(&config, &MODULE_ASCLIN1);
+    config.baudrate.baudrate = 115200;
+
+    // Default of SamplePointPosition_3 with oversamp = 1 cause issues in receiving at 115200.
+    // Below configuration is reliable and taken from code example that receives data over UART (no just transmit).
+    config.baudrate.oversampling = IfxAsclin_OversamplingFactor_16;
+    config.bitTiming.medianFilter = IfxAsclin_SamplesPerBit_three;
+    config.bitTiming.samplePointPosition = IfxAsclin_SamplePointPosition_8;
+
+    config.interrupt.txPriority = BOARD_ISR_PRIORITY_ASCLIN1_TX;
+    config.interrupt.rxPriority = BOARD_ISR_PRIORITY_ASCLIN1_RX;
+    config.interrupt.typeOfService = IfxCpu_Irq_getTos(IfxCpu_getCoreIndex());
+
+    config.frame.parityBit = false;
+    config.frame.stopBit = IfxAsclin_StopBit_1;
+
+    config.txBuffer = &g_asclin1_tx_buffer;
+    config.txBufferSize = BOARD_ASCLIN1_TX_BUFFER_SIZE;
+
+    config.rxBuffer = &g_asclin1_rx_buffer;
+    config.rxBufferSize = BOARD_ASCLIN1_RX_BUFFER_SIZE;
+
+    const IfxAsclin_Asc_Pins pins = {
+        NULL_PTR,                              // CTS pin not used
+        IfxPort_InputMode_pullUp,              // CTS pin pullup
+        &BOARD_ASCLIN1_SERIAL_PIN_RX,          // RX Pin
+        IfxPort_InputMode_pullUp,              // RX pin pullup
+        NULL_PTR,                              // RTS pin not used
+        IfxPort_OutputMode_pushPull,           // RTS pin pushpull
+        &BOARD_ASCLIN1_SERIAL_PIN_TX,          // TX pin
+        IfxPort_OutputMode_pushPull,           // TX pin pushpull
+        IfxPort_PadDriver_cmosAutomotiveSpeed1 // Pin driver
+    };
+    config.pins = &pins;
+
+    IfxAsclin_Asc_initModule(&g_asclin1, &config);
 }
 
 // ===== GPT12 ======
@@ -148,11 +224,11 @@ void init_gpt12(void)
 
     // Initialize the interrupt
     volatile Ifx_SRC_SRCR *t2_src = IfxGpt12_T2_getSrc(&MODULE_GPT120);
-    IfxSrc_init(t2_src, BOARD_ISR_PROVIDER_GPT12_TIMER, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
+    IfxSrc_init(t2_src, IfxCpu_Irq_getTos(IfxCpu_getCoreIndex()), BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
     IfxSrc_enable(t2_src);
 
     volatile Ifx_SRC_SRCR *t4_src = IfxGpt12_T4_getSrc(&MODULE_GPT120);
-    IfxSrc_init(t4_src, BOARD_ISR_PROVIDER_GPT12_TIMER, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
+    IfxSrc_init(t4_src, IfxCpu_Irq_getTos(IfxCpu_getCoreIndex()), BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
     IfxSrc_enable(t4_src);
 
     IfxGpt12_T2_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);

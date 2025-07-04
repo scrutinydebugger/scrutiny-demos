@@ -56,22 +56,36 @@ extern "C"
     setup_cpu();
     init_board();
 
-    configure_scrutiny(&g_asclin0);
+    configure_scrutiny();
     TaskController::get_task_highfreq()->enable();
     TaskController::get_task_lowfreq()->enable();
 
+    IfxCpu_enableInterrupts();
+
     uint32_t last_timestamp = stm_timestamp();
+
+    char buffer[32];
+
+    sprintf(buffer, "den: %u\n", g_asclin0.asclin->BRG.B.DENOMINATOR);
+    int16_t count = strlen(buffer);
+    IfxAsclin_Asc_write(&g_asclin0, buffer, &count, 0);
+
+    sprintf(buffer, "num: %u\n", g_asclin0.asclin->BRG.B.NUMERATOR);
+    count = strlen(buffer);
+    IfxAsclin_Asc_write(&g_asclin0, buffer, &count, 0);
+
     while (1)
     {
         // Overflow expected only if the task load is increased artificially by scrutiny
         bool const overflow = (TaskController::get_task_highfreq()->is_overflow() || TaskController::get_task_lowfreq()->is_overflow());
-        set_led1(overflow);
-
+        // set_led1(overflow);
+        for (volatile int i = 0; i < 100000; i++)
+            ;
         uint32_t timestamp = stm_timestamp();
         uint32_t const timediff_100ns = stm_timestamp_diff_to_delta_100ns(timestamp - last_timestamp);
+        last_timestamp = timestamp;
         task_idle_loop_handler.process(timediff_100ns);
         process_scrutiny_main(timediff_100ns);
-        last_timestamp = timestamp;
     }
 }
 

@@ -10,7 +10,7 @@
 #include "board.hpp"
 #include "scrutiny.hpp"
 #include <cstdint>
-// #include <limits>
+#include <limits>
 
 extern "C"
 {
@@ -18,12 +18,13 @@ extern "C"
 #include "IfxCpu_Irq.h"
 }
 
-uint8_t scrutiny_rx_buffer[64];
-uint8_t scrutiny_tx_buffer[BOARD_ASCLIN0_TX_BUFFER_SIZE]; // Match the fifo size, we should be free of overrun
-uint8_t scrutiny_datalogging_buffer[4096];                // Allow as much as possible. Could use the linker script to allocate the "remaining memory"
+// Match the fifo size, we should be free of overrun
+uint8_t scrutiny_rx_buffer[BOARD_ASCLIN0_RX_BUFFER_SIZE];
+uint8_t scrutiny_tx_buffer[BOARD_ASCLIN0_TX_BUFFER_SIZE];
+uint8_t scrutiny_datalogging_buffer[4096]; // Allow as much as possible. Could use the linker script to allocate the "remaining memory"
 scrutiny::VariableFrequencyLoopHandler task_idle_loop_handler("Idle");
-scrutiny::FixedFrequencyLoopHandler task_lowfreq_loop_handler(1e7 / 1000);   // 1KHz
-scrutiny::FixedFrequencyLoopHandler task_highfreq_loop_handler(1e7 / 10000); // 10 KHz
+scrutiny::FixedFrequencyLoopHandler task_lowfreq_loop_handler(1e7 / 1000, "Low Freq");    // 1KHz
+scrutiny::FixedFrequencyLoopHandler task_highfreq_loop_handler(1e7 / 10000, "High Freq"); // 10 KHz
 scrutiny::LoopHandler *scrutiny_loops[] = {
     &task_idle_loop_handler,
     &task_lowfreq_loop_handler,
@@ -32,12 +33,10 @@ scrutiny::LoopHandler *scrutiny_loops[] = {
 
 static scrutiny::Config config;
 static scrutiny::MainHandler main_handler;
-static IfxAsclin_Asc *s_scrutiny_asclin;
 
 /// @brief Function that initializes the scrutiny library for this demo.
-void configure_scrutiny(IfxAsclin_Asc *const asclin)
+void configure_scrutiny()
 {
-    s_scrutiny_asclin = asclin;
     config.set_buffers(
         scrutiny_rx_buffer,
         sizeof(scrutiny_rx_buffer), // Receive
@@ -55,22 +54,32 @@ void configure_scrutiny(IfxAsclin_Asc *const asclin)
 /// @param timestep_100ns The amount of time, in step of 100ns, since the last call to this function
 void process_scrutiny_main(uint32_t const timestep_100ns)
 {
+    IfxAsclin_Asc *scrutiny_asclin = &g_asclin0;
     uint8_t buffer[32];
     Ifx_SizeT count;
 
-    // static_assert(std::numeric_limits<Ifx_SizeT>::max() > sizeof(buffer));
-    count = sizeof(buffer);
-    IfxAsclin_Asc_read(s_scrutiny_asclin, buffer, &count, 0);
-    main_handler.receive_data(buffer, static_cast<uint16_t>(count));
+    static_assert(std::numeric_limits<Ifx_SizeT>::max() > sizeof(buffer));
+    count = IfxAsclin_Asc_getReadCount(scrutiny_asclin);
+    count = Ifx__minu(count, sizeof(buffer));
+    if (count > 0)
+    {
+        set_led2(true);
+
+        IfxAsclin_Asc_read(scrutiny_asclin, buffer, &count, 0);
+        int16_t count2 = count;
+        IfxAsclin_Asc_write(&g_asclin1, buffer, &count2, 0);
+
+        main_handler.receive_data(buffer, static_cast<uint16_t>(count));
+    }
 
     main_handler.process(timestep_100ns);
 
-    uint16_t toSend{ static_cast<uint16_t>(main_handler.data_to_send()) };
-    if (toSend > sizeof(buffer))
+    uint16_t to_send{ static_cast<uint16_t>(main_handler.data_to_send()) };
+    to_send = Ifx__minu(to_send, sizeof(buffer));
+    if (to_send > 0)
     {
-        toSend = sizeof(buffer);
+        count = to_send;
+        main_handler.pop_data(buffer, to_send);
+        IfxAsclin_Asc_write(scrutiny_asclin, buffer, &count, 0);
     }
-    count = toSend;
-    main_handler.pop_data(buffer, toSend);
-    IfxAsclin_Asc_write(s_scrutiny_asclin, buffer, &count, 0);
 }
