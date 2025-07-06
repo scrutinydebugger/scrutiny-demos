@@ -60,6 +60,8 @@ extern "C" void core0_main(void)
     uint32_t last_timestamp = stm_timestamp(); // Will use that timestamp to track time
     sync_all_wavegen = true;
 
+    uint32_t task_2Hz_timer_timestamp = stm_timestamp();
+
     while (true)
     {
         uint32_t const timestamp = stm_timestamp();
@@ -74,6 +76,14 @@ extern "C" void core0_main(void)
             low_freq_func_gen.set_phase(0);
             high_freq_func_gen.set_phase(0);
             sync_all_wavegen = false;
+        }
+
+        if (stm_timestamp_diff_to_delta_100ns(timestamp - task_2Hz_timer_timestamp) >= 5e6) // 500ms : 2Hz
+        {
+            // We can use this pin to validate that the STM timer is correctly configured with a logic analyzer
+            // Should create a 1Hz square wave (toggle every 500ms)
+            toggle_time_ref_pin();
+            task_2Hz_timer_timestamp = timestamp;
         }
 
         // We could use this button to trigger a scrutiny graph

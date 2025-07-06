@@ -44,6 +44,8 @@ extern "C"
 #define BOARD_BTN1_MODULE MODULE_P00
 #define BOARD_BTN1_PIN 7
 
+#define BOARD_TIME_REF_MODULE MODULE_P00
+#define BOARD_TIME_REF_PIN 1
 #define BOARD_TASK_LOWFREQ_IO_MODULE BOARD_X2_3_MODULE
 #define BOARD_TASK_LOWFREQ_IO_PIN BOARD_X2_3_PIN
 #define BOARD_TASK_HIGHFREQ_IO_MODULE BOARD_X2_5_MODULE
@@ -70,6 +72,7 @@ void init_board();
 void set_led1(bool val);
 void set_led2(bool val);
 void toggle_graph_trigger_pin();
+void toggle_time_ref_pin();
 
 inline uint32_t stm_timestamp()
 {
@@ -78,7 +81,9 @@ inline uint32_t stm_timestamp()
 
 inline uint32_t stm_timestamp_diff_to_delta_100ns(uint32_t const timestamp_diff)
 {
-    return timestamp_diff >> 2; // Assumes that the STM runs at 20MHz
+    // Assumes that the STM runs at 20MHz
+    // Divide 20MHz in 2 to get 10MHz, which is 1/100ns
+    return timestamp_diff >> 1;
 }
 
 #endif // DEMO_TC334_BOARD_HPP
