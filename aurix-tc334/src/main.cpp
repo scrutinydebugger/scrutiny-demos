@@ -19,10 +19,15 @@ extern "C"
 #include "scrutiny.hpp"
 #include "scrutiny_integration.hpp"
 #include "task_controller.hpp"
+#include "wave_function_generator.hpp"
 #include <cstdint>
 #include <cstdio>
 
 IFX_ALIGN(4) IfxCpu_syncEvent cpuSyncEvent = 0;
+
+static WaveFunctionGenerator high_freq_func_gen(WaveFunctionGenerator::WaveType::SINE, 10, 0);
+static WaveFunctionGenerator low_freq_func_gen(WaveFunctionGenerator::WaveType::TRIANGLE, 10, 0);
+static WaveFunctionGenerator main_loop_func_gen(WaveFunctionGenerator::WaveType::SAWTOOTH, 10, 0);
 
 void setup_cpu()
 {
@@ -64,27 +69,21 @@ extern "C"
 
     uint32_t last_timestamp = stm_timestamp();
 
-    char buffer[32];
-
-    sprintf(buffer, "den: %u\n", g_asclin0.asclin->BRG.B.DENOMINATOR);
-    int16_t count = strlen(buffer);
-    IfxAsclin_Asc_write(&g_asclin0, buffer, &count, 0);
-
-    sprintf(buffer, "num: %u\n", g_asclin0.asclin->BRG.B.NUMERATOR);
-    count = strlen(buffer);
-    IfxAsclin_Asc_write(&g_asclin0, buffer, &count, 0);
+    high_freq_func_gen.set_phase(0);
+    low_freq_func_gen.set_phase(0);
+    main_loop_func_gen.set_phase(0);
 
     while (1)
     {
         // Overflow expected only if the task load is increased artificially by scrutiny
         bool const overflow = (TaskController::get_task_highfreq()->is_overflow() || TaskController::get_task_lowfreq()->is_overflow());
-        // set_led1(overflow);
-        for (volatile int i = 0; i < 100000; i++)
-            ;
+        set_led1(overflow);
+
         uint32_t timestamp = stm_timestamp();
         uint32_t const timediff_100ns = stm_timestamp_diff_to_delta_100ns(timestamp - last_timestamp);
         last_timestamp = timestamp;
         task_idle_loop_handler.process(timediff_100ns);
+        main_loop_func_gen.update(static_cast<float>(timediff_100ns) * 1e-7f);
         process_scrutiny_main(timediff_100ns);
     }
 }
@@ -105,6 +104,7 @@ void user_task_lowfreq()
     uint32_t const timestamp = stm_timestamp();
     uint32_t const timediff_100ns = stm_timestamp_diff_to_delta_100ns(timestamp - last_timestamp);
     task_lowfreq_loop_handler.process(timediff_100ns);
+    low_freq_func_gen.update(static_cast<float>(timediff_100ns) * 1e-7f);
     last_timestamp = timestamp;
 
     IfxPort_setPinLow(&BOARD_TASK_LOWFREQ_IO_MODULE, BOARD_TASK_LOWFREQ_IO_PIN);
@@ -125,6 +125,7 @@ void user_task_highfreq()
     // Process scrutiny loop probe and measure the time precisely for it.
     uint32_t const timestamp = stm_timestamp();
     uint32_t const timediff_100ns = stm_timestamp_diff_to_delta_100ns(timestamp - last_timestamp);
+    high_freq_func_gen.update(static_cast<float>(timediff_100ns) * 1e-7f);
     task_highfreq_loop_handler.process(timediff_100ns);
     last_timestamp = timestamp;
 

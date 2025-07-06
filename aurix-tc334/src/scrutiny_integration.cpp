@@ -21,7 +21,7 @@ extern "C"
 // Match the fifo size, we should be free of overrun
 uint8_t scrutiny_rx_buffer[BOARD_ASCLIN0_RX_BUFFER_SIZE];
 uint8_t scrutiny_tx_buffer[BOARD_ASCLIN0_TX_BUFFER_SIZE];
-uint8_t scrutiny_datalogging_buffer[4096]; // Allow as much as possible. Could use the linker script to allocate the "remaining memory"
+uint8_t scrutiny_datalogging_buffer[32768]; // Allow as much as possible. Could use the linker script to allocate the "remaining memory"
 scrutiny::VariableFrequencyLoopHandler task_idle_loop_handler("Idle");
 scrutiny::FixedFrequencyLoopHandler task_lowfreq_loop_handler(1e7 / 1000, "Low Freq");    // 1KHz
 scrutiny::FixedFrequencyLoopHandler task_highfreq_loop_handler(1e7 / 10000, "High Freq"); // 10 KHz

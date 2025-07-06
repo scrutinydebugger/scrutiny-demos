@@ -1,0 +1,50 @@
+{
+    "HF Wave Generator/Type":{
+        "target" : "/static/main.cpp/high_freq_func_gen/wave_type"
+    },
+    "HF Wave Generator/Output" : {
+        "target" : "/static/main.cpp/high_freq_func_gen/m_output"
+    },
+    "HF Wave Generator/Enabled" : {
+        "target" : "/static/main.cpp/high_freq_func_gen/enabled"
+    },
+    "HF Wave Generator/Offset" : {
+     "target" : "/static/main.cpp/high_freq_func_gen/offset"
+    },
+    "HF Wave Generator/Ferquency" : {
+        "target" : "/static/main.cpp/high_freq_func_gen/frequency"
+    },
+
+    "LF Wave Generator/Type":{
+        "target" : "/static/main.cpp/low_freq_func_gen/wave_type"
+    },
+    "LF Wave Generator/Output" : {
+        "target" : "/static/main.cpp/low_freq_func_gen/m_output"
+    },
+    "LF Wave Generator/Enabled" : {
+        "target" : "/static/main.cpp/low_freq_func_gen/enabled"
+    },
+    "LF Wave Generator/Offset" : {
+     "target" : "/static/main.cpp/low_freq_func_gen/offset"
+    },
+    "LF Wave Generator/Ferquency" : {
+        "target" : "/static/main.cpp/low_freq_func_gen/frequency"
+    },
+
+    "Main Wave Generator/Type":{
+        "target" : "/static/main.cpp/main_loop_func_gen/wave_type"
+    },
+    "Main Wave Generator/Output" : {
+        "target" : "/static/main.cpp/main_loop_func_gen/m_output"
+    },
+    "Main Wave Generator/Enabled" : {
+        "target" : "/static/main.cpp/main_loop_func_gen/enabled"
+    },
+    "Main Wave Generator/Offset" : {
+     "target" : "/static/main.cpp/main_loop_func_gen/offset"
+    },
+    "Main Wave Generator/Ferquency" : {
+        "target" : "/static/main.cpp/main_loop_func_gen/frequency"
+    }    
+
+}
