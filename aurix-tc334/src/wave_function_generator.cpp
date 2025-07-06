@@ -1,3 +1,11 @@
+//    wave_function_generator.cpp
+//        A class that generate a periodic wave with common shapes
+//
+//   - License : MIT - See LICENSE file.
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//   Copyright (c) 2025 Scrutiny Debugger
+
 #include "wave_function_generator.hpp"
 #include <algorithm>
 #include <cmath>

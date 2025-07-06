@@ -56,6 +56,15 @@
         },
         "src/board.cpp": {
             "docstring": "The abstraction layer to configure the dev board (kit_a2g_tc334_lite)"
+        },
+        "src/wave_function_generator.cpp": {
+            "docstring": "A class that generate a periodic wave with common shapes"
+        },
+        "src/wave_function_generator.hpp": {
+            "docstring": "A class that generate a periodic wave with common shapes"
+        },
+        "src/ignored_file.cpp": {
+            "docstring": "A file that demonstrate the ability to filter out compile units from the postbuild toolchain"
         }
     }
 }

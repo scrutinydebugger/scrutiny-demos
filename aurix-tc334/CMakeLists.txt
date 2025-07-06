@@ -14,6 +14,7 @@ include(FetchContent)
 set(SCRUTINY_ENABLE_DATALOGGING 1)
 set(SCRUTINY_SUPPORT_64BITS 1) 
 set(SCRUTINY_DATALOGGING_BUFFER_32BITS 0)
+set(SCRUTINY_BUILD_CWRAPPER 0)
 
 FetchContent_Declare(
   scrutiny-embedded
