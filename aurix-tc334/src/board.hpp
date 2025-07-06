@@ -38,11 +38,18 @@ extern "C"
 #define BOARD_X2_5_MODULE MODULE_P00
 #define BOARD_X2_5_PIN 2
 
+#define BOARD_X2_9_MODULE MODULE_P00
+#define BOARD_X2_9_PIN 8
+
+#define BOARD_BTN1_MODULE MODULE_P00
+#define BOARD_BTN1_PIN 7
+
 #define BOARD_TASK_LOWFREQ_IO_MODULE BOARD_X2_3_MODULE
 #define BOARD_TASK_LOWFREQ_IO_PIN BOARD_X2_3_PIN
-
 #define BOARD_TASK_HIGHFREQ_IO_MODULE BOARD_X2_5_MODULE
 #define BOARD_TASK_HIGHFREQ_IO_PIN BOARD_X2_5_PIN
+#define BOARD_SCRUTINY_TRIGGER_MODULE BOARD_X2_9_MODULE
+#define BOARD_SCRUTINY_TRIGGER_PIN BOARD_X2_9_PIN
 
 #define STM_TARGET_FREQUENCY 20000000.0f // fsource = 300MHz. STMDIV = 15 (max) yields 20MHz.
 
@@ -62,6 +69,7 @@ void init_board();
 
 void set_led1(bool val);
 void set_led2(bool val);
+void toggle_graph_trigger_pin();
 
 inline uint32_t stm_timestamp()
 {

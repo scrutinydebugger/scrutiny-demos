@@ -119,6 +119,9 @@ void init_io(void)
     IfxPort_setPinModeOutput(&BOARD_LED2_MODULE, BOARD_LED2_PIN, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
     IfxPort_setPinModeOutput(&BOARD_TASK_LOWFREQ_IO_MODULE, BOARD_TASK_LOWFREQ_IO_PIN, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
     IfxPort_setPinModeOutput(&BOARD_TASK_HIGHFREQ_IO_MODULE, BOARD_TASK_HIGHFREQ_IO_PIN, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+    IfxPort_setPinModeOutput(&BOARD_SCRUTINY_TRIGGER_MODULE, BOARD_SCRUTINY_TRIGGER_PIN, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+
+    IfxPort_setPinModeInput(&BOARD_BTN1_MODULE, BOARD_BTN1_PIN, IfxPort_InputMode_noPullDevice);
 }
 
 // ==== ASCLIN 0 ====
@@ -262,4 +265,9 @@ void set_led2(bool val)
     {
         IfxPort_setPinHigh(&BOARD_LED2_MODULE, BOARD_LED2_PIN);
     }
+}
+
+void toggle_graph_trigger_pin()
+{
+    IfxPort_togglePin(&BOARD_SCRUTINY_TRIGGER_MODULE, BOARD_SCRUTINY_TRIGGER_PIN);
 }

@@ -13,7 +13,6 @@ extern "C"
 #include "Ifx_Types.h"
 }
 
-// #include "board.hpp"
 #include "IfxStm.h"
 #include "board.hpp"
 #include "scrutiny.hpp"
@@ -30,54 +29,40 @@ static WaveFunctionGenerator low_freq_func_gen(WaveFunctionGenerator::WaveType::
 static WaveFunctionGenerator main_loop_func_gen(WaveFunctionGenerator::WaveType::SAWTOOTH, 10, 0);
 
 static volatile bool sync_all_wavegen = false;
+static volatile bool btn1_pressed;
 
+/// @brief Startup the CPU. Following Infineon examples to startup the core.
 void setup_cpu()
 {
     IfxCpu_enableInterrupts();
-    /*
-     * !!WATCHDOG0 AND SAFETY WATCHDOG ARE DISABLED HERE!!
-     * Enable the watchdog in the demo if it is required and also service the watchdog periodically
-     * */
+
     IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
     IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
 
-    /* Cpu sync event wait*/
-    IfxCpu_emitEvent(&cpuSyncEvent);
-    IfxCpu_waitEvent(&cpuSyncEvent, 1);
-
-    /* Wait for CPU sync event */
+    // Cpu sync event wait
     IfxCpu_emitEvent(&cpuSyncEvent);
     IfxCpu_waitEvent(&cpuSyncEvent, 1);
 }
 
-extern "C"
-#if !defined(IFX_CFG_SSW_RETURN_FROM_MAIN)
-    void
-    core0_main(void)
+extern "C" void core0_main(void)
 {
-#else
-    int
-    core0_main(void)
-{
-#endif
-    setup_cpu();
-    init_board();
+    setup_cpu();  // Boot the core
+    init_board(); // Configure peripherals
 
-    configure_scrutiny();
+    configure_scrutiny(); // Configure the Scrutiny Embedded lib
+
+    // enable 10KHz & 1KHz task with little home made task scheduler based on GPT12 timer interrupts
     TaskController::get_task_highfreq()->enable();
     TaskController::get_task_lowfreq()->enable();
 
     IfxCpu_enableInterrupts();
 
-    uint32_t last_timestamp = stm_timestamp();
+    uint32_t last_timestamp = stm_timestamp(); // Will use that timestamp to track time
+    sync_all_wavegen = true;
 
-    high_freq_func_gen.set_phase(0);
-    low_freq_func_gen.set_phase(0);
-    main_loop_func_gen.set_phase(0);
-
-    while (1)
+    while (true)
     {
-        uint32_t timestamp = stm_timestamp();
+        uint32_t const timestamp = stm_timestamp();
 
         // Overflow expected only if the task load is increased artificially by scrutiny
         bool const overflow = (TaskController::get_task_highfreq()->is_overflow() || TaskController::get_task_lowfreq()->is_overflow());
@@ -91,6 +76,10 @@ extern "C"
             sync_all_wavegen = false;
         }
 
+        // We could use this button to trigger a scrutiny graph
+        btn1_pressed = !IfxPort_getPinState(&BOARD_BTN1_MODULE, BOARD_BTN1_PIN); // Active low
+
+        // Measure the time increase and update Scrutiny and our demo wave generator
         uint32_t const timediff_100ns = stm_timestamp_diff_to_delta_100ns(timestamp - last_timestamp);
         last_timestamp = timestamp;
         task_idle_loop_handler.process(timediff_100ns);
@@ -99,10 +88,11 @@ extern "C"
     }
 }
 
+/// @brief Low frequency task (1KHz) with low priority controlled by interrupt with a minimalistic custom made task scheduler
 void user_task_lowfreq()
 {
-    // Runs at 1KHz
-    IfxPort_setPinHigh(&BOARD_TASK_LOWFREQ_IO_MODULE, BOARD_TASK_LOWFREQ_IO_PIN);
+    // Runs at 1KHz. Cannot interrupt the 10KHz task
+    IfxPort_setPinHigh(&BOARD_TASK_LOWFREQ_IO_MODULE, BOARD_TASK_LOWFREQ_IO_PIN); // Debug pin for logic analyzer
     static uint32_t last_timestamp = stm_timestamp();
     uint32_t const timestamp = stm_timestamp();
 
@@ -118,13 +108,14 @@ void user_task_lowfreq()
     low_freq_func_gen.update(static_cast<float>(timediff_100ns) * 1e-7f);
     last_timestamp = timestamp;
 
-    IfxPort_setPinLow(&BOARD_TASK_LOWFREQ_IO_MODULE, BOARD_TASK_LOWFREQ_IO_PIN);
+    IfxPort_setPinLow(&BOARD_TASK_LOWFREQ_IO_MODULE, BOARD_TASK_LOWFREQ_IO_PIN); // Debug pin for logic analyzer
 }
 
+/// @brief High frequency task (10KHz) with high priority controlled by interrupt with a minimalistic custom made task scheduler
 void user_task_highfreq()
 {
-    // Runs at 10KHz
-    IfxPort_setPinHigh(&BOARD_TASK_HIGHFREQ_IO_MODULE, BOARD_TASK_HIGHFREQ_IO_PIN);
+    // Runs at 10KHz. Can interrupt the 1KHz task
+    IfxPort_setPinHigh(&BOARD_TASK_HIGHFREQ_IO_MODULE, BOARD_TASK_HIGHFREQ_IO_PIN); // Debug pin for logic analyzer
     static uint32_t last_timestamp = stm_timestamp();
     uint32_t const timestamp = stm_timestamp();
 
@@ -140,5 +131,5 @@ void user_task_highfreq()
     task_highfreq_loop_handler.process(timediff_100ns);
     last_timestamp = timestamp;
 
-    IfxPort_setPinLow(&BOARD_TASK_HIGHFREQ_IO_MODULE, BOARD_TASK_HIGHFREQ_IO_PIN);
+    IfxPort_setPinLow(&BOARD_TASK_HIGHFREQ_IO_MODULE, BOARD_TASK_HIGHFREQ_IO_PIN); // Debug pin for logic analyzer
 }
