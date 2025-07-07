@@ -195,7 +195,7 @@ void init_asclin1(void)
     const IfxAsclin_Asc_Pins pins = {
         NULL_PTR,                              // CTS pin not used
         IfxPort_InputMode_pullUp,              // CTS pin pullup
-        &BOARD_ASCLIN1_SERIAL_PIN_RX,          // RX Pin
+        &NULL_PTR,                             // RX Pin not used
         IfxPort_InputMode_pullUp,              // RX pin pullup
         NULL_PTR,                              // RTS pin not used
         IfxPort_OutputMode_pushPull,           // RTS pin pushpull

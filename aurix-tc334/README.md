@@ -1,2 +1,0 @@
-
-kit_a2g_tc334_lite

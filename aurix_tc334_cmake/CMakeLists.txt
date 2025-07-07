@@ -24,7 +24,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(scrutiny-embedded)
 
 add_compile_options(
-    -g
+    -g   # Needed by scrutiny postbuilds
     -gdwarf-4
 )
 
