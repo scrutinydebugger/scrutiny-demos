@@ -33,6 +33,68 @@ scrutiny::LoopHandler *scrutiny_loops[] = {
     &task_highfreq_loop_handler,
 };
 
+/// @brief The callback invoked by scrutiny when the server wants to write a Runtime Published Value
+/// @param rpv The RPV defintions
+/// @param inval The value received from the server
+/// @param caller The handler that called the callback. nullptr means MainHandler (watch window), otherwise we get the Loop Handler (graph + sampling
+/// rate)
+/// @return true on success, false on failure
+bool rpv_write_callback(const scrutiny::RuntimePublishedValue rpv, const scrutiny::AnyType *inval, scrutiny::LoopHandler *const caller)
+{
+    static uint32_t some_counter = 0;
+    if (rpv.id == 0x1000 && rpv.type == scrutiny::VariableType::uint32)
+    {
+        some_counter += inval->uint32;
+    }
+    else
+    {
+        return false; // failure
+    }
+    return true; // success
+}
+
+/// @brief The callback invoked by scrutiny when the server wants to read a Runtime Published Value
+/// @param rpv The RPV defintions
+/// @param outval The value point that will reach the server
+/// @param caller The handler that called the callback. nullptr means MainHandler (watch window), otherwise we get the Loop Handler (graph + sampling
+/// rate)
+/// @return true on success, false on failure
+bool rpv_read_callback(scrutiny::RuntimePublishedValue rpv, scrutiny::AnyType *outval, scrutiny::LoopHandler *const caller)
+{
+    if (rpv.id == 0x1000 && rpv.type == scrutiny::VariableType::uint32)
+    {
+        // We can take action based on what time domain is reading an RPV.
+        // This little toy demo will show different values if read in a watch window,
+        // or read in a graph and will depend on the sampling rate selected.
+        // A real use case could be to avoid accessing a critical section depending on time domain (avoid race conditions).
+        if (caller == nullptr)
+        {
+            outval->uint32 = 1000;
+        }
+        else if (caller == &task_idle_loop_handler)
+        {
+            outval->uint32 = 2000;
+        }
+        else if (caller == &task_lowfreq_loop_handler)
+        {
+            outval->uint32 = 3000;
+        }
+        else if (caller == &task_highfreq_loop_handler)
+        {
+            outval->uint32 = 4000;
+        }
+    }
+    else
+    {
+        return false; // failure
+    }
+    return true; // success
+}
+
+scrutiny::RuntimePublishedValue rpvs[] = {
+    { 0x1000, scrutiny::VariableType::uint32 },
+};
+
 static scrutiny::Config config;
 static scrutiny::MainHandler main_handler;
 
@@ -49,6 +111,7 @@ void configure_scrutiny()
     config.set_datalogging_buffers(scrutiny_datalogging_buffer, sizeof(scrutiny_datalogging_buffer));
     config.set_loops(scrutiny_loops, sizeof(scrutiny_loops) / sizeof(scrutiny_loops[0]));
     config.set_datalogging_trigger_callback(toggle_graph_trigger_pin);
+    config.set_published_values(rpvs, sizeof(rpvs) / sizeof(rpvs[0]), rpv_read_callback, rpv_write_callback);
 
     main_handler.init(&config);
 }

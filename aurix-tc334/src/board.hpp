@@ -14,7 +14,7 @@ extern "C"
 #include "IfxAsclin_Asc.h"
 }
 
-#include <stdint.h>
+#include <cstdint>
 
 #define BOARD_ASCLIN0_SERIAL_PIN_RX IfxAsclin0_RXA_P14_1_IN
 #define BOARD_ASCLIN0_SERIAL_PIN_TX IfxAsclin0_TX_P14_0_OUT
