@@ -51,8 +51,8 @@ The prebuilt binary (ready to be flashed) & the Scrutiny Firmware File (.sfd) to
 
 The task scheduling is done using the GPT12 module. 
 
-- GPT12.T2 interrupt scehdule the 10KHz loop. 
-- GPT12.T4 schedule the 1KHz loop. 
+- GPT12.T3 interrupt scehdule the 10KHz loop. (T2 used as reload register)
+- GPT12.T6 schedule the 1KHz loop. 
 
 The 10KHz can interrupt the 1KHz and idle loop. The 1KHz task **cannot** interrupt the 10KHz task, but can interrupt the idle loop.
 
@@ -85,3 +85,43 @@ A single RPV is defined. We showcase that any custom logic can be done in the RP
 
 A datalogging trigger callback toggles a pin when the embedded graph trigger event is fired. This can be useful to synchronize a hardware scope with the software acquisition. 
 
+## Graphs and triggers
+
+In this demo, scrutiny is configured to toggle the pin P00.8 ( Header X2 - Pin 9) when the datalogger trigger is fired.
+
+```c++
+    config.set_datalogging_trigger_callback(toggle_graph_trigger_pin);
+```
+
+In the following screen capture, we see a trigger fired when Button1 is pressed for 100ms. To achieve this, the suer needs to drag the variable that reads the button state into the trigger condition field of the Embedded Graph configuration window and set a hold time of 100ms.
+
+Note that the button is active low.
+
+![Graph Trigger](images/graph-hold-time.png)
+
+## Sampling rates
+
+In this demo, we have 3 tasks:
+
+ - 10 Khz High Priority
+ - 1Khz Low Priority
+ - Idle Loop
+
+ Each fo these task has an instance of a LoopHandler, enabling the datalogger to sample the memory at the given rate.
+
+ To demonstrate how sampling rates affect datalogging, each of these loops runs a wave generator code where the output of the wave. The parameters of the wave generator are configurable through scrutiny.
+
+ ![Wave Generators](images/wave-gen-config.png)
+
+ In the following graph, we see the 3 sine waves sampled from the 10kHz task. They have been synchronized prior to the acquisitions
+
+  ![Graph 10kHz](images/graph-10khz.png)
+  ![Graph 10kHz](images/graph-10khz-zoom.png)
+
+  We can make the following observations
+
+  1. The 1KHz signal has a staircase shape because it is updated 10x slower than the sampling frequency
+  2. The main loop is not in phase because the execution period is not stable since it is not driven by a hardware timer
+  3. We can see little artifacts in the main loop signal, essentially little steps when the cpu load increase causing a step in time for the low priority main loop
+
+  

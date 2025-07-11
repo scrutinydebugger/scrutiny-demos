@@ -65,6 +65,7 @@ scrutiny_postbuild(${PROJECT_NAME}
     ALIAS_FILES
         aliases/wavegen_alias.json
         aliases/io.json
+        aliases/tasks.json
     CU_IGNORE_PATTERNS 
         */ignored_file.cpp      # We can skip one or many files to parse with a list of glob expression
     PATH_IGNORE_PATTERNS 

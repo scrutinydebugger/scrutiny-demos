@@ -14,6 +14,10 @@
     "WaveGen/HF Wave Generator/Frequency": {
         "target": "/static/main.cpp/high_freq_func_gen/frequency"
     },
+    "WaveGen/HF Wave Generator/Phase shift": {
+        "target": "/static/main.cpp/high_freq_func_gen/phase_shift"
+    },
+
     "WaveGen/LF Wave Generator/Wave Shape": {
         "target": "/static/main.cpp/low_freq_func_gen/wave_type"
     },
@@ -29,6 +33,10 @@
     "WaveGen/LF Wave Generator/Frequency": {
         "target": "/static/main.cpp/low_freq_func_gen/frequency"
     },
+    "WaveGen/LF Wave Generator/Phase Shift": {
+        "target": "/static/main.cpp/low_freq_func_gen/phase_shift"
+    },
+
     "WaveGen/Main Wave Generator/Wave Shape": {
         "target": "/static/main.cpp/main_loop_func_gen/wave_type"
     },
@@ -43,6 +51,9 @@
     },
     "WaveGen/Main Wave Generator/Frequency": {
         "target": "/static/main.cpp/main_loop_func_gen/frequency"
+    },
+    "WaveGen/Main Wave Generator/Phase Shift": {
+        "target": "/static/main.cpp/main_loop_func_gen/phase_shift"
     },
     "WaveGen/Sync": {
         "target": "/static/main.cpp/sync_all_wavegen"
