@@ -41,6 +41,7 @@ scrutiny::LoopHandler *scrutiny_loops[] = {
 /// @return true on success, false on failure
 bool rpv_write_callback(const scrutiny::RuntimePublishedValue rpv, const scrutiny::AnyType *inval, scrutiny::LoopHandler *const caller)
 {
+    static_cast<void>(caller);
     static uint32_t some_counter = 0;
     if (rpv.id == 0x1000 && rpv.type == scrutiny::VariableType::uint32)
     {

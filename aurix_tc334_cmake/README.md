@@ -75,3 +75,13 @@ The graph below shows what happens when these changes are made :
 
 If a load is increased at the point where a new interrupt is fired before the previous has finished executing, an overrun condition is triggered. In that situation, the task is disabled and LED1 is turned on.
 
+## Scrutiny integration
+
+To keep track of time, this demo uses the STM module (System Timer) configured to run at 20MHz (2 ticks = 100ns).
+
+The scrutiny buffers are purposely sized to match the size of the UART FIFOs. Doing so avoid the complexity handling full FIFOs conditions. Let's remember that the Scrutiny embedded protocol is a command based half-duplex protocol. No new data is sent until the response is fully received.
+
+A single RPV is defined. We showcase that any custom logic can be done in the RPV read/write callback. Writing does not write the same value that is read. Also the value read will change based on the task that reads it (1KHz loop doesn't see the same value as the 10KHz loop).
+
+A datalogging trigger callback toggles a pin when the embedded graph trigger event is fired. This can be useful to synchronize a hardware scope with the software acquisition. 
+

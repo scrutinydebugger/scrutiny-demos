@@ -23,6 +23,7 @@ class WaveFunctionGenerator
     WaveType wave_type;
     float frequency;
     float offset;
+    float phase_shift;
     bool enabled;
 
     WaveFunctionGenerator(WaveType type, float frequency, float offset);

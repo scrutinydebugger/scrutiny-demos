@@ -36,19 +36,25 @@ void WaveFunctionGenerator::update(float const time_delta)
         m_phase -= std::floor(m_phase / _2pi) * _2pi;
     }
 
+    float effective_phase = m_phase + phase_shift;
+    if (effective_phase >= _2pi)
+    {
+        effective_phase -= std::floor(effective_phase / _2pi) * _2pi;
+    }
+
     switch (wave_type)
     {
     case WaveType::SINE:
-        m_output = std::sin(m_phase);
+        m_output = std::sin(effective_phase);
         break;
     case WaveType::SQUARE:
-        m_output = (m_phase < M_PI) ? -1 : 1;
+        m_output = (effective_phase < M_PI) ? -1 : 1;
         break;
     case WaveType::TRIANGLE:
-        m_output = (m_phase < M_PI) ? m_phase * 2 / M_PI - 1 : -2 / M_PI * m_phase + 3;
+        m_output = (effective_phase < M_PI) ? effective_phase * 2 / M_PI - 1 : -2 / M_PI * effective_phase + 3;
         break;
     case WaveType::SAWTOOTH:
-        m_output = m_phase / M_PI - 1;
+        m_output = effective_phase / M_PI - 1;
         break;
     default:
         m_output = 0;

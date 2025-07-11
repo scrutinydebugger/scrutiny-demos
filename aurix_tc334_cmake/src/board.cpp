@@ -32,11 +32,8 @@ IFX_INTERRUPT(interrupt_asclin0_tx, 0, BOARD_ISR_PRIORITY_ASCLIN0_TX);
 IFX_INTERRUPT(interrupt_asclin0_rx, 0, BOARD_ISR_PRIORITY_ASCLIN0_RX);
 IFX_INTERRUPT(interrupt_asclin1_tx, 0, BOARD_ISR_PRIORITY_ASCLIN1_TX);
 IFX_INTERRUPT(interrupt_asclin1_rx, 0, BOARD_ISR_PRIORITY_ASCLIN1_RX);
-IFX_INTERRUPT(interrupt_gpt12_T2, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
-IFX_INTERRUPT(interrupt_gpt12_T4, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
-
-static constexpr uint16_t TIMER2_VAL = 2500;
-static constexpr uint16_t TIMER4_VAL = 6250;
+IFX_INTERRUPT(interrupt_gpt12_T3, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
+IFX_INTERRUPT(interrupt_gpt12_T6, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
 
 void interrupt_asclin0_tx(void)
 {
@@ -67,11 +64,10 @@ void init_asclin1(void);
 void init_gpt12(void);
 void init_stm(void);
 
-void interrupt_gpt12_T2(void)
+void interrupt_gpt12_T3(void)
 {
-    IfxGpt12_T2_setTimerValue(&MODULE_GPT120, TIMER2_VAL);
     TaskController::Task *const task = TaskController::get_task_highfreq();
-    volatile Ifx_SRC_SRCR *src = IfxGpt12_T2_getSrc(&MODULE_GPT120);
+    volatile Ifx_SRC_SRCR *src = IfxGpt12_T3_getSrc(&MODULE_GPT120);
     if (src->B.IOV)
     {
         task->triger_overflow();
@@ -84,9 +80,8 @@ void interrupt_gpt12_T2(void)
     }
 }
 
-void interrupt_gpt12_T4(void)
+void interrupt_gpt12_T6(void)
 {
-    IfxGpt12_T4_setTimerValue(&MODULE_GPT120, TIMER4_VAL);
     TaskController::Task *const task = TaskController::get_task_lowfreq();
     volatile Ifx_SRC_SRCR *src = IfxGpt12_T4_getSrc(&MODULE_GPT120);
     if (src->B.IOV)
@@ -195,7 +190,7 @@ void init_asclin1(void)
     const IfxAsclin_Asc_Pins pins = {
         NULL_PTR,                              // CTS pin not used
         IfxPort_InputMode_pullUp,              // CTS pin pullup
-        &NULL_PTR,                             // RX Pin not used
+        NULL_PTR,                              // RX Pin not used
         IfxPort_InputMode_pullUp,              // RX pin pullup
         NULL_PTR,                              // RTS pin not used
         IfxPort_OutputMode_pushPull,           // RTS pin pushpull
@@ -214,29 +209,41 @@ void init_gpt12(void)
     IfxGpt12_enableModule(&MODULE_GPT120);
     IfxGpt12_setGpt1BlockPrescaler(&MODULE_GPT120, IfxGpt12_Gpt1BlockPrescaler_4); // Prescaler for T2, T3, T4
 
-    // Timer T2 - Task 10KHz : 100e6/4/1/2500 = 10000
-    IfxGpt12_T2_setMode(&MODULE_GPT120, IfxGpt12_Mode_timer);
-    IfxGpt12_T2_setTimerDirection(&MODULE_GPT120, IfxGpt12_TimerDirection_down);
-    IfxGpt12_T2_setTimerPrescaler(&MODULE_GPT120, IfxGpt12_TimerInputPrescaler_1); // Prescaler for T2 only
-    IfxGpt12_T2_setTimerValue(&MODULE_GPT120, TIMER2_VAL);
+    constexpr uint16_t TIMER3_VAL = 2500;
+    constexpr uint16_t TIMER6_VAL = 6250;
 
-    // Timer T4 - Task 1KHz : 100e6/4/4/6250 = 1000
-    IfxGpt12_T4_setMode(&MODULE_GPT120, IfxGpt12_Mode_timer);
-    IfxGpt12_T4_setTimerDirection(&MODULE_GPT120, IfxGpt12_TimerDirection_down);
-    IfxGpt12_T4_setTimerPrescaler(&MODULE_GPT120, IfxGpt12_TimerInputPrescaler_4); // Prescaler for T4 only
-    IfxGpt12_T4_setTimerValue(&MODULE_GPT120, TIMER4_VAL);
+    // Timer T3 - Task 10KHz : 100e6/4/1/2500 = 10000
+    IfxGpt12_T3_setMode(&MODULE_GPT120, IfxGpt12_Mode_timer);
+    IfxGpt12_T3_setTimerDirection(&MODULE_GPT120, IfxGpt12_TimerDirection_down);
+    IfxGpt12_T3_setTimerPrescaler(&MODULE_GPT120, IfxGpt12_TimerInputPrescaler_1); // Prescaler for T3 only
+    IfxGpt12_T3_setTimerValue(&MODULE_GPT120, TIMER3_VAL);                         // Set at start
+
+    // Timer T2 is not counting. it simply store the reload value of T3
+    IfxGpt12_T2_setMode(&MODULE_GPT120, IfxGpt12_Mode_reload);
+    IfxGpt12_T2_setReloadInputMode(&MODULE_GPT120, IfxGpt12_ReloadInputMode_bothEdgesTxOTL);
+    IfxGpt12_T2_setTimerValue(&MODULE_GPT120, TIMER3_VAL);
+
+    // Timer T6 - Task 10KHz : 100e6/16/1/6250 = 1000
+    IfxGpt12_setGpt2BlockPrescaler(&MODULE_GPT120, IfxGpt12_Gpt2BlockPrescaler_16);
+    IfxGpt12_T6_setMode(&MODULE_GPT120, IfxGpt12_Mode_timer);
+    IfxGpt12_T6_setTimerDirection(&MODULE_GPT120, IfxGpt12_TimerDirection_down);
+    IfxGpt12_T6_setReloadMode(&MODULE_GPT120, IfxGpt12_TimerReloadMode_enable); // will use CAPREL on  underflow
+    IfxGpt12_T6_setTimerPrescaler(&MODULE_GPT120, IfxGpt12_TimerInputPrescaler_1);
+    IfxGpt12_T6_setTimerValue(&MODULE_GPT120, TIMER6_VAL);
+
+    IfxGpt12_setCaptureReload(&MODULE_GPT120, TIMER6_VAL); // Value reloaded by T6 on underflow
 
     // Initialize the interrupt
-    volatile Ifx_SRC_SRCR *t2_src = IfxGpt12_T2_getSrc(&MODULE_GPT120);
-    IfxSrc_init(t2_src, IfxCpu_Irq_getTos(IfxCpu_getCoreIndex()), BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
-    IfxSrc_enable(t2_src);
+    volatile Ifx_SRC_SRCR *t3_src = IfxGpt12_T3_getSrc(&MODULE_GPT120);
+    IfxSrc_init(t3_src, IfxCpu_Irq_getTos(IfxCpu_getCoreIndex()), BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
+    IfxSrc_enable(t3_src);
 
-    volatile Ifx_SRC_SRCR *t4_src = IfxGpt12_T4_getSrc(&MODULE_GPT120);
-    IfxSrc_init(t4_src, IfxCpu_Irq_getTos(IfxCpu_getCoreIndex()), BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
-    IfxSrc_enable(t4_src);
+    volatile Ifx_SRC_SRCR *t6_src = IfxGpt12_T6_getSrc(&MODULE_GPT120);
+    IfxSrc_init(t6_src, IfxSrc_Tos_cpu0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
+    IfxSrc_enable(t6_src);
 
-    IfxGpt12_T2_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
-    IfxGpt12_T4_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
+    IfxGpt12_T3_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
+    IfxGpt12_T6_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
 }
 
 void init_stm(void)
