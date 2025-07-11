@@ -17,6 +17,7 @@ set(CMAKE_C_COMPILER avr-gcc CACHE FILEPATH "Path to avr-gcc" FORCE)
 set(CMAKE_CXX_COMPILER avr-g++ CACHE FILEPATH "Path to avr-g++" FORCE)
 set(CMAKE_OBJCOPY avr-objcopy CACHE FILEPATH "Path to avr-objcopy" FORCE)
 set(CMAKE_SIZE avr-size CACHE FILEPATH "Path to avr-size" FORCE)
+set(CMAKE_CPPFILT avr-c++filt CACHE FILEPATH "Path to avr-c++filt" FORCE)
 set(ARDUINO_AVRDUDE avrdude CACHE FILEPATH "Path to avrdude" FORCE)
 
 # Only look libraries etc. in the sysroot, but never look there for programs
