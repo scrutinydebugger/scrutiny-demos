@@ -1,0 +1,8 @@
+{
+    "Task/Low Freq Load": {
+        "target": "/static/main.cpp/user_task_lowfreq()/lowfreq_load"
+    },
+    "Task/High Freq Load": {
+        "target": "/static/main.cpp/user_task_highfreq()/highfreq_load"
+    }
+}

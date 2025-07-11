@@ -1,0 +1,5 @@
+{
+    "Inputs/Button1": {
+        "target": "/static/main.cpp/btn1_pressed"
+    }
+}

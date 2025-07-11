@@ -1,0 +1,61 @@
+{
+    "WaveGen/HF Wave Generator/Wave Shape": {
+        "target": "/static/main.cpp/high_freq_func_gen/wave_type"
+    },
+    "WaveGen/HF Wave Generator/Output": {
+        "target": "/static/main.cpp/high_freq_func_gen/m_output"
+    },
+    "WaveGen/HF Wave Generator/Enabled": {
+        "target": "/static/main.cpp/high_freq_func_gen/enabled"
+    },
+    "WaveGen/HF Wave Generator/Offset": {
+        "target": "/static/main.cpp/high_freq_func_gen/offset"
+    },
+    "WaveGen/HF Wave Generator/Frequency": {
+        "target": "/static/main.cpp/high_freq_func_gen/frequency"
+    },
+    "WaveGen/HF Wave Generator/Phase shift": {
+        "target": "/static/main.cpp/high_freq_func_gen/phase_shift"
+    },
+
+    "WaveGen/LF Wave Generator/Wave Shape": {
+        "target": "/static/main.cpp/low_freq_func_gen/wave_type"
+    },
+    "WaveGen/LF Wave Generator/Output": {
+        "target": "/static/main.cpp/low_freq_func_gen/m_output"
+    },
+    "WaveGen/LF Wave Generator/Enabled": {
+        "target": "/static/main.cpp/low_freq_func_gen/enabled"
+    },
+    "WaveGen/LF Wave Generator/Offset": {
+        "target": "/static/main.cpp/low_freq_func_gen/offset"
+    },
+    "WaveGen/LF Wave Generator/Frequency": {
+        "target": "/static/main.cpp/low_freq_func_gen/frequency"
+    },
+    "WaveGen/LF Wave Generator/Phase Shift": {
+        "target": "/static/main.cpp/low_freq_func_gen/phase_shift"
+    },
+
+    "WaveGen/Main Wave Generator/Wave Shape": {
+        "target": "/static/main.cpp/main_loop_func_gen/wave_type"
+    },
+    "WaveGen/Main Wave Generator/Output": {
+        "target": "/static/main.cpp/main_loop_func_gen/m_output"
+    },
+    "WaveGen/Main Wave Generator/Enabled": {
+        "target": "/static/main.cpp/main_loop_func_gen/enabled"
+    },
+    "WaveGen/Main Wave Generator/Offset": {
+        "target": "/static/main.cpp/main_loop_func_gen/offset"
+    },
+    "WaveGen/Main Wave Generator/Frequency": {
+        "target": "/static/main.cpp/main_loop_func_gen/frequency"
+    },
+    "WaveGen/Main Wave Generator/Phase Shift": {
+        "target": "/static/main.cpp/main_loop_func_gen/phase_shift"
+    },
+    "WaveGen/Sync": {
+        "target": "/static/main.cpp/sync_all_wavegen"
+    }
+}
