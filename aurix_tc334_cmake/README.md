@@ -1,7 +1,7 @@
 
 # Aurix TC334 (CMake) Demo
 
-This project is a demonstration of the integration of Scrutiny on a Infineon Aurix TC334 microcontroller. The project uses CMake and builds with ``tricore-elf-gcc`` provided with AURIX Development Studio. This demo runs a minimalistic task scheduler with 3 premptive tasks 
+This project is a demonstration of the integration of Scrutiny on a Infineon Aurix TC334 microcontroller. The project uses CMake and builds with ``tricore-elf-gcc`` provided with AURIX Development Studio. This demo runs a minimalistic task scheduler with 3 preemptive tasks 
  
  - 10 Khz High Priority
  - 1Khz Low Priority
@@ -120,8 +120,10 @@ In this demo, we have 3 tasks:
 
   We can make the following observations
 
-  1. The 1KHz signal has a staircase shape because it is updated 10x slower than the sampling frequency
+  1. The 1KHz signal has a staircase shape because it is updated at a rate 10x slower than the sampling frequency
   2. The main loop is not in phase because the execution period is not stable since it is not driven by a hardware timer
   3. We can see little artifacts in the main loop signal, essentially little steps when the cpu load increase causing a step in time for the low priority main loop
 
-  
+## Notes
+
+- The update rate and graph download speed are slow. There are delays coming from the Infineon DAS virtual COM port that cause a ~60ms latency between each device response. This does not happen on a real COM port or a FT232 driver.
