@@ -22,7 +22,8 @@ scrutiny::LoopHandler *scrutiny_loops[] = {
     &task_20hz_loop_handler,
 };
 
-bool rpv_write_callback(const scrutiny::RuntimePublishedValue rpv, const scrutiny::AnyType *inval){
+bool rpv_write_callback(const scrutiny::RuntimePublishedValue rpv, const scrutiny::AnyType *inval, scrutiny::LoopHandler* caller){
+    static_cast<void>(caller);
     static uint32_t some_counter=0;
     if (rpv.id == 0x1000 && rpv.type == scrutiny::VariableType::uint32){
         some_counter += inval->uint32;
@@ -32,7 +33,8 @@ bool rpv_write_callback(const scrutiny::RuntimePublishedValue rpv, const scrutin
     return true;    // success
 }
 
-bool rpv_read_callback(scrutiny::RuntimePublishedValue rpv, scrutiny::AnyType *outval){
+bool rpv_read_callback(scrutiny::RuntimePublishedValue rpv, scrutiny::AnyType *outval, scrutiny::LoopHandler* caller){
+    static_cast<void>(caller);
     if (rpv.id == 0x1000 && rpv.type == scrutiny::VariableType::uint32){
         outval->uint32 = 0x12345678;
     } else {
