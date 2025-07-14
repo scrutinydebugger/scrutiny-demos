@@ -51,25 +51,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 # Scrutiny postbuild tools. Create a new .elf with the firmware ID injected + Create the .sfd file
-set(ALIAS_DIR ${CMAKE_CURRENT_LIST_DIR}/aliases)
-set(WORKDIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_sfd)
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    BYPRODUCTS ${PROJECT_NAME}.sfd  ${PROJECT_NAME}.elf
-    DEPENDS ${ALIAS_DIR}/alias1.json    # FIXME : This dependency does nothing
-    COMMAND ${CMAKE_COMMAND} -E rm -rf ${WORKDIR}   # add_alias appends to workfolder. We want a new empty one.
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKDIR}
-    COMMAND scrutiny elf2varmap $<TARGET_FILE:${PROJECT_NAME}> --output ${WORKDIR} --loglevel error
-    COMMAND scrutiny get-firmware-id $<TARGET_FILE:${PROJECT_NAME}> --output ${WORKDIR} 
-    COMMAND scrutiny tag-firmware-id $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.elf
-    COMMAND scrutiny make-metadata --output ${WORKDIR} 
-        --project-name "${PROJECT_NAME}"
-        --version "1.0.0" 
-        --author "Pier-Yves Lessard"
-    COMMAND scrutiny add-alias ${WORKDIR} --file ${ALIAS_DIR}/alias1.json
-    COMMAND scrutiny make-sfd ${WORKDIR} ${PROJECT_NAME}.sfd
-    COMMAND ${CMAKE_OBJCOPY} --strip-debug ${PROJECT_NAME}.elf  # Once we have the SFD, we can strip the debug symbols.
-)
-
 scrutiny_postbuild(${PROJECT_NAME} 
     TAGGED_EXECUTABLE_TARGET_VAR TAGGED_BIN_TARGET
     METADATA_PROJECT_NAME "Atmega 2560 Demo"
