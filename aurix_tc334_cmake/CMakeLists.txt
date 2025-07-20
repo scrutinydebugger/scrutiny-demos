@@ -19,7 +19,7 @@ set(SCRUTINY_BUILD_CWRAPPER 0)
 FetchContent_Declare(
   scrutiny-embedded
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        master
+  GIT_TAG        v0.3.1
 )
 FetchContent_MakeAvailable(scrutiny-embedded)
 
@@ -57,6 +57,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map=${CMAKE_RUN
 
 scrutiny_postbuild(${PROJECT_NAME} 
     TAGGED_EXECUTABLE_TARGET_VAR TAGGED_BIN_TARGET
+    TAGGED_EXECUTABLE_PATH_VAR TAGGED_BIN_FILE
     INSTALL_SFD
     
     METADATA_PROJECT_NAME "Aurix Demo"
@@ -75,27 +76,26 @@ scrutiny_postbuild(${PROJECT_NAME}
 
 )
 
-get_target_property(TAGGED_BIN_FILE ${TAGGED_BIN_TARGET} TARGET_FILE)
-get_filename_component(TAGGED_BIN_FILE_BASENAME ${TAGGED_BIN_FILE} NAME_WE)   # Name Without Extension
+get_filename_component(TAGGED_BINARY_BASENAME_WE ${TAGGED_BIN_FILE} NAME_WE)
 
 # Post builds 
 # Produce the .hex
 add_custom_command(TARGET ${TAGGED_BIN_TARGET}  POST_BUILD
      DEPENDS ${TAGGED_BIN_FILE}
-     BYPRODUCTS ${TAGGED_BIN_FILE_BASENAME}.hex
+     BYPRODUCTS ${TAGGED_BINARY_BASENAME_WE}.hex
      VERBATIM 
      COMMAND ${CMAKE_OBJCOPY} ARGS 
         -O ihex
         "${TAGGED_BIN_FILE}"
-        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TAGGED_BIN_FILE_BASENAME}.hex"
+        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TAGGED_BINARY_BASENAME_WE}.hex"
      )
 
 # Produce the .lst
 add_custom_command(TARGET ${TAGGED_BIN_TARGET}  POST_BUILD
      DEPENDS ${TAGGED_BIN_FILE}
-     BYPRODUCTS ${TAGGED_BIN_FILE_BASENAME}.lst
+     BYPRODUCTS ${TAGGED_BINARY_BASENAME_WE}.lst
      VERBATIM 
      COMMAND ${CMAKE_OBJDUMP} ARGS
         -h -S 
-        "${TAGGED_BIN_FILE}" > "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TAGGED_BIN_FILE_BASENAME}.lst"
+        "${TAGGED_BIN_FILE}" > "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TAGGED_BINARY_BASENAME_WE}.lst"
      )
