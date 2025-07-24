@@ -32,6 +32,9 @@ uint8 g_asclin0_rx_buffer[BOARD_ASCLIN0_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 uint8 g_asclin1_tx_buffer[BOARD_ASCLIN1_TX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 uint8 g_asclin1_rx_buffer[BOARD_ASCLIN1_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 
+uint8 s_can0_rx_buffer[BOARD_CAN0_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
+Ifx_Fifo* g_can0_rx_fifo = nullptr;
+
 IFX_INTERRUPT(interrupt_asclin0_tx, 0, BOARD_ISR_PRIORITY_ASCLIN0_TX);
 IFX_INTERRUPT(interrupt_asclin0_rx, 0, BOARD_ISR_PRIORITY_ASCLIN0_RX);
 IFX_INTERRUPT(interrupt_asclin1_tx, 0, BOARD_ISR_PRIORITY_ASCLIN1_TX);
@@ -65,12 +68,49 @@ void interrupt_can_tx(void)
 {
     set_led1(true);
     IfxCan_Node_clearInterruptFlag(g_can_node0.node, IfxCan_Interrupt_transmissionCompleted);
+    
 }
 
 void interrupt_can_rx(void)
 {
-    set_led2(true);
-    IfxCan_Node_clearInterruptFlag(g_can_node0.node, IfxCan_Interrupt_messageStoredToDedicatedRxBuffer);
+    static int interrupt_count=0;
+    interrupt_count++;
+    static IfxCan_Message msg;
+    static uint32_t buff[64/4];
+    IfxCan_Node_clearInterruptFlag(g_can_node0.node, IfxCan_Interrupt_rxFifo0NewMessage);
+    msg.readFromRxFifo0 = TRUE;
+    
+    IfxPort_togglePin(&BOARD_LED2_MODULE, BOARD_LED2_PIN);
+    IfxCan_Can_readMessage(&g_can_node0, &msg, buff);
+    
+    Ifx_SizeT nb_bytes = 0;
+    if (msg.dataLengthCode <= 8){
+        nb_bytes = msg.dataLengthCode;
+    }
+    else if (msg.dataLengthCode == IfxCan_DataLengthCode_12){
+        nb_bytes = 12;
+    }
+    else if (msg.dataLengthCode == IfxCan_DataLengthCode_16){
+        nb_bytes = 16;
+    }
+    else if (msg.dataLengthCode == IfxCan_DataLengthCode_20){
+        nb_bytes = 20;
+    }
+    else if (msg.dataLengthCode == IfxCan_DataLengthCode_24){
+        nb_bytes = 24;
+    }
+    else if (msg.dataLengthCode == IfxCan_DataLengthCode_32){
+        nb_bytes = 32;
+    }
+    else if (msg.dataLengthCode == IfxCan_DataLengthCode_48){
+        nb_bytes = 48;
+    }
+    else if (msg.dataLengthCode == IfxCan_DataLengthCode_64){
+        nb_bytes = 64;
+    }
+    
+    Ifx_Fifo_write(g_can0_rx_fifo, buff, nb_bytes, TIME_INFINITE );
+    set_led2(false);
 }
 
 
@@ -274,6 +314,7 @@ void init_gpt12(void)
 
 void init_stm(void)
 {
+    // We use this timer as a time reference for updating scrutiny
     IfxScuCcu_setStmFrequency(STM_TARGET_FREQUENCY);
 }
 
@@ -303,11 +344,13 @@ void set_led2(bool val)
 
 void toggle_graph_trigger_pin()
 {
+    // Trigger a pin when the scrutiny datalogger trigger condition is met for the required hold time
     IfxPort_togglePin(&BOARD_SCRUTINY_TRIGGER_MODULE, BOARD_SCRUTINY_TRIGGER_PIN);
 }
 
 void toggle_time_ref_pin()
 {
+    // Trigger a pin periodically to validate the time reference with a logic analyzer
     IfxPort_togglePin(&BOARD_TIME_REF_MODULE, BOARD_TIME_REF_PIN);
 }
 
@@ -318,6 +361,8 @@ void init_mcmcan(void)
     static IfxCan_Can_NodeConfig canNodeConfig;
     static volatile bool configure_status;
 
+    g_can0_rx_fifo = Ifx_Fifo_init(s_can0_rx_buffer, BOARD_CAN0_RX_BUFFER_SIZE, 1);
+
     IfxCan_Can_initModuleConfig(&canConfig, &MODULE_CAN0);
     IfxCan_Can_initModule(&g_mcmcan0, &canConfig);
 
@@ -325,14 +370,20 @@ void init_mcmcan(void)
 
     canNodeConfig.nodeId = IfxCan_NodeId_0;
     canNodeConfig.frame.type = IfxCan_FrameType_transmitAndReceive;
-    canNodeConfig.interruptConfig.messageStoredToDedicatedRxBufferEnabled = TRUE;
+    canNodeConfig.rxConfig.rxMode = IfxCan_RxMode_fifo0;
+    canNodeConfig.rxConfig.rxFifo0DataFieldSize = IfxCan_DataFieldSize_64;
+    canNodeConfig.rxConfig.rxFifo0OperatingMode = IfxCan_RxFifoMode_overwrite;
+    canNodeConfig.rxConfig.rxFifo0Size = 64;
+    
+
+    canNodeConfig.interruptConfig.rxFifo0NewMessageEnabled = TRUE;
     canNodeConfig.interruptConfig.transmissionCompletedEnabled = TRUE;
     canNodeConfig.interruptConfig.traco.priority = BOARD_ISR_PRIORITY_CAN_TX;
     canNodeConfig.interruptConfig.traco.interruptLine = IfxCan_InterruptLine_0;
     canNodeConfig.interruptConfig.traco.typeOfService = IfxSrc_Tos_cpu0;
-    canNodeConfig.interruptConfig.reint.priority = BOARD_ISR_PRIORITY_CAN_RX;
-    canNodeConfig.interruptConfig.reint.interruptLine = IfxCan_InterruptLine_1;
-    canNodeConfig.interruptConfig.reint.typeOfService = IfxSrc_Tos_cpu0;
+    canNodeConfig.interruptConfig.rxf0n.priority = BOARD_ISR_PRIORITY_CAN_RX;
+    canNodeConfig.interruptConfig.rxf0n.interruptLine = IfxCan_InterruptLine_1;
+    canNodeConfig.interruptConfig.rxf0n.typeOfService = IfxSrc_Tos_cpu0;
 
     canNodeConfig.baudRate.baudrate = 500000;
     canNodeConfig.fastBaudRate.baudrate = 500000;

@@ -61,6 +61,8 @@ extern "C"
 #define BOARD_ASCLIN1_TX_BUFFER_SIZE 256
 #define BOARD_ASCLIN1_RX_BUFFER_SIZE 128
 
+#define BOARD_CAN0_RX_BUFFER_SIZE 128
+
 #define BOARD_ASCLIN1_SERIAL_PIN_TX IfxAsclin1_TX_P15_1_OUT
 
 #define BOARD_CAN00_TXD_PIN               IfxCan_TXD00_P20_8_OUT
@@ -70,6 +72,7 @@ extern IfxAsclin_Asc g_asclin0;
 extern IfxAsclin_Asc g_asclin1;
 extern IfxCan_Can    g_mcmcan0;
 extern IfxCan_Can_Node g_can_node0; 
+extern Ifx_Fifo* g_can0_rx_fifo;
 
 void init_board();
 

@@ -44,6 +44,8 @@ void setup_cpu()
     IfxCpu_waitEvent(&cpuSyncEvent, 1);
 }
 
+Ifx_SizeT fifo_size = 0;
+
 extern "C" void core0_main(void)
 {
     setup_cpu();  // Boot the core
@@ -62,13 +64,6 @@ extern "C" void core0_main(void)
 
     uint32_t task_2Hz_timer_timestamp = stm_timestamp();
 
-    static volatile IfxCan_Status can_status;
-    IfxCan_Message msg;
-    IfxCan_Can_initMessage(&msg);
-    msg.messageId = 0x222;
-    msg.dataLengthCode = IfxCan_DataLengthCode_4;
-    uint32_t data[2] = {0x11223344, 0};
-    can_status = IfxCan_Can_sendMessage(&g_can_node0, &msg, data);
 
     while (true)
     {
@@ -103,6 +98,8 @@ extern "C" void core0_main(void)
         task_idle_loop_handler.process(timediff_100ns);
         main_loop_func_gen.update(static_cast<float>(timediff_100ns) * 1e-7f);
         process_scrutiny_main(timediff_100ns);
+
+        fifo_size=Ifx_Fifo_readCount(g_can0_rx_fifo);
     }
 }
 
