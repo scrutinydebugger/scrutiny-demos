@@ -62,13 +62,21 @@ extern "C" void core0_main(void)
 
     uint32_t task_2Hz_timer_timestamp = stm_timestamp();
 
+    static volatile IfxCan_Status can_status;
+    IfxCan_Message msg;
+    IfxCan_Can_initMessage(&msg);
+    msg.messageId = 0x222;
+    msg.dataLengthCode = IfxCan_DataLengthCode_4;
+    uint32_t data[2] = {0x11223344, 0};
+    can_status = IfxCan_Can_sendMessage(&g_can_node0, &msg, data);
+
     while (true)
     {
         uint32_t const timestamp = stm_timestamp();
 
         // Overflow expected only if the task load is increased artificially by scrutiny
         bool const overflow = (TaskController::get_task_highfreq()->is_overflow() || TaskController::get_task_lowfreq()->is_overflow());
-        set_led1(overflow);
+        //set_led1(overflow);
 
         if (sync_all_wavegen) // Controlled by scrutiny
         {

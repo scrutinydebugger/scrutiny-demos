@@ -13,6 +13,8 @@ extern "C"
 #include "IfxGpt12.h"
 #include "IfxPort.h"
 #include "Ifx_Types.h"
+#include "IfxCan_Can.h"
+#include "IfxCan.h"
 }
 
 #include "board.hpp"
@@ -21,6 +23,8 @@ extern "C"
 
 IfxAsclin_Asc g_asclin0;
 IfxAsclin_Asc g_asclin1;
+IfxCan_Can    g_mcmcan0; 
+IfxCan_Can_Node g_can_node0; 
 
 // Define buffer size based on Infineon UART examples
 uint8 g_asclin0_tx_buffer[BOARD_ASCLIN0_TX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
@@ -34,6 +38,8 @@ IFX_INTERRUPT(interrupt_asclin1_tx, 0, BOARD_ISR_PRIORITY_ASCLIN1_TX);
 IFX_INTERRUPT(interrupt_asclin1_rx, 0, BOARD_ISR_PRIORITY_ASCLIN1_RX);
 IFX_INTERRUPT(interrupt_gpt12_T3, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
 IFX_INTERRUPT(interrupt_gpt12_T6, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
+IFX_INTERRUPT(interrupt_can_tx, 0, BOARD_ISR_PRIORITY_CAN_TX);
+IFX_INTERRUPT(interrupt_can_rx, 0, BOARD_ISR_PRIORITY_CAN_RX);
 
 void interrupt_asclin0_tx(void)
 {
@@ -55,12 +61,26 @@ void interrupt_asclin1_rx(void)
     IfxAsclin_Asc_isrReceive(&g_asclin1);
 }
 
+void interrupt_can_tx(void)
+{
+    set_led1(true);
+    IfxCan_Node_clearInterruptFlag(g_can_node0.node, IfxCan_Interrupt_transmissionCompleted);
+}
+
+void interrupt_can_rx(void)
+{
+    set_led2(true);
+    IfxCan_Node_clearInterruptFlag(g_can_node0.node, IfxCan_Interrupt_messageStoredToDedicatedRxBuffer);
+}
+
+
 void task_1khz();
 void task_10khz();
 
 void init_io(void);
 void init_asclin0(void);
 void init_asclin1(void);
+void init_mcmcan();
 void init_gpt12(void);
 void init_stm(void);
 
@@ -98,14 +118,19 @@ void interrupt_gpt12_T6(void)
 
 void init_board()
 {
+    
+    
     init_io();
+    set_led1(false);
+    set_led2(false);
     init_asclin0();
     init_asclin1();
+    init_mcmcan();
     init_gpt12();
     init_stm();
 
-    set_led1(false);
-    set_led2(false);
+    
+    
 }
 
 void init_io(void)
@@ -116,6 +141,7 @@ void init_io(void)
     IfxPort_setPinModeOutput(&BOARD_TASK_HIGHFREQ_IO_MODULE, BOARD_TASK_HIGHFREQ_IO_PIN, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
     IfxPort_setPinModeOutput(&BOARD_SCRUTINY_TRIGGER_MODULE, BOARD_SCRUTINY_TRIGGER_PIN, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
     IfxPort_setPinModeOutput(&BOARD_TIME_REF_MODULE, BOARD_TIME_REF_PIN, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+    IfxPort_setPinModeOutput(&BOARD_CAN_STANDBY_MODULE, BOARD_CAN_STANDBY_PIN, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
 
     IfxPort_setPinModeInput(&BOARD_BTN1_MODULE, BOARD_BTN1_PIN, IfxPort_InputMode_noPullDevice);
 }
@@ -284,3 +310,48 @@ void toggle_time_ref_pin()
 {
     IfxPort_togglePin(&BOARD_TIME_REF_MODULE, BOARD_TIME_REF_PIN);
 }
+
+
+void init_mcmcan(void)
+{
+    static IfxCan_Can_Config canConfig;
+    static IfxCan_Can_NodeConfig canNodeConfig;
+    static volatile bool configure_status;
+
+    IfxCan_Can_initModuleConfig(&canConfig, &MODULE_CAN0);
+    IfxCan_Can_initModule(&g_mcmcan0, &canConfig);
+
+    IfxCan_Can_initNodeConfig(&canNodeConfig, &g_mcmcan0);
+
+    canNodeConfig.nodeId = IfxCan_NodeId_0;
+    canNodeConfig.frame.type = IfxCan_FrameType_transmitAndReceive;
+    canNodeConfig.interruptConfig.messageStoredToDedicatedRxBufferEnabled = TRUE;
+    canNodeConfig.interruptConfig.transmissionCompletedEnabled = TRUE;
+    canNodeConfig.interruptConfig.traco.priority = BOARD_ISR_PRIORITY_CAN_TX;
+    canNodeConfig.interruptConfig.traco.interruptLine = IfxCan_InterruptLine_0;
+    canNodeConfig.interruptConfig.traco.typeOfService = IfxSrc_Tos_cpu0;
+    canNodeConfig.interruptConfig.reint.priority = BOARD_ISR_PRIORITY_CAN_RX;
+    canNodeConfig.interruptConfig.reint.interruptLine = IfxCan_InterruptLine_1;
+    canNodeConfig.interruptConfig.reint.typeOfService = IfxSrc_Tos_cpu0;
+
+    canNodeConfig.baudRate.baudrate = 500000;
+    canNodeConfig.fastBaudRate.baudrate = 500000;
+
+    const IfxCan_Can_Pins pins = {
+        &IfxCan_TXD00_P20_8_OUT,                //txPin
+        IfxPort_OutputMode_pushPull,            //txPinMode
+        &IfxCan_RXD00B_P20_7_IN,                //rxPin
+        IfxPort_InputMode_noPullDevice,         //rxPinMode
+        IfxPort_PadDriver_cmosAutomotiveSpeed1  //padDriver
+    };
+
+    canNodeConfig.pins = &pins;
+    
+    configure_status = IfxCan_Can_initNode(&g_can_node0, &canNodeConfig);
+
+    IfxPort_setPinLow(&BOARD_CAN_STANDBY_MODULE, BOARD_CAN_STANDBY_PIN);    // Enable the CAN transceiver by setting CAN_STB to low
+
+}
+
+//IfxCan_RXD00B_P20_7_IN
+//IfxCan_TXD00_P20_8_OUT
