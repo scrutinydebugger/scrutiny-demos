@@ -32,7 +32,6 @@ extern "C"
 #define BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz 6
 #define BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz 7 // Highest number = highest priority
 
-#define BOARD_ISR_PRIORITY_CAN_TX 2   
 #define BOARD_ISR_PRIORITY_CAN_RX 1   
 
 #define BOARD_LED1_MODULE MODULE_P00
@@ -57,11 +56,10 @@ extern "C"
 #define STM_TARGET_FREQUENCY 20000000.0f // fsource = 300MHz. STMDIV = 15 (max) yields 20MHz.
 
 
-
 #define BOARD_ASCLIN1_TX_BUFFER_SIZE 256
 #define BOARD_ASCLIN1_RX_BUFFER_SIZE 128
 
-#define BOARD_CAN0_RX_BUFFER_SIZE 128
+#define BOARD_CAN_SCRUTINY_RX_BUFFER_SIZE 128
 
 #define BOARD_ASCLIN1_SERIAL_PIN_TX IfxAsclin1_TX_P15_1_OUT
 
@@ -72,7 +70,7 @@ extern IfxAsclin_Asc g_asclin0;
 extern IfxAsclin_Asc g_asclin1;
 extern IfxCan_Can    g_mcmcan0;
 extern IfxCan_Can_Node g_can_node0; 
-extern Ifx_Fifo* g_can0_rx_fifo;
+extern Ifx_Fifo* g_scrutiny_can_rx_fifo;
 
 void init_board();
 

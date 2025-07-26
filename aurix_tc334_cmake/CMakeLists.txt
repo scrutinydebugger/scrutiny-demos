@@ -70,7 +70,7 @@ scrutiny_postbuild(${PROJECT_NAME}
     CU_IGNORE_PATTERNS 
         */ignored_file.cpp      # We can skip one or many files to parse with a list of glob expression
     PATH_IGNORE_PATTERNS 
-        *_impure_dat2as*        # We can skip one or many variables witha  lsit of glob expression
+        *_impure_data*        # We can skip one or many variables with a list of glob expression
 
     CPPFILT ${CMAKE_CPPFILT}    # Make sure we use tricore-elf-c++filt for demangling 
 

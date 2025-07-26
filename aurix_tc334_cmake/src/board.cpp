@@ -19,6 +19,7 @@ extern "C"
 
 #include "board.hpp"
 #include "task_controller.hpp"
+#include "scrutiny_integration.hpp"
 #include <cstdint>
 
 IfxAsclin_Asc g_asclin0;
@@ -32,8 +33,8 @@ uint8 g_asclin0_rx_buffer[BOARD_ASCLIN0_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 uint8 g_asclin1_tx_buffer[BOARD_ASCLIN1_TX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 uint8 g_asclin1_rx_buffer[BOARD_ASCLIN1_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 
-uint8 s_can0_rx_buffer[BOARD_CAN0_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
-Ifx_Fifo* g_can0_rx_fifo = nullptr;
+uint8 s_scrutiny_rx_buffer[BOARD_CAN_SCRUTINY_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
+Ifx_Fifo* g_scrutiny_can_rx_fifo = nullptr;
 
 IFX_INTERRUPT(interrupt_asclin0_tx, 0, BOARD_ISR_PRIORITY_ASCLIN0_TX);
 IFX_INTERRUPT(interrupt_asclin0_rx, 0, BOARD_ISR_PRIORITY_ASCLIN0_RX);
@@ -41,7 +42,6 @@ IFX_INTERRUPT(interrupt_asclin1_tx, 0, BOARD_ISR_PRIORITY_ASCLIN1_TX);
 IFX_INTERRUPT(interrupt_asclin1_rx, 0, BOARD_ISR_PRIORITY_ASCLIN1_RX);
 IFX_INTERRUPT(interrupt_gpt12_T3, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_10KHz);
 IFX_INTERRUPT(interrupt_gpt12_T6, 0, BOARD_ISR_PRIORITY_GPT12_TIMER_TASK_1KHz);
-IFX_INTERRUPT(interrupt_can_tx, 0, BOARD_ISR_PRIORITY_CAN_TX);
 IFX_INTERRUPT(interrupt_can_rx, 0, BOARD_ISR_PRIORITY_CAN_RX);
 
 void interrupt_asclin0_tx(void)
@@ -64,53 +64,32 @@ void interrupt_asclin1_rx(void)
     IfxAsclin_Asc_isrReceive(&g_asclin1);
 }
 
-void interrupt_can_tx(void)
-{
-    set_led1(true);
-    IfxCan_Node_clearInterruptFlag(g_can_node0.node, IfxCan_Interrupt_transmissionCompleted);
-    
-}
-
 void interrupt_can_rx(void)
 {
     static int interrupt_count=0;
     interrupt_count++;
     static IfxCan_Message msg;
-    static uint32_t buff[64/4];
+    static Ifx_SizeT const dlc_size_lut[16] = {0,1,2,3,4,5,6,7,8,12,16,20,24,32,48,64};
+    union{
+        uint8_t data8[8];
+        uint32_t data32[2];
+    } data;
+
     IfxCan_Node_clearInterruptFlag(g_can_node0.node, IfxCan_Interrupt_rxFifo0NewMessage);
     msg.readFromRxFifo0 = TRUE;
     
-    IfxPort_togglePin(&BOARD_LED2_MODULE, BOARD_LED2_PIN);
-    IfxCan_Can_readMessage(&g_can_node0, &msg, buff);
+    IfxCan_Can_readMessage(&g_can_node0, &msg, data.data32);
     
-    Ifx_SizeT nb_bytes = 0;
-    if (msg.dataLengthCode <= 8){
-        nb_bytes = msg.dataLengthCode;
-    }
-    else if (msg.dataLengthCode == IfxCan_DataLengthCode_12){
-        nb_bytes = 12;
-    }
-    else if (msg.dataLengthCode == IfxCan_DataLengthCode_16){
-        nb_bytes = 16;
-    }
-    else if (msg.dataLengthCode == IfxCan_DataLengthCode_20){
-        nb_bytes = 20;
-    }
-    else if (msg.dataLengthCode == IfxCan_DataLengthCode_24){
-        nb_bytes = 24;
-    }
-    else if (msg.dataLengthCode == IfxCan_DataLengthCode_32){
-        nb_bytes = 32;
-    }
-    else if (msg.dataLengthCode == IfxCan_DataLengthCode_48){
-        nb_bytes = 48;
-    }
-    else if (msg.dataLengthCode == IfxCan_DataLengthCode_64){
-        nb_bytes = 64;
-    }
+    Ifx_SizeT const nb_bytes = dlc_size_lut[static_cast<int>(msg.dataLengthCode)];
     
-    Ifx_Fifo_write(g_can0_rx_fifo, buff, nb_bytes, TIME_INFINITE );
-    set_led2(false);
+    if (msg.messageId == SCRUTINY_CAN_RX_ID && msg.messageIdLength == IfxCan_MessageIdLength_standard)
+    {
+        Ifx_Fifo_write(g_scrutiny_can_rx_fifo, &data.data8, nb_bytes, 0 );  
+    }
+    else
+    {
+        // Ignore other messages if any
+    }
 }
 
 
@@ -158,8 +137,6 @@ void interrupt_gpt12_T6(void)
 
 void init_board()
 {
-    
-    
     init_io();
     set_led1(false);
     set_led2(false);
@@ -169,8 +146,6 @@ void init_board()
     init_gpt12();
     init_stm();
 
-    
-    
 }
 
 void init_io(void)
@@ -289,7 +264,7 @@ void init_gpt12(void)
     IfxGpt12_T2_setReloadInputMode(&MODULE_GPT120, IfxGpt12_ReloadInputMode_bothEdgesTxOTL);
     IfxGpt12_T2_setTimerValue(&MODULE_GPT120, TIMER3_VAL);
 
-    // Timer T6 - Task 10KHz : 100e6/16/1/6250 = 1000
+    // Timer T6 - Task 1KHz : 100e6/16/1/6250 = 1000
     IfxGpt12_setGpt2BlockPrescaler(&MODULE_GPT120, IfxGpt12_Gpt2BlockPrescaler_16);
     IfxGpt12_T6_setMode(&MODULE_GPT120, IfxGpt12_Mode_timer);
     IfxGpt12_T6_setTimerDirection(&MODULE_GPT120, IfxGpt12_TimerDirection_down);
@@ -359,9 +334,8 @@ void init_mcmcan(void)
 {
     static IfxCan_Can_Config canConfig;
     static IfxCan_Can_NodeConfig canNodeConfig;
-    static volatile bool configure_status;
 
-    g_can0_rx_fifo = Ifx_Fifo_init(s_can0_rx_buffer, BOARD_CAN0_RX_BUFFER_SIZE, 1);
+    g_scrutiny_can_rx_fifo = Ifx_Fifo_init(s_scrutiny_rx_buffer, BOARD_CAN_SCRUTINY_RX_BUFFER_SIZE, 1);
 
     IfxCan_Can_initModuleConfig(&canConfig, &MODULE_CAN0);
     IfxCan_Can_initModule(&g_mcmcan0, &canConfig);
@@ -371,16 +345,15 @@ void init_mcmcan(void)
     canNodeConfig.nodeId = IfxCan_NodeId_0;
     canNodeConfig.frame.type = IfxCan_FrameType_transmitAndReceive;
     canNodeConfig.rxConfig.rxMode = IfxCan_RxMode_fifo0;
-    canNodeConfig.rxConfig.rxFifo0DataFieldSize = IfxCan_DataFieldSize_64;
+    canNodeConfig.rxConfig.rxFifo0DataFieldSize = IfxCan_DataFieldSize_8;
     canNodeConfig.rxConfig.rxFifo0OperatingMode = IfxCan_RxFifoMode_overwrite;
-    canNodeConfig.rxConfig.rxFifo0Size = 64;
+    canNodeConfig.rxConfig.rxFifo0Size = 4; // No need to use a lot, we have an interrupt on rx. 1 would be enough
     
+    canNodeConfig.txConfig.txMode = IfxCan_TxMode_fifo;
+    canNodeConfig.txConfig.txFifoQueueSize = 32;
+    canNodeConfig.txConfig.txBufferDataFieldSize = IfxCan_DataFieldSize_8;
 
     canNodeConfig.interruptConfig.rxFifo0NewMessageEnabled = TRUE;
-    canNodeConfig.interruptConfig.transmissionCompletedEnabled = TRUE;
-    canNodeConfig.interruptConfig.traco.priority = BOARD_ISR_PRIORITY_CAN_TX;
-    canNodeConfig.interruptConfig.traco.interruptLine = IfxCan_InterruptLine_0;
-    canNodeConfig.interruptConfig.traco.typeOfService = IfxSrc_Tos_cpu0;
     canNodeConfig.interruptConfig.rxf0n.priority = BOARD_ISR_PRIORITY_CAN_RX;
     canNodeConfig.interruptConfig.rxf0n.interruptLine = IfxCan_InterruptLine_1;
     canNodeConfig.interruptConfig.rxf0n.typeOfService = IfxSrc_Tos_cpu0;
@@ -398,7 +371,7 @@ void init_mcmcan(void)
 
     canNodeConfig.pins = &pins;
     
-    configure_status = IfxCan_Can_initNode(&g_can_node0, &canNodeConfig);
+    IfxCan_Can_initNode(&g_can_node0, &canNodeConfig);
 
     IfxPort_setPinLow(&BOARD_CAN_STANDBY_MODULE, BOARD_CAN_STANDBY_PIN);    // Enable the CAN transceiver by setting CAN_STB to low
 

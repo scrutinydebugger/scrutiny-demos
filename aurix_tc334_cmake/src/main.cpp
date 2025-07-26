@@ -44,8 +44,6 @@ void setup_cpu()
     IfxCpu_waitEvent(&cpuSyncEvent, 1);
 }
 
-Ifx_SizeT fifo_size = 0;
-
 extern "C" void core0_main(void)
 {
     setup_cpu();  // Boot the core
@@ -71,7 +69,7 @@ extern "C" void core0_main(void)
 
         // Overflow expected only if the task load is increased artificially by scrutiny
         bool const overflow = (TaskController::get_task_highfreq()->is_overflow() || TaskController::get_task_lowfreq()->is_overflow());
-        //set_led1(overflow);
+        set_led1(overflow);
 
         if (sync_all_wavegen) // Controlled by scrutiny
         {
@@ -98,8 +96,6 @@ extern "C" void core0_main(void)
         task_idle_loop_handler.process(timediff_100ns);
         main_loop_func_gen.update(static_cast<float>(timediff_100ns) * 1e-7f);
         process_scrutiny_main(timediff_100ns);
-
-        fifo_size=Ifx_Fifo_readCount(g_can0_rx_fifo);
     }
 }
 
