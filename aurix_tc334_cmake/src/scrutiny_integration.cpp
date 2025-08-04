@@ -24,8 +24,8 @@ extern "C"
 #define SCRUTINY_OVER_ASCLIN0 1
 #define SCRUTINY_OVER_CAN0 2
 
-#ifndef SCRUTINY_MODE
-#define SCRUTINY_MODE (SCRUTINY_OVER_CAN0)
+#ifndef SCRUTINY_CHANNEL
+#define SCRUTINY_CHANNEL (SCRUTINY_OVER_CAN0)
 #endif
 
 
@@ -128,7 +128,7 @@ void configure_scrutiny()
 
 
 
-#if SCRUTINY_MODE == SCRUTINY_OVER_ASCLIN0
+#if SCRUTINY_CHANNEL == SCRUTINY_OVER_ASCLIN0
 /// @brief Function to be called periodically, as fast as possible
 /// @param timestep_100ns The amount of time, in step of 100ns, since the last call to this function
 void process_scrutiny_main(uint32_t const timestep_100ns)
@@ -163,7 +163,7 @@ void process_scrutiny_main(uint32_t const timestep_100ns)
     }
 }
 
-#elif SCRUTINY_MODE == SCRUTINY_OVER_CAN0
+#elif SCRUTINY_CHANNEL == SCRUTINY_OVER_CAN0
 
 /// @brief Function to be called periodically, as fast as possible
 /// @param timestep_100ns The amount of time, in step of 100ns, since the last call to this function
