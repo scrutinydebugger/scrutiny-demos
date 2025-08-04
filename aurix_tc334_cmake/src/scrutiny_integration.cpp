@@ -9,6 +9,7 @@
 
 #include "board.hpp"
 #include "scrutiny.hpp"
+#include "scrutiny_integration.hpp"
 #include <cstdint>
 #include <limits>
 
@@ -176,14 +177,17 @@ void process_scrutiny_main(uint32_t const timestep_100ns)
         first_call=false;
         IfxCan_Can_initMessage(&tx_msg);
         tx_msg.storeInTxFifoQueue = true;
+        tx_msg.messageId = SCRUTINY_CAN_TX_ID;
     }
 
     uint8_t buffer[32]; // Temporary buffer
-    static_assert(sizeof(buffer) % sizeof(uint32_t) == 0, "Infineon API require uint32_t for sending CAN emssages");
+    static_assert(sizeof(buffer) % sizeof(uint32_t) == 0, "Infineon API requires uint32_t for sending CAN messages");
     Ifx_SizeT count = Ifx_Fifo_readCount(g_scrutiny_can_rx_fifo);
+    
     if (count > 0)
     {
         count = Ifx__minu(count, sizeof(buffer));
+        Ifx_Fifo_read(g_scrutiny_can_rx_fifo, buffer, count, 0);
         #if FORWARD_TO_ASCLIN_1
         // For debug purpose with a logic analyzer. We can see what Scrutiny receives
         int16_t count2 = count;
@@ -203,5 +207,6 @@ void process_scrutiny_main(uint32_t const timestep_100ns)
         while(IfxCan_Can_sendMessage(&g_can_node0, &tx_msg, reinterpret_cast<uint32_t*>(buffer)) == IfxCan_Status_notSentBusy);
     }
 }
+
 
 #endif
