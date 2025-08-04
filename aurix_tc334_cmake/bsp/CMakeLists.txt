@@ -80,6 +80,9 @@ add_library(${PROJECT_NAME} OBJECT
     
     ${ILLD_FOLDER}/Pms/Std/IfxPmsEvr.c
     ${ILLD_FOLDER}/Pms/Std/IfxPmsPm.c
+    
+    ${ILLD_FOLDER}/Can/Std/IfxCan.c
+    ${ILLD_FOLDER}/Can/Can/IfxCan_Can.c
 )
 
 
@@ -103,6 +106,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${ILLD_FOLDER}/Port/Std
     ${ILLD_FOLDER}/Stm/Std
     ${ILLD_FOLDER}/Stm/Timer
+    ${ILLD_FOLDER}/Can/Std
+    ${ILLD_FOLDER}/Can/Can
 
     ${ILLD_FOLDER}/_Lib/DataHandling
     ${ILLD_FOLDER}/_Lib/InternalMux

@@ -26,4 +26,8 @@ extern scrutiny::VariableFrequencyLoopHandler task_idle_loop_handler;
 extern scrutiny::FixedFrequencyLoopHandler task_lowfreq_loop_handler;
 extern scrutiny::FixedFrequencyLoopHandler task_highfreq_loop_handler;
 
+
+constexpr uint32_t SCRUTINY_CAN_RX_ID{ 0x100 };
+constexpr uint32_t SCRUTINY_CAN_TX_ID{ 0x101 };
+
 #endif // SCRUTINY_INTEGRATION_HPP

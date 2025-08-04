@@ -9,6 +9,7 @@
 
 #include "board.hpp"
 #include "scrutiny.hpp"
+#include "scrutiny_integration.hpp"
 #include <cstdint>
 #include <limits>
 
@@ -19,6 +20,14 @@ extern "C"
 }
 
 #define FORWARD_TO_ASCLIN_1 1 // For debugging purpose. asclin0 doe snot have physical headers on the board
+
+#define SCRUTINY_OVER_ASCLIN0 1
+#define SCRUTINY_OVER_CAN0 2
+
+#ifndef SCRUTINY_CHANNEL
+#define SCRUTINY_CHANNEL (SCRUTINY_OVER_CAN0)
+#endif
+
 
 // Match the fifo size, we should be free of overrun
 uint8_t scrutiny_rx_buffer[BOARD_ASCLIN0_RX_BUFFER_SIZE];
@@ -117,6 +126,9 @@ void configure_scrutiny()
     main_handler.init(&config);
 }
 
+
+
+#if SCRUTINY_CHANNEL == SCRUTINY_OVER_ASCLIN0
 /// @brief Function to be called periodically, as fast as possible
 /// @param timestep_100ns The amount of time, in step of 100ns, since the last call to this function
 void process_scrutiny_main(uint32_t const timestep_100ns)
@@ -150,3 +162,51 @@ void process_scrutiny_main(uint32_t const timestep_100ns)
         IfxAsclin_Asc_write(scrutiny_asclin, buffer, &count, 0);
     }
 }
+
+#elif SCRUTINY_CHANNEL == SCRUTINY_OVER_CAN0
+
+/// @brief Function to be called periodically, as fast as possible
+/// @param timestep_100ns The amount of time, in step of 100ns, since the last call to this function
+void process_scrutiny_main(uint32_t const timestep_100ns)
+{
+    static bool first_call = true;
+    static IfxCan_Message tx_msg;
+
+    if (first_call)
+    {
+        first_call=false;
+        IfxCan_Can_initMessage(&tx_msg);
+        tx_msg.storeInTxFifoQueue = true;
+        tx_msg.messageId = SCRUTINY_CAN_TX_ID;
+    }
+
+    uint8_t buffer[32]; // Temporary buffer
+    static_assert(sizeof(buffer) % sizeof(uint32_t) == 0, "Infineon API requires uint32_t for sending CAN messages");
+    Ifx_SizeT count = Ifx_Fifo_readCount(g_scrutiny_can_rx_fifo);
+    
+    if (count > 0)
+    {
+        count = Ifx__minu(count, sizeof(buffer));
+        Ifx_Fifo_read(g_scrutiny_can_rx_fifo, buffer, count, 0);
+        #if FORWARD_TO_ASCLIN_1
+        // For debug purpose with a logic analyzer. We can see what Scrutiny receives
+        int16_t count2 = count;
+        IfxAsclin_Asc_write(&g_asclin1, buffer, &count2, 0);
+        #endif
+        main_handler.receive_data(buffer, static_cast<uint16_t>(count));
+    }
+
+    main_handler.process(timestep_100ns);
+
+    while (( count = static_cast<uint16_t>(main_handler.data_to_send() )) > 0)
+    {
+        count = Ifx__minu(count, 8);
+        count = Ifx__minu(count, sizeof(buffer));
+        tx_msg.dataLengthCode = static_cast<IfxCan_DataLengthCode>(count);
+        main_handler.pop_data(buffer, count);
+        while(IfxCan_Can_sendMessage(&g_can_node0, &tx_msg, reinterpret_cast<uint32_t*>(buffer)) == IfxCan_Status_notSentBusy);
+    }
+}
+
+
+#endif

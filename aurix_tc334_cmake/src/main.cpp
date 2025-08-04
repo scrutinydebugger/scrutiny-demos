@@ -62,6 +62,7 @@ extern "C" void core0_main(void)
 
     uint32_t task_2Hz_timer_timestamp = stm_timestamp();
 
+
     while (true)
     {
         uint32_t const timestamp = stm_timestamp();

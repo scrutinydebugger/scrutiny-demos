@@ -9,12 +9,17 @@ This project is a demonstration of the integration of Scrutiny on a Infineon Aur
 
  Each of these tasks run a software wave generator that can generate common periodic waves: sine, triangular, square, sawtooth. These wave generators exist to showcase the graphing capabilities of Scrutiny.
 
- The device communicate through the USB virtual UART at 115200 Bauds/sec (1 stop bit, no parity)
+ The device communicate either through the USB virtual UART or through CAN bus depending on the build options.
+ 
+- Serial Parameters : 115200 baud/s / 8bits / No Parity / 1 Stop bit
+- CAN Parameters : TXID:0x100 / RXID:0x101. 11bits ID / CAN 2.0 (No FD)
+
 
 ## Required hardware:
 
  - [kit_a2g_tc334_lite development board](https://www.infineon.com/cms/en/product/evaluation-boards/kit_a2g_tc334_lite/)
  - USB Cable
+ - \[Optional\] A CAN transceiver to run scrutiny over CAN instead of serial
  - \[Optional\]: Logic Analyzer (for recreating the waveform provided below)
 
 ## Required software:
@@ -29,7 +34,8 @@ This project is a demonstration of the integration of Scrutiny on a Infineon Aur
 Assuming the software requirements are all met and the software are in your PATH, calling the following scripts should be enough for building and flashing.
 
 ```bash
-./scripts/build.sh
+SCRUTINY_CHANNEL=SCRUTINY_OVER_ASCLIN0 ./scripts/build.sh   # To use Scrutiny over serial (usb cable)
+SCRUTINY_CHANNEL=SCRUTINY_OVER_CAN0 ./scripts/build.sh      # To use Scrutiny over CAN bus (CAN header on board)
 ./scripts/flash.sh
 ```
 
@@ -126,4 +132,4 @@ In this demo, we have 3 tasks:
 
 ## Notes
 
-- The update rate and graph download speed are slow. There are delays coming from the Infineon DAS virtual COM port that cause a ~60ms latency between each device response. This does not happen on a real COM port or a FT232 driver.
+- The update rate and graph download speed are slow over serial. There are delays coming from the Infineon DAS virtual COM port that cause a ~60ms latency between each device response. This does not happen on a real COM port or a FT232 driver.

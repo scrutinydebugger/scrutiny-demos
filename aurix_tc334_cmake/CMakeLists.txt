@@ -9,6 +9,13 @@ set(CMAKE_C_STANDARD 99)    # Mostly for LLD
 
 project(scrutiny-aurix-tc334)
 
+option(SCRUTINY_CHANNEL "The channel to use for scrutiny communication. Use SCRUTINY_OVER_ASCLIN0 or SCRUTINY_OVER_CAN0 " SCRUTINY_OVER_ASCLIN0 )
+
+if (NOT SCRUTINY_CHANNEL STREQUAL SCRUTINY_OVER_ASCLIN0 AND NOT SCRUTINY_CHANNEL STREQUAL SCRUTINY_OVER_CAN0)
+    message(FATAL_ERROR "Invalid SCRUTINY_CHANNEL. Use SCRUTINY_OVER_ASCLIN0 or SCRUTINY_OVER_CAN0")
+endif()
+message(STATUS "SCRUTINY_CHANNEL : ${SCRUTINY_CHANNEL}")
+
 include(FetchContent)
 
 set(SCRUTINY_ENABLE_DATALOGGING 1)
@@ -70,7 +77,7 @@ scrutiny_postbuild(${PROJECT_NAME}
     CU_IGNORE_PATTERNS 
         */ignored_file.cpp      # We can skip one or many files to parse with a list of glob expression
     PATH_IGNORE_PATTERNS 
-        *_impure_dat2as*        # We can skip one or many variables witha  lsit of glob expression
+        *_impure_data*        # We can skip one or many variables with a list of glob expression
 
     CPPFILT ${CMAKE_CPPFILT}    # Make sure we use tricore-elf-c++filt for demangling 
 
