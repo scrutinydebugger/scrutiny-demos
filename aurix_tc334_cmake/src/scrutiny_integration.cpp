@@ -25,7 +25,7 @@ extern "C"
 #define SCRUTINY_OVER_CAN0 2
 
 #ifndef SCRUTINY_CHANNEL
-#define SCRUTINY_CHANNEL (SCRUTINY_OVER_CAN0)
+#define SCRUTINY_CHANNEL (SCRUTINY_OVER_ASCLIN0)
 #endif
 
 
@@ -208,5 +208,7 @@ void process_scrutiny_main(uint32_t const timestep_100ns)
     }
 }
 
+#else 
+#error SCRUTINY_CHANNEL not defined with a valid value
 
 #endif

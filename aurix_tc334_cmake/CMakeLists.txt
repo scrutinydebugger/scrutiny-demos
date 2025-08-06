@@ -43,6 +43,7 @@ add_executable(${PROJECT_NAME}
     src/scrutiny_integration.cpp
     src/wave_function_generator.cpp
     )
+target_compile_definitions(${PROJECT_NAME} PRIVATE SCRUTINY_CHANNEL=${SCRUTINY_CHANNEL})
 set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf")
 
 target_include_directories(${PROJECT_NAME} PRIVATE 
