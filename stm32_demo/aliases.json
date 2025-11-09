@@ -1,0 +1,14 @@
+{
+    "IMU/Accel_X (G)": {
+        "target": "/global/accel_mgXYZ/x",
+        "gain": 0.00006103701
+    },
+    "IMU/Accel_Y (G)": {
+        "target": "/global/accel_mgXYZ/y",
+        "gain": 0.00006103701
+    },
+    "IMU/Accel_Z (G)": {
+        "target": "/global/accel_mgXYZ/z",
+        "gain": 0.00006103701
+    }
+}
