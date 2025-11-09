@@ -29,4 +29,4 @@ cmake --preset Release
 cmake --build build/Release --parallel $(nproc)
 ```
 
-The final binary to be flashed is `build/Release/stm32_demo_tagged.bin`
+The final binary to be flashed is `build/Release/stm32_demo_tagged.hex`

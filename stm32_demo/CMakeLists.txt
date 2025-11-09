@@ -63,13 +63,13 @@ scrutiny_postbuild(${PROJECT_NAME}
 
 get_filename_component(TAGGED_BINARY_BASENAME_WE ${TAGGED_BIN_FILE} NAME_WE)
 
-# Generate .bin file from the tagged ELF
+# Generate .hex file from the tagged ELF
 add_custom_command(TARGET ${TAGGED_BIN_TARGET} POST_BUILD
-     BYPRODUCTS ${TAGGED_BINARY_BASENAME_WE}.bin
+     BYPRODUCTS ${TAGGED_BINARY_BASENAME_WE}.hex
      VERBATIM 
      COMMAND ${CMAKE_OBJCOPY} ARGS 
-        -O binary
+        -O ihex
         "${TAGGED_BIN_FILE}"
-        "${TAGGED_BINARY_BASENAME_WE}.bin"
-    COMMENT "Generating ${TAGGED_BINARY_BASENAME_WE}.bin from ELF"
+        "${TAGGED_BINARY_BASENAME_WE}.hex"
+    COMMENT "Generating ${TAGGED_BINARY_BASENAME_WE}.hex from ELF"
 )
