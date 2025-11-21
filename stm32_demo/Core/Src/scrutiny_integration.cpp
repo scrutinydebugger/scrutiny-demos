@@ -44,7 +44,7 @@ void scrutiny_integration_update(const uint32_t timestamp_us) {
     last_timestamp_task_100hz = timestamp_us;
   }
 
-  uint8_t rxTxBuf[32];
+  uint8_t rxTxBuf[CDC_QUEUE_MAX_PACKET_SIZE];
   uint16_t readSize = CDC_ReceiveQueue_ReadSize(&ReceiveQueue);
   if (readSize) {
     if(readSize > sizeof(rxTxBuf)) readSize = sizeof(rxTxBuf);
@@ -58,9 +58,10 @@ void scrutiny_integration_update(const uint32_t timestamp_us) {
 
   unsigned int lenToSend{
       static_cast<unsigned int>(main_handler.data_to_send())};
-  if (lenToSend > sizeof(rxTxBuf))   lenToSend = sizeof(rxTxBuf);
 
   if (lenToSend > 0) {
+      if (lenToSend > sizeof(rxTxBuf))   lenToSend = sizeof(rxTxBuf);
+
     main_handler.pop_data(rxTxBuf, lenToSend);
     CDC_TransmitQueue_Enqueue(&TransmitQueue, rxTxBuf, lenToSend);
     CDC_continue_transmit();
