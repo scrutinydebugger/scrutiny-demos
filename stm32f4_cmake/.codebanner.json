@@ -1,0 +1,29 @@
+{
+    "folders": [
+        "scripts",
+        "app/src",
+        "app/inc"
+    ],
+    "include_patterns": [
+        "*.cpp",
+        "*.hpp",
+        "*.sh",
+        "*.cmake",
+        "*CMakeLists.txt"
+    ],
+    "exclude_patterns": [],
+    "project": "Scrutiny Debugger",
+    "repo": "github.com/scrutinydebugger/scrutiny-demos",
+    "license": "MIT - See LICENSE file",
+    "copyright_owner": "Scrutiny Debugger",
+    "copyright_start_date": null,
+    "copyright_end_date": null,
+    "files": {
+        "scripts/build.sh": {
+            "docstring": ""
+        },
+        "app/src/scrutiny_integration.cpp": {
+            "docstring": ""
+        }
+    }
+}
