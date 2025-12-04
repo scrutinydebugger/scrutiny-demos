@@ -27,11 +27,11 @@ fi
 
 CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:-Release}
 
-cmake  \
-    -G Ninja \
+cmake                                           \
+    -G "Unix Makefiles"                         \
     -DCMAKE_TOOLCHAIN_FILE=${ROOT_DIR}/app/toolchain/gcc-arm-none-eabi.cmake    \
-    -DCMAKE_VERBOSE_MAKEFILE=0 \
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}  \
-    $CCACHE_ARG \
+    -DCMAKE_VERBOSE_MAKEFILE=0                  \
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}      \
+    $CCACHE_ARG                                 \
     -S app -B build
-cmake --build build -j 12
+cmake --build build -j 8
