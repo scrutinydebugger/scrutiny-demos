@@ -2,7 +2,8 @@
     "folders": [
         "scripts",
         "app/src",
-        "app/inc"
+        "app/inc",
+        "app"
     ],
     "include_patterns": [
         "*.cpp",
@@ -13,16 +14,19 @@
         "*.cmake",
         "*CMakeLists.txt"
     ],
-    "exclude_patterns": [],
+    "exclude_patterns": [
+        "app/stm32cubemx/*",
+        "app/global_inc/*"
+    ],
     "project": "Scrutiny Debugger",
     "repo": "github.com/scrutinydebugger/scrutiny-demos",
     "license": "MIT - See LICENSE file",
     "copyright_owner": "Scrutiny Debugger",
     "copyright_start_date": null,
     "copyright_end_date": null,
-    "authors" : {
-        "MrMati" : "MrMati (Mateusz Niedbała) <mati.niedbala5@gmail.com>",
-        "pylessard" : "Pier-Yves Lessard (pylessard)"
+    "authors": {
+        "MrMati": "MrMati (Mateusz Niedba\u0142a) <mati.niedbala5@gmail.com>",
+        "pylessard": "Pier-Yves Lessard (pylessard)"
     },
     "files": {
         "scripts/build.sh": {
@@ -30,18 +34,38 @@
         },
         "app/src/scrutiny_integration.cpp": {
             "docstring": "The app wrapper that integrates scrutiny in this demo by connecting the USB virtual serial port (CDC-ACM) to the scrutiny streams.",
-            "author" : "MrMati",
-            "contributors" : ["pylessard"]
+            "author": "MrMati",
+            "contributors": [
+                "pylessard"
+            ]
         },
         "app/src/main.c": {
             "docstring": "",
-            "author" : "MrMati",
-            "contributors" : ["pylessard"]
+            "author": "MrMati",
+            "contributors": [
+                "pylessard"
+            ]
         },
         "app/inc/scrutiny_integration.h": {
             "docstring": "The app wrapper that integrates scrutiny in this demo by connecting the USB virtual serial port (CDC-ACM) to the scrutiny streams.",
-            "author" : "MrMati",
-            "contributors" : ["pylessard"]
+            "author": "MrMati",
+            "contributors": [
+                "pylessard"
+            ]
+        },
+        "app/CMakeLists.txt": {
+            "docstring": "The application main Cmake entry point",
+            "author": "MrMati",
+            "contributors": [
+                "pylessard"
+            ]
+        },
+        "app/toolchain/gcc-arm-none-eabi.cmake": {
+            "docstring": "The toolchain file for this project",
+            "author": "MrMati",
+            "contributors": [
+                "pylessard"
+            ]
         }
     }
 }

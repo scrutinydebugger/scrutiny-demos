@@ -1,3 +1,14 @@
+#    CMakeLists.txt
+#        The application main Cmake entry point
+#
+#   - License : MIT - See LICENSE file
+#   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+#   - Author : MrMati (Mateusz Niedbała) <mati.niedbala5@gmail.com>
+#   - Contributors : 
+#       - Pier-Yves Lessard (pylessard)
+#
+#    Copyright (c) 2025 Scrutiny Debugger
+
 cmake_minimum_required(VERSION 3.16.3)
 
 set(LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/toolchain/STM32F411XX_FLASH.ld)
@@ -78,7 +89,6 @@ get_filename_component(TAGGED_BINARY_BASENAME_WE ${TAGGED_BIN_FILE} NAME_WE)
 
 # Generate .hex file from the tagged ELF
 set(HEX_FILE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TAGGED_BINARY_BASENAME_WE}.hex")
-
 add_custom_command(
     TARGET ${TAGGED_BIN_TARGET} POST_BUILD
     DEPENDS ${TAGGED_BIN_FILE}
