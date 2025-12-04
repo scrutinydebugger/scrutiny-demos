@@ -17,8 +17,6 @@ cd "$ROOT_DIR"
 
 rm -rf build
 mkdir -p build
-cd build
-
 
 USE_CCACHE=0    # Use ccache if available
 CCACHE=$(which "ccache" 2>/dev/null || true)
@@ -31,10 +29,10 @@ fi
 CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:-Release}
 
 cmake  \
-    -G "Unix Makefiles" \
-    -DCMAKE_TOOLCHAIN_FILE=${ROOT_DIR}/cmake/gcc-arm-none-eabi.cmake    \
+    -G Ninja \
+    -DCMAKE_TOOLCHAIN_FILE=${ROOT_DIR}/app/toolchain/gcc-arm-none-eabi.cmake    \
     -DCMAKE_VERBOSE_MAKEFILE=0 \
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}  \
     $CCACHE_ARG \
-    ..
-cmake --build . -j 12
+    -S app -B build
+cmake --build build -j 12
