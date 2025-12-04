@@ -6,7 +6,9 @@
     ],
     "include_patterns": [
         "*.cpp",
+        "*.c",
         "*.hpp",
+        "*.h",
         "*.sh",
         "*.cmake",
         "*CMakeLists.txt"
@@ -18,12 +20,28 @@
     "copyright_owner": "Scrutiny Debugger",
     "copyright_start_date": null,
     "copyright_end_date": null,
+    "authors" : {
+        "MrMati" : "MrMati (Mateusz Niedbała) <mati.niedbala5@gmail.com>",
+        "pylessard" : "Pier-Yves Lessard (pylessard)"
+    },
     "files": {
         "scripts/build.sh": {
-            "docstring": ""
+            "docstring": "A script that builds the project from scratch"
         },
         "app/src/scrutiny_integration.cpp": {
-            "docstring": ""
+            "docstring": "The app wrapper that integrates scrutiny in this demo by connecting the USB virtual serial port (CDC-ACM) to the scrutiny streams.",
+            "author" : "MrMati",
+            "contributors" : ["pylessard"]
+        },
+        "app/src/main.c": {
+            "docstring": "",
+            "author" : "MrMati",
+            "contributors" : ["pylessard"]
+        },
+        "app/inc/scrutiny_integration.h": {
+            "docstring": "The app wrapper that integrates scrutiny in this demo by connecting the USB virtual serial port (CDC-ACM) to the scrutiny streams.",
+            "author" : "MrMati",
+            "contributors" : ["pylessard"]
         }
     }
 }

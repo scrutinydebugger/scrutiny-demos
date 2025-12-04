@@ -90,4 +90,8 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "xaver.clang-format",
     },
+    "[c]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "xaver.clang-format",
+    },
 }
