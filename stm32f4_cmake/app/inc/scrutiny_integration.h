@@ -18,7 +18,7 @@
 
 extern scrutiny_c_loop_handler_ff_t *task_1khz_loop_handler;
 
-void scrutiny_integration_init();
+int scrutiny_integration_init();
 void scrutiny_integration_update(const uint32_t timestamp_us);
 
 #endif

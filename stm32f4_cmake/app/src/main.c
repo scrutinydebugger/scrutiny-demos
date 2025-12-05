@@ -45,7 +45,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         uint32_t const timestamp_us = TIM2->CNT;
         uint32_t const timediff_us = (timestamp_us - last_timestamp_us_tim3);
         last_timestamp_us_tim3 = timestamp_us;
-        // We use a precise time reference to have an accurate "measured time".
+        // We use a precise time reference to have an accurate "measured time". Should be a value very close to 1.000 ms
         scrutiny_c_loop_handler_fixed_freq_process(task_1khz_loop_handler, timediff_us * 10);
     }
 }
@@ -58,21 +58,26 @@ int main(void)
     MX_GPIO_Init();
     MX_I2C1_Init();
     MX_USB_DEVICE_Init();
-
     TIM2_Init();
-    TIM3_Init();
+
+    // Init before TIM3 since the timer invoke Scrutiny Loop Handler.
+    if (scrutiny_integration_init() != 0)
+    {
+        Error_Handler();
+    }
 
     if (BSP_ACCELERO_Init() != ACCELERO_OK)
     {
         Error_Handler();
     }
-    scrutiny_integration_init(); // Init before timer since the timer invoke Scrutiny Loop Handler.
+
+    TIM3_Init(); // 1KHz interrupt
 
     while (1)
     {
-        uint32_t const timestamp_us = TIM2->CNT; // Runs at 1MHz
-        scrutiny_integration_update(timestamp_us);
-        BSP_ACCELERO_GetXYZ(&accel_mgXYZ); // blocking read. Takes ~3.2ms
+        uint32_t const timestamp_us = TIM2->CNT;   // Runs at 1MHz
+        scrutiny_integration_update(timestamp_us); // Maximum refresh rate of 300 update/sec because of blocking accelerometer read below
+        BSP_ACCELERO_GetXYZ(&accel_mgXYZ);         // blocking read. Takes ~3.17ms
         HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
     }
 }
@@ -204,7 +209,7 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_7 | GPIO_PIN_9;
+    GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_9;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
