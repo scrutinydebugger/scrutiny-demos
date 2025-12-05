@@ -84,7 +84,9 @@
         "ifxport.h": "c",
         "ifx_ssw_compilers.h": "c",
         "ifx_ssw_legacyswcfg.h": "c",
-        "stm32f4xx_hal.h": "c"
+        "stm32f4xx_hal.h": "c",
+        "usb_device.h": "c",
+        "stm32f4xx_hal_gpio.h": "c"
     },
     "[cpp]": {
         "editor.formatOnSave": true,

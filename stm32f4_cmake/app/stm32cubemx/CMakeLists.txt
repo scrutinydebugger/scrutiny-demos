@@ -37,6 +37,8 @@ add_library(${PROJECT_NAME} OBJECT
     Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c
     Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c
     Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
 
     Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
     Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c

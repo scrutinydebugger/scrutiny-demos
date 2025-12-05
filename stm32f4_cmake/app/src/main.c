@@ -3,27 +3,47 @@
 //   - License : MIT - See LICENSE file
 //   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
 //   - Author : MrMati (Mateusz Niedbała) <mati.niedbala5@gmail.com>
-//   - Contributors : 
+//   - Contributors :
 //       - Pier-Yves Lessard (pylessard)
 //
 //    Copyright (c) 2025 Scrutiny Debugger
 
 #include "main.h"
-
-#include "scrutiny_integration.h"
 #include "stm32f411e_discovery.h"
 #include "stm32f411e_discovery_accelerometer.h"
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_gpio.h"
+#include "stm32f4xx_hal_tim.h"
 #include "usb_device.h"
 
+#include "scrutiny_integration.hpp"
+
 I2C_HandleTypeDef hi2c1;
+TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim3;
 
 static void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
+static void TIM2_Init(void);
+static void TIM3_Init(void);
 
 ACCELERO_XYZTypeDef accel_mgXYZ = { 0 };
+
+void TIM3_IRQHandler(void)
+{
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+    HAL_TIM_IRQHandler(&htim3);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM3)
+    {
+        // task_1khz_loop_handler.process();
+    }
+}
 
 int main(void)
 {
@@ -34,26 +54,70 @@ int main(void)
     MX_I2C1_Init();
     MX_USB_DEVICE_Init();
 
+    TIM2_Init();
+    TIM3_Init();
+
     if (BSP_ACCELERO_Init() != ACCELERO_OK)
     {
         Error_Handler();
     }
-
-    scrutiny_integration_init();
+    scrutiny_integration_init(); // Init before timer since the timer invoke Scrutiny Loop Handler.
 
     while (1)
     {
-        uint32_t timestamp_us = 1000 * HAL_GetTick();
+        uint32_t const timestamp_us = TIM2->CNT; // Runs at 1MHz
         scrutiny_integration_update(timestamp_us);
-
-        BSP_ACCELERO_GetXYZ(&accel_mgXYZ);
+        BSP_ACCELERO_GetXYZ(&accel_mgXYZ); // blocking read. Takes ~3.2ms
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
     }
 }
 
-/**
- * @brief System Clock Configuration
- * @retval None
- */
+void TIM2_Init(void)
+{
+    // Enable TIM2 time reference. CLK_INT = APB1 Timer = 48MHz
+    __HAL_RCC_TIM2_CLK_ENABLE();
+    htim2.Instance = TIM2;
+    htim2.Init.Prescaler = 48 - 1;
+    htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+    htim2.Init.Period = 0xFFFFFFFF; // Free running to have a time reference
+    htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+    if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    if (HAL_TIM_Base_Start(&htim2) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+void TIM3_Init(void)
+{
+    // Enable TIM3 time reference. CLK_INT = APB1 Timer = 48MHz
+    __HAL_RCC_TIM3_CLK_ENABLE();
+    htim3.Instance = TIM3;
+    htim3.Init.Prescaler = 0;
+    htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+    htim3.Init.Period = 48000 - 1;
+    htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+
+    if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    HAL_NVIC_SetPriority(TIM3_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(TIM3_IRQn);
+
+    if (HAL_TIM_Base_Start_IT(&htim3) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
 static void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
@@ -64,9 +128,6 @@ static void SystemClock_Config(void)
     __HAL_RCC_PWR_CLK_ENABLE();
     __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-    /** Initializes the RCC Oscillators according to the specified parameters
-     * in the RCC_OscInitTypeDef structure.
-     */
     RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
     RCC_OscInitStruct.HSEState = RCC_HSE_ON;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -80,8 +141,6 @@ static void SystemClock_Config(void)
         Error_Handler();
     }
 
-    /** Initializes the CPU, AHB and APB buses clocks
-     */
     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
@@ -94,11 +153,6 @@ static void SystemClock_Config(void)
     }
 }
 
-/**
- * @brief I2C1 Initialization Function
- * @param None
- * @retval None
- */
 static void MX_I2C1_Init(void)
 {
     hi2c1.Instance = I2C1;
@@ -116,11 +170,6 @@ static void MX_I2C1_Init(void)
     }
 }
 
-/**
- * @brief GPIO Initialization Function
- * @param None
- * @retval None
- */
 static void MX_GPIO_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
@@ -149,12 +198,14 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_7 | GPIO_PIN_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 }
 
-/**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
 void Error_Handler(void)
 {
     /* User can add his own implementation to report the HAL error return state */

@@ -14,7 +14,7 @@ SCRIPT_DIR=$(realpath "$(dirname ${BASH_SOURCE[0]})")
 ROOT_DIR=$SCRIPT_DIR/..
 cd "$ROOT_DIR" 
 
-rm -rf build
+#rm -rf build
 mkdir -p build
 
 USE_CCACHE=0    # Use ccache if available
