@@ -78,10 +78,6 @@ scrutiny_postbuild(${PROJECT_NAME}
     METADATA_AUTHOR "MrMati (Mateusz Niedbała)"
     ALIAS_FILES aliases.json
     CPPFILT ${CMAKE_CPPFILT}
-    CU_IGNORE_PATTERNS
-        ${CMAKE_SOURCE_DIR}"/Drivers/*"
-        ${CMAKE_SOURCE_DIR}"/Middlewares/*"
-        ${CMAKE_SOURCE_DIR}"/USB_DEVICE/*"
     INSTALL_SFD
 )
 
