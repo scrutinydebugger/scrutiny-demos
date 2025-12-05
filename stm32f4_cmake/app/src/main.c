@@ -16,7 +16,7 @@
 #include "stm32f4xx_hal_tim.h"
 #include "usb_device.h"
 
-#include "scrutiny_integration.hpp"
+#include "scrutiny_integration.h"
 
 I2C_HandleTypeDef hi2c1;
 TIM_HandleTypeDef htim2;
@@ -39,9 +39,14 @@ void TIM3_IRQHandler(void)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
+    static uint32_t last_timestamp_us_tim3 = 0;
     if (htim->Instance == TIM3)
     {
-        // task_1khz_loop_handler.process();
+        uint32_t const timestamp_us = TIM2->CNT;
+        uint32_t const timediff_us = (timestamp_us - last_timestamp_us_tim3);
+        last_timestamp_us_tim3 = timestamp_us;
+        // We use a precise time reference to have an accurate "measured time".
+        scrutiny_c_loop_handler_fixed_freq_process(task_1khz_loop_handler, timediff_us * 10);
     }
 }
 

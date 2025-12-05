@@ -35,7 +35,7 @@ add_compile_definitions(
 
 set(SCRUTINY_ENABLE_DATALOGGING 1)
 set(SCRUTINY_SUPPORT_64BITS 0) 
-set(SCRUTINY_BUILD_CWRAPPER 0)
+set(SCRUTINY_BUILD_CWRAPPER 1)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -54,7 +54,7 @@ add_compile_options(
 add_subdirectory(stm32cubemx)   # Load stm32cubemx generated files
 
 add_executable(${PROJECT_NAME}
-    src/scrutiny_integration.cpp
+    src/scrutiny_integration.c
     src/main.c
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf") # Set .elf suffix for tagged binary
@@ -67,7 +67,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 target_link_libraries(${PROJECT_NAME} 
     stm32cubemx         # Object lib in this proejct
-    scrutiny-embedded   # Static lib coming from Github
+    scrutiny-cwrapper   # Static lib coming from Github
 )
 
 scrutiny_postbuild(${PROJECT_NAME} 

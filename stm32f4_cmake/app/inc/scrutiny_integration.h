@@ -13,18 +13,12 @@
 #ifndef __SCRUTINY_INTEGRATION_H
 #define __SCRUTINY_INTEGRATION_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
+#include "scrutiny_cwrapper.h"
 #include <stdint.h>
 
-    void scrutiny_integration_init();
-    void scrutiny_integration_update(const uint32_t timestamp_us);
+extern scrutiny_c_loop_handler_ff_t *task_1khz_loop_handler;
 
-#ifdef __cplusplus
-}
-#endif
+void scrutiny_integration_init();
+void scrutiny_integration_update(const uint32_t timestamp_us);
 
 #endif
