@@ -1,5 +1,5 @@
 {
-    "name": "STM32 Demo",
+    "name": "STM32F4 Demo",
     "api": {
         "client_interface_config": {
             "host": "0.0.0.0",
@@ -14,8 +14,7 @@
             "baudrate": 1000000,
             "stopbits": 1,
             "databits": 8,
-            "parity": "none",
-            "start_delay": 0.5
+            "parity": "none"        
         }
     }
 }
