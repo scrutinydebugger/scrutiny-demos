@@ -10,5 +10,20 @@
     "IMU/Accel_Z (G)": {
         "target": "/global/accel_mgXYZ/z",
         "gain": 0.00006103701
+    },
+    "IO/Input/B1 User": {
+        "target": "/static/main.c/io/B1_User"
+    },
+    "IO/Output/LD3": {
+        "target": "/static/main.c/io/LD3"
+    },
+    "IO/Output/LD4": {
+        "target": "/static/main.c/io/LD4"
+    },
+    "IO/Output/LD5": {
+        "target": "/static/main.c/io/LD5"
+    },
+    "IO/Output/LD6": {
+        "target": "/static/main.c/io/LD6"
     }
 }

@@ -58,6 +58,7 @@ add_executable(${PROJECT_NAME}
     src/main.c
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf")
 target_link_options(${PROJECT_NAME} PRIVATE -T${LINKER_SCRIPT})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.map)

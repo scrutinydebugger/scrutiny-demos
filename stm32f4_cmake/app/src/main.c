@@ -29,6 +29,14 @@ static void TIM2_Init(void);
 static void TIM3_Init(void);
 
 ACCELERO_XYZTypeDef accel_mgXYZ = { 0 };
+static volatile struct
+{
+    GPIO_PinState B1_User; // PA0
+    GPIO_PinState LD3;     // PD13
+    GPIO_PinState LD4;     // PD12
+    GPIO_PinState LD5;     // PD14
+    GPIO_PinState LD6;     // PD15
+} io;
 
 void TIM3_IRQHandler(void)
 {
@@ -75,10 +83,18 @@ int main(void)
 
     while (1)
     {
-        uint32_t const timestamp_us = TIM2->CNT;   // Runs at 1MHz
-        scrutiny_integration_update(timestamp_us); // Maximum refresh rate of 300 update/sec because of blocking accelerometer read below
-        BSP_ACCELERO_GetXYZ(&accel_mgXYZ);         // blocking read. Takes ~3.17ms
         HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
+        uint32_t const timestamp_us = TIM2->CNT; // Runs at 1MHz
+
+        // Passthrough of the user IOs for Scrutiny to control
+        io.B1_User = HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin);
+        HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, io.LD3);
+        HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, io.LD4);
+        HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, io.LD5);
+        HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, io.LD6);
+
+        BSP_ACCELERO_GetXYZ(&accel_mgXYZ);         // blocking read. Takes ~3.17ms
+        scrutiny_integration_update(timestamp_us); // Maximum refresh rate of 300 update/sec because of blocking accelerometer read
     }
 }
 
@@ -192,8 +208,8 @@ static void MX_GPIO_Init(void)
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOD_CLK_ENABLE();
 
-    /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(GPIOD, LD4_Pin | LD3_Pin | LD5_Pin | LD6_Pin, GPIO_PIN_RESET);
+    /* Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPIOD, LD3_Pin | LD4_Pin | LD5_Pin | LD6_Pin, GPIO_PIN_RESET);
 
     /*Configure GPIO pin : PA0 */
     GPIO_InitStruct.Pin = GPIO_PIN_0;
@@ -201,9 +217,8 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    /*Configure GPIO pins : LD4_Pin LD3_Pin LD5_Pin LD6_Pin
-                             Audio_RST_Pin */
-    GPIO_InitStruct.Pin = LD4_Pin | LD3_Pin | LD5_Pin | LD6_Pin;
+    /* Configure GPIO pins : LD3_Pin LD4_Pin LD5_Pin LD6_Pin */
+    GPIO_InitStruct.Pin = LD3_Pin | LD4_Pin | LD5_Pin | LD6_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
