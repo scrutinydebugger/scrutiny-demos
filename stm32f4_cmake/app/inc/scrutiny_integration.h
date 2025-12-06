@@ -1,0 +1,24 @@
+//    scrutiny_integration.h
+//        The app wrapper that integrates scrutiny in this demo by connecting the USB virtual
+//        serial port (CDC-ACM) to the scrutiny streams.
+//
+//   - Author : MrMati (Mateusz Niedbała) <mati.niedbala5@gmail.com>
+//   - Contributors : 
+//       - Pier-Yves Lessard (pylessard)
+//   - License : MIT - See LICENSE file
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//    Copyright (c) 2025 Scrutiny Debugger
+
+#ifndef __SCRUTINY_INTEGRATION_H
+#define __SCRUTINY_INTEGRATION_H
+
+#include "scrutiny_cwrapper.h"
+#include <stdint.h>
+
+extern scrutiny_c_loop_handler_ff_t *task_1khz_loop_handler;
+
+int scrutiny_integration_init();
+void scrutiny_integration_update(const uint32_t timestamp_us);
+
+#endif
