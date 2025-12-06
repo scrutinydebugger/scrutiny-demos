@@ -18,7 +18,19 @@ TIM3 generates a 1 kHz interrupt that executes a loop handler, enabling low‑
 
 The main idle loop runs at approximately 300 Hz because reading the accelerometer is a blocking task that takes about 3.2 ms.
 
-## Example
+## SDK demo
+
+A python script ``sdk_demo.py`` showcase to read/write variables in the device using the Scrutiny SDK.
+
+The demo prints the accelerometer values to the console and make a rotating pattern with the onboard LED, see the video below.
+
+```bash
+python sdk_demo.py --host localhost --port 8765     # Make sure scrutiny SDK is in the python path
+```
+
+![SDK control](images/sdk_demo_led.gif)
+
+## Graph from UI
 
 Below is an example of an acceleration graph acquired with Scrutiny.
 
