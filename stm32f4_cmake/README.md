@@ -27,12 +27,12 @@ The main idle loop runs at approximately 300 Hz because reading the accelerome
 
 ## SDK demo
 
-A python script ``sdk_demo.py`` showcase to read/write variables in the device using the Scrutiny SDK.
+A python script ``sdk_demo.py`` showcase how to read/write variables in the device using the Scrutiny SDK.
 
-The demo prints the accelerometer values to the console and make a rotating pattern with the onboard LED, see the video below.
+The demo prints the accelerometer values to the console and makes a rotating pattern with the onboard LED, see the video below.
 
 ```bash
-# Note:  A server must be running and the scrutiny SDK must be in the python path
+# Note:  A server must be running and the scrutiny SDK must be in the Python path
 python sdk_demo.py --host localhost --port 8765     
 ```
 
@@ -54,7 +54,7 @@ Below is an example of an acceleration graph acquired with Scrutiny.
 - GCC for ARM32
 - CMake
 - GNU Make (or any other build system supported by CMake)
-- \[Optional\]: Bash (Git bash for Widnows is fine)
+- \[Optional\]: Bash (Git bash for Windows is fine)
 
 ## Prebuilt binary
 
@@ -73,7 +73,7 @@ Or use the following bash build script
 ./scripts/build.sh
 ```
 
-Once built, the binary `build/Release/stm32_demo_tagged.[hex|elf]` can be flashed onto the device using a tool such a [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
+Once built, the binary `build/Release/stm32_demo_tagged.[hex|elf]` can be flashed onto the device using a tool such as [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
 
 ## Credit
 
