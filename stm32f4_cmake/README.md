@@ -66,3 +66,7 @@ Or use the following bash build script
 ```
 
 Once built, the binary `build/Release/stm32_demo_tagged.[hex|elf]` can be flashed onto the device using a tool such a [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
+
+## Credit
+
+This demo has been initially written by [MrMati](https://github.com/MrMati) and later improved by the Scrutiny authors.
