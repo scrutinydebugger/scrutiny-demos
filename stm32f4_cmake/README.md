@@ -3,7 +3,7 @@
 This project demonstrates the integration of Scrutiny on an STM32F411 Discovery board in C using the C Wrapper.
 It uses CMake, builds with ARM GCC, and includes all required STM32-specific build dependencies.
 
-The application reads the onboard accelerometer and I/Os and exposes the values in global variables. Aliases are added on top of these, making them accessible through Scrutiny with user-friendly paths such as ``/IMY/Accel_X (G)``
+The application reads the onboard accelerometer and I/Os and exposes the values in global variables. Aliases are added on top of these, making them accessible through Scrutiny with user-friendly paths such as ``/IMU/Accel_X (G)``
 
 Communication is handled via a USB virtual serial port (CDC-ACM) exposed on the user USB connector using the ST libraries. This virtual serial port operates at 1 Mbit/sec regardless of the serial configuration on the host machine. The high speed and low latency of the CDC driver enable the Scrutiny server to poll the device at a relatively high rate.
 
