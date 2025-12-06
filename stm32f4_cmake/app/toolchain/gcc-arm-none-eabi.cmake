@@ -1,11 +1,11 @@
 #    gcc-arm-none-eabi.cmake
 #        The toolchain file for this project
 #
-#   - License : MIT - See LICENSE file
-#   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
 #   - Author : MrMati (Mateusz Niedbała) <mati.niedbala5@gmail.com>
 #   - Contributors : 
 #       - Pier-Yves Lessard (pylessard)
+#   - License : MIT - See LICENSE file
+#   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
 #
 #    Copyright (c) 2025 Scrutiny Debugger
 

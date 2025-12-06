@@ -1,12 +1,9 @@
-//    scrutiny_integration.cpp
+//    scrutiny_integration.c
 //        The app wrapper that integrates scrutiny in this demo by connecting the USB virtual
 //        serial port (CDC-ACM) to the scrutiny streams.
 //
 //   - License : MIT - See LICENSE file
 //   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
-//   - Author : MrMati (Mateusz Niedbała) <mati.niedbala5@gmail.com>
-//   - Contributors :
-//       - Pier-Yves Lessard (pylessard)
 //
 //    Copyright (c) 2025 Scrutiny Debugger
 
