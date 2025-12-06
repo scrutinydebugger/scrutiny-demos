@@ -33,7 +33,7 @@ int scrutiny_integration_init()
     // We use dynamic allocation because SCRUTINY_C_<TYPE>_SIZE are runtime values.
     // We could use static allocation with prior knowledge of these constant.
     // They can either be extracted with objdump or printed once, then replaced by a hardcoded value.
-    // Note: Every "_construct" methods require a buffer of size equal or greater than their resepctive SIZE constant, so a bigger buffer
+    // Note: Every "_construct" methods require a buffer of size equal or greater than their respective SIZE constant, so a bigger buffer
     // can be given, including some margin for future proofing the code.
 
     main_handler = scrutiny_c_main_handler_construct(malloc(SCRUTINY_C_MAIN_HANDLER_SIZE), SCRUTINY_C_MAIN_HANDLER_SIZE);

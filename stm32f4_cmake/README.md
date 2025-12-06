@@ -75,6 +75,18 @@ Or use the following bash build script
 
 Once built, the binary `build/Release/stm32_demo_tagged.[hex|elf]` can be flashed onto the device using a tool such as [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
 
+## Note on ``malloc()``
+
+Scrutiny works with static allocation only; no dynamic allocation is performed in the library. In this demo, there is a call to ``malloc()`` during the initialization of Scrutiny. This dynamic allocation is not necessary, it simply simplifies the C integration and the demo code.
+
+Scrutiny was originally written in C++ and later ported to C with a C wrapper. This means the C compiler does not have access to the size of the C++ class at compile time, but the sizes are available through runtime constants (``SCRUTINY_C_<class_name>_SIZE``). Using ``malloc()`` is the easiest way to use these cosntants.
+
+To avoid using ``malloc()`` when initializing Scrutiny in C, two options exists:
+ 1. Allocate a static buffer with a hard-coded size that is at least as large as the required size. That size can be determined by inspecting the values of the runtime constants once.
+ 2. Extract the values of the size constants before compilation using ``objdump``.
+
+**N.B.** There are plans to add a CMake helper to automatically generate a header file with the correct values so they can be used at compile time.
+
 ## Credit
 
-This demo has been initially written by [MrMati](https://github.com/MrMati) and later improved by the Scrutiny authors.
+This demo has been initially written by [MrMati](https://github.com/MrMati) and later modified by the Scrutiny authors.
