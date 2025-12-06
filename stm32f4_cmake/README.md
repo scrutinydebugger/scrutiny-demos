@@ -53,7 +53,7 @@ Below is an example of an acceleration graph acquired with Scrutiny.
 
 - GCC for ARM32
 - CMake
-- \[Optional\]: GNU Make
+- GNU Make (or any other build system supported by CMake)
 - \[Optional\]: Bash (Git bash for Widnows is fine)
 
 ## Prebuilt binary

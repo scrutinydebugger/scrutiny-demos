@@ -19,13 +19,12 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
+project(stm32f4_demo)
 enable_language(C CXX ASM)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
-
-project(stm32f4_demo)
 
 add_compile_definitions(
 	USE_HAL_DRIVER 
@@ -80,6 +79,10 @@ scrutiny_postbuild(${PROJECT_NAME}
     METADATA_AUTHOR "MrMati (Mateusz Niedbała)"
     ALIAS_FILES aliases.json
     CPPFILT ${CMAKE_CPPFILT}
+    CU_IGNORE_PATTERNS
+        */app/stm32cubemx/Drivers/*
+        */app/stm32cubemx/Middlewares/*
+        */app/stm32cubemx/USB_DEVICE/*
     INSTALL_SFD     # Auto install the .sfd on the build amchine
 )
 
