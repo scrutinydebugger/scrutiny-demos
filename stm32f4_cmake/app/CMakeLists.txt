@@ -57,7 +57,7 @@ add_executable(${PROJECT_NAME}
     src/scrutiny_integration.c
     src/main.c
 )
-set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf") # Set .elf suffix for tagged binary
+
 target_link_options(${PROJECT_NAME} PRIVATE -T${LINKER_SCRIPT})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.map)
@@ -70,6 +70,7 @@ target_link_libraries(${PROJECT_NAME}
     scrutiny-cwrapper   # Static lib coming from Github
 )
 
+# Inject the firmware ID in the .elf and generate the .sfd file for the server
 scrutiny_postbuild(${PROJECT_NAME} 
     TAGGED_EXECUTABLE_TARGET_VAR TAGGED_BIN_TARGET
     TAGGED_EXECUTABLE_PATH_VAR TAGGED_BIN_FILE
@@ -78,7 +79,7 @@ scrutiny_postbuild(${PROJECT_NAME}
     METADATA_AUTHOR "MrMati (Mateusz Niedbała)"
     ALIAS_FILES aliases.json
     CPPFILT ${CMAKE_CPPFILT}
-    INSTALL_SFD
+    INSTALL_SFD     # Auto install the .sfd on the build amchine
 )
 
 get_filename_component(TAGGED_BINARY_BASENAME_WE ${TAGGED_BIN_FILE} NAME_WE)
