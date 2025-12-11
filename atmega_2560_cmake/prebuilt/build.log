@@ -1,48 +1,89 @@
-$ ./scripts/build_in_docker.sh 
-[+] Building 22.8s (8/8) FINISHED                                                                                                                                                                      docker:default
- => [internal] load build definition from Dockerfile                                                                                                                                                             0.0s
- => => transferring dockerfile: 369B                                                                                                                                                                             0.0s
- => [internal] load metadata for docker.io/library/ubuntu:22.04                                                                                                                                                  0.1s
- => [internal] load .dockerignore                                                                                                                                                                                0.0s
- => => transferring context: 2B                                                                                                                                                                                  0.0s
- => [1/4] FROM docker.io/library/ubuntu:22.04@sha256:01a3ee0b5e413cefaaffc6abe68c9c37879ae3cced56a8e088b1649e5b269eee                                                                                            0.0s
- => CACHED [2/4] WORKDIR /tmp/                                                                                                                                                                                   0.0s
- => CACHED [3/4] RUN apt-get update && apt-get install -y     ninja-build     cmake     git     wget     arduino     gcc-avr     avrdude     avr-libc     python3     python3-pip     && rm -rf /var/lib/apt/li  0.0s
- => [4/4] RUN pip3 install scrutinydebugger==0.5.2                                                                                                                                                              17.8s
- => exporting to image                                                                                                                                                                                           4.8s 
- => => exporting layers                                                                                                                                                                                          4.7s 
- => => writing image sha256:40ac8c2f582266bd97913bfcd7c514c06b68ed6f0a9443af4579d8198b692fb3                                                                                                                     0.0s 
- => => naming to docker.io/library/scrutiny_nsec2024_demo                                                                                                                                                        0.0s 
-[Info] ARDUINO_PATH=/usr/share/arduino                                                                                                                                                                                
--- Scrutiny datalogging is ENABLED                                                                                                                                                                                    
+-- The C compiler identification is GNU 5.4.0
+-- The CXX compiler identification is GNU 5.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/avr-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/avr-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Scrutiny datalogging is ENABLED
 -- Scrutiny support for 64bits is DISABLED
+-- Using scrutiny at /usr/local/bin/scrutiny
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/py/scrutiny/scrutiny-demos/nsec2024/build
+-- Build files have been written to: /home/py/scrutiny/scrutiny-demos/atmega_2560_cmake/build
 ninja: Entering directory `build'
-[1/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_config.cpp.obj
-[2/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_loop_handler.cpp.obj
-[3/14] Building CXX object CMakeFiles/scrutiny-nsec2024.dir/src/main.cpp.obj
-[4/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogging.cpp.obj
-[5/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/protocol/scrutiny_codec_v1_0.cpp.obj
-[6/14] Building CXX object CMakeFiles/scrutiny-nsec2024.dir/src/scrutiny_integration.cpp.obj
-[7/14] Building CXX object _deps/scrutiny-embedded-build/cwrapper/CMakeFiles/scrutiny-cwrapper.dir/scrutiny_cwrapper.cpp.obj
-[8/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogger.cpp.obj
-[9/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogger_raw_encoder.cpp.obj
-[10/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogging_trigger.cpp.obj
-[11/14] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_main_handler.cpp.obj
-[12/14] Linking CXX static library _deps/scrutiny-embedded-build/lib/libscrutiny-embedded.a
-[13/14] Linking CXX static library _deps/scrutiny-embedded-build/cwrapper/libscrutiny-cwrapper.a
-[14/14] Linking CXX executable scrutiny-nsec2024_untagged.elf
-[INFO] <get-firmware-id> Firmware ID 69fd2d89bfc4441509359606d13ebfa5 written to /home/py/scrutiny/scrutiny-demos/nsec2024/build/scrutiny-nsec2024_sfd/firmwareid
-[INFO] <tag-firmware-id> Binary scrutiny-nsec2024.elf tagged with firmware ID: 69fd2d89bfc4441509359606d13ebfa5
-[INFO] <make-metadata> Metadata file /home/py/scrutiny/scrutiny-demos/nsec2024/build/scrutiny-nsec2024_sfd/metadata.json written
-[INFO] <make-sfd> SFD File scrutiny-nsec2024.sfd written
-scrutiny-nsec2024.elf  :
-section                     size      addr
-.data                        176   8389120
-.text                      32414         0
-.bss                        5240   8389296
-.comment                      17         0
-.note.gnu.avr.deviceinfo      64         0
-Total                      37911
+[1/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/abi.cpp.obj
+[2/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial1.cpp.obj
+[3/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/CDC.cpp.obj
+[4/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial3.cpp.obj
+[5/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial2.cpp.obj
+[6/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial0.cpp.obj
+[7/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/new.cpp.obj
+[8/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/IPAddress.cpp.obj
+[9/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/PluggableUSB.cpp.obj
+[10/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial.cpp.obj
+[11/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/main.cpp.obj
+[12/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/USBCore.cpp.obj
+[13/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/WMath.cpp.obj
+[14/47] Building C object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/hooks.c.obj
+[15/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/Print.cpp.obj
+[16/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/Stream.cpp.obj
+[17/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/Tone.cpp.obj
+[18/47] Building C object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/WInterrupts.c.obj
+[19/47] Building C object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/wiring_analog.c.obj
+[20/47] Building C object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/wiring.c.obj
+[21/47] Building C object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/wiring_pulse.c.obj
+[22/47] Building C object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/wiring_shift.c.obj
+[23/47] Building C object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/wiring_digital.c.obj
+[24/47] Building CXX object CMakeFiles/scrutiny-nsec2024.dir/src/scrutiny_integration.cpp.obj
+[25/47] Building CXX object CMakeFiles/scrutiny-nsec2024.dir/src/bno055.cpp.obj
+[26/47] Building CXX object CMakeFiles/scrutiny-nsec2024.dir/src/main.cpp.obj
+[27/47] Building CXX object CMakeFiles/ArduinoCore.dir/usr/share/arduino/hardware/arduino/avr/cores/arduino/WString.cpp.obj
+[28/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_software_id.cpp.obj
+[29/47] Building C object CMakeFiles/scrutiny-nsec2024.dir/src/twi/twi.c.obj
+[30/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_loop_handler.cpp.obj
+[31/47] Linking CXX static library libArduinoCore.a
+[32/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_config.cpp.obj
+[33/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_common_codecs.cpp.obj
+[34/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/protocol/scrutiny_protocol_definitions.cpp.obj
+[35/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_tools.cpp.obj
+[36/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogging.cpp.obj
+[37/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/protocol/scrutiny_comm_handler.cpp.obj
+[38/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogging_trigger.cpp.obj
+[39/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_main_handler.cpp.obj
+[40/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogger.cpp.obj
+[41/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogger_raw_encoder.cpp.obj
+[42/47] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/protocol/scrutiny_codec_v1_0.cpp.obj
+[43/47] Linking CXX static library _deps/scrutiny-embedded-build/lib/libscrutiny-embedded.a
+[44/47] Linking CXX executable scrutiny-nsec2024.elf
+[45/47] Generating scrutiny-nsec2024_tagged.elf
+[INFO] <tag-firmware-id> Binary /home/py/scrutiny/scrutiny-demos/atmega_2560_cmake/build/scrutiny-nsec2024_tagged.elf tagged with firmware ID: f5dd7d8f3113adbc6f3c07f43d9c3f82
+[46/47] Running utility command for scrutiny-nsec2024_tagged_target
+/home/py/scrutiny/scrutiny-demos/atmega_2560_cmake/build/scrutiny-nsec2024_tagged.elf  :
+section                      size      addr
+.data                         176   8389120
+.text                       32508         0
+.bss                         5239   8389296
+.comment                       17         0
+.note.gnu.avr.deviceinfo       64         0
+.debug_aranges                544         0
+.debug_info                 60415         0
+.debug_abbrev                8674         0
+.debug_line                  7076         0
+.debug_frame                 1816         0
+.debug_str                  41233         0
+.debug_loc                   4060         0
+.debug_ranges                 504         0
+Total                      162326
+
+
+[47/47] Generating scrutiny-nsec2024.sfd
+Generating Scrutiny Firmware Description for scrutiny-nsec2024
+[INFO] <get-firmware-id> Firmware ID f5dd7d8f3113adbc6f3c07f43d9c3f82 written to /home/py/scrutiny/scrutiny-demos/atmega_2560_cmake/build/_scrutiny_scrutiny-nsec2024_sfd_workfolder/firmwareid
+[INFO] <make-metadata> Metadata file /home/py/scrutiny/scrutiny-demos/atmega_2560_cmake/build/_scrutiny_scrutiny-nsec2024_sfd_workfolder/metadata.json written
+[INFO] <make-sfd> SFD File /home/py/scrutiny/scrutiny-demos/atmega_2560_cmake/build/scrutiny-nsec2024.sfd written

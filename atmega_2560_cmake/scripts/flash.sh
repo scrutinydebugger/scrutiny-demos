@@ -4,7 +4,7 @@ ROOT_DIR=$SCRIPT_DIR/..
 cd "$ROOT_DIR" 
 
 source $SCRIPT_DIR/common.sh
-BINNAME=scrutiny-nsec2024.hex
+BINNAME=scrutiny-nsec2024_tagged.hex
 BINPATH=./build/$BINNAME
 DEFAULT_PORT=/dev/ttyACM0
 

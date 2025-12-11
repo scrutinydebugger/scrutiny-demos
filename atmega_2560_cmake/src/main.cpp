@@ -1,6 +1,6 @@
 //    main.cpp
 //        NorthSec 2024 demo. 
-//        Scrutiny demonstration used during nsec2024 talk
+//        ATMega 2560 demo. \nScrutiny demonstration used during NorthSec 2024
 //
 //   - License : MIT - See LICENSE file.
 //   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
