@@ -14,6 +14,11 @@ uint8_t scrutiny_rx_buffer[256];
 uint8_t scrutiny_tx_buffer[512];
 uint8_t scrutiny_datalogging_buffer[16384];
 
+static uint8_t scrutiny_config_memory[CPP_CONST_SCRUTINY_C_CONFIG_SIZE];
+static uint8_t main_handler_memory[CPP_CONST_SCRUTINY_C_MAIN_HANDLER_SIZE];
+static uint8_t task_1khz_loop_handler_memory[CPP_CONST_SCRUTINY_C_LOOP_HANDLER_FF_SIZE];
+static uint8_t task_idle_loop_handler_memory[CPP_CONST_SCRUTINY_C_LOOP_HANDLER_VF_SIZE];
+
 static scrutiny_c_config_t *scrutiny_config = NULL;
 static scrutiny_c_main_handler_t *main_handler = NULL;
 scrutiny_c_loop_handler_ff_t *task_1khz_loop_handler = NULL;
@@ -36,15 +41,15 @@ int scrutiny_integration_init()
     // Note: Every "_construct" methods require a buffer of size equal or greater than their respective SIZE constant, so a bigger buffer
     // can be given, including some margin for future proofing the code.
 
-    main_handler = scrutiny_c_main_handler_construct(malloc(SCRUTINY_C_MAIN_HANDLER_SIZE), SCRUTINY_C_MAIN_HANDLER_SIZE);
+    main_handler = scrutiny_c_main_handler_construct(main_handler_memory, sizeof(main_handler_memory));
     RETURN_1_IF_NULL(main_handler);
-    scrutiny_config = scrutiny_c_config_construct(malloc(SCRUTINY_C_CONFIG_SIZE), SCRUTINY_C_CONFIG_SIZE);
+    scrutiny_config = scrutiny_c_config_construct(scrutiny_config_memory, sizeof(scrutiny_config_memory));
     RETURN_1_IF_NULL(scrutiny_config);
     task_idle_loop_handler =
-        scrutiny_c_loop_handler_variable_freq_construct(malloc(SCRUTINY_C_LOOP_HANDLER_VF_SIZE), SCRUTINY_C_LOOP_HANDLER_VF_SIZE, "Idle loop");
+        scrutiny_c_loop_handler_variable_freq_construct(task_idle_loop_handler_memory, sizeof(task_idle_loop_handler_memory), "Idle loop");
     RETURN_1_IF_NULL(task_idle_loop_handler);
     task_1khz_loop_handler =
-        scrutiny_c_loop_handler_fixed_freq_construct(malloc(SCRUTINY_C_LOOP_HANDLER_FF_SIZE), SCRUTINY_C_LOOP_HANDLER_FF_SIZE, 1e7 / 1000, "1KHz");
+        scrutiny_c_loop_handler_fixed_freq_construct(task_1khz_loop_handler_memory, sizeof(task_1khz_loop_handler_memory), 1e7 / 1000, "1KHz");
     RETURN_1_IF_NULL(task_1khz_loop_handler);
 
     scrutiny_loops[0] = task_idle_loop_handler;

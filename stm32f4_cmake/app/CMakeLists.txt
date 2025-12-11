@@ -40,7 +40,7 @@ include(FetchContent)
 FetchContent_Declare(
   scrutiny-embedded
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        v0.4.0
+  GIT_TAG        v0.5.0
 )
 
 FetchContent_MakeAvailable(scrutiny-embedded)
