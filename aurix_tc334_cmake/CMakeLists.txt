@@ -26,7 +26,7 @@ set(SCRUTINY_BUILD_CWRAPPER 0)
 FetchContent_Declare(
   scrutiny-embedded
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        v0.3.1
+  GIT_TAG        v0.5.0
 )
 FetchContent_MakeAvailable(scrutiny-embedded)
 
