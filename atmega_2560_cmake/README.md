@@ -4,6 +4,8 @@ This project is a Arduino project used to demonstrate the Scrutiny framework dur
 
 https://nsec.io/session/2024-scrutiny-debugger-debug-test-and-configure-embedded-softwares-through-instrumentation.html
 
+It has been modified since then
+
 ## Required hardware:
 
  - Arduino Mega 2560
@@ -14,7 +16,7 @@ https://nsec.io/session/2024-scrutiny-debugger-debug-test-and-configure-embedded
 
 ## Building the Arduino app
 
-Calling the following script should be enough, assuming you have docker configured
+Calling the following scripts should be enough, assuming you have docker configured
 
 ```bash
 export ARDUINO_PORT=/dev/ttyACM0    # Change serial port
@@ -29,8 +31,7 @@ The prebuilt binary (ready to be flashed) & the Scrutiny Firmware File (.sfd) to
 ## Running the server
 
 ```bash
-# pip install scrutinydebugger  # For latest release
-git clone --depth 1 -b v0.5.2 https://github.com/scrutinydebugger/scrutiny-main /tmp/scrutiny-main && pip3 install -e /tmp/scrutiny-main
+pip install scrutinydebugger  # For latest release
 scrutiny server --config scrutiny_server_config.json    # Make sure to adjust the serial port name in that configuration
 ```
 
