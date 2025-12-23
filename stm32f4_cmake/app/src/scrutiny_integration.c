@@ -35,12 +35,6 @@ static uint32_t last_timestamp_us;
 
 int scrutiny_integration_init()
 {
-    // We use dynamic allocation because SCRUTINY_C_<TYPE>_SIZE are runtime values.
-    // We could use static allocation with prior knowledge of these constant.
-    // They can either be extracted with objdump or printed once, then replaced by a hardcoded value.
-    // Note: Every "_construct" methods require a buffer of size equal or greater than their respective SIZE constant, so a bigger buffer
-    // can be given, including some margin for future proofing the code.
-
     main_handler = scrutiny_c_main_handler_construct(main_handler_memory, sizeof(main_handler_memory));
     RETURN_1_IF_NULL(main_handler);
     scrutiny_config = scrutiny_c_config_construct(scrutiny_config_memory, sizeof(scrutiny_config_memory));
