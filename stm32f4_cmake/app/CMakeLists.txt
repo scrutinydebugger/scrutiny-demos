@@ -40,7 +40,7 @@ include(FetchContent)
 FetchContent_Declare(
   scrutiny-embedded
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        v0.5.0
+  GIT_TAG        v0.5.1
 )
 
 FetchContent_MakeAvailable(scrutiny-embedded)
@@ -83,7 +83,8 @@ scrutiny_postbuild(${PROJECT_NAME}
         */app/stm32cubemx/Drivers/*
         */app/stm32cubemx/Middlewares/*
         */app/stm32cubemx/USB_DEVICE/*
-    INSTALL_SFD     # Auto install the .sfd on the build amchine
+    INSTALL_SFD     # Auto install the .sfd on the build machine
+    DEREFERENCE_POINTERS ON
 )
 
 get_filename_component(TAGGED_BINARY_BASENAME_WE ${TAGGED_BIN_FILE} NAME_WE)
