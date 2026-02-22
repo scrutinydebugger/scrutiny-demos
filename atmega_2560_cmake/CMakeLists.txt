@@ -17,7 +17,7 @@ set(SCRUTINY_BUILD_CWRAPPER 0)
 FetchContent_Declare(
   scrutiny-embedded
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        v0.5.0
+  GIT_TAG        v0.5.1
 )
 FetchContent_MakeAvailable(scrutiny-embedded)
 
@@ -60,6 +60,7 @@ scrutiny_postbuild(${PROJECT_NAME}
     ALIAS_FILES aliases/alias1.json
     CPPFILT ${CMAKE_CPPFILT}
     #INSTALL_SFD        #  Can be installed automatically. Need to be outside of docker
+    DEREFERENCE_POINTERS ON
 )
 
 get_filename_component(TAGGED_BINARY_BASENAME_WE ${TAGGED_BIN_FILE} NAME_WE)

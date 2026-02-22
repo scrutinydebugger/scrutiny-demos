@@ -16,6 +16,6 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install scrutinydebugger==0.10.1
+RUN pip3 install scrutinydebugger==0.11.0
 # For dev, we can work with a specific branch
-#RUN git clone https://github.com/scrutinydebugger/scrutiny-main -b v0.10.1 && pip3 install -e scrutiny-main
+#RUN git clone https://github.com/scrutinydebugger/scrutiny-main -b v0.11.0 && pip3 install -e scrutiny-main

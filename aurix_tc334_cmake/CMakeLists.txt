@@ -26,7 +26,7 @@ set(SCRUTINY_BUILD_CWRAPPER 0)
 FetchContent_Declare(
   scrutiny-embedded
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        v0.5.0
+  GIT_TAG        v0.5.1
 )
 FetchContent_MakeAvailable(scrutiny-embedded)
 
@@ -81,6 +81,7 @@ scrutiny_postbuild(${PROJECT_NAME}
         *_impure_data*        # We can skip one or many variables with a list of glob expression
 
     CPPFILT ${CMAKE_CPPFILT}    # Make sure we use tricore-elf-c++filt for demangling 
+    DEREFERENCE_POINTERS OFF
 
 )
 
