@@ -81,7 +81,7 @@ scrutiny_postbuild(${PROJECT_NAME}
         *_impure_data*        # We can skip one or many variables with a list of glob expression
 
     CPPFILT ${CMAKE_CPPFILT}    # Make sure we use tricore-elf-c++filt for demangling 
-    DEREFERENCE_POINTERS OFF
+    DEREFERENCE_POINTERS ON
 
 )
 
