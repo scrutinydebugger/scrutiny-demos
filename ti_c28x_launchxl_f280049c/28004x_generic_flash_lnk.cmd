@@ -1,4 +1,4 @@
---retain=*(.bss)
+
 MEMORY
 {
 PAGE 0 :
@@ -93,11 +93,13 @@ SECTIONS
    /* Initalized sections go in Flash */
    .const           : > FLASH_BANK1_SEC0_15,       PAGE = 0,       ALIGN(4)
 #else
+   /* We need an .elf for Scrutiny.
    .pinit           : > FLASH_BANK1_SEC0_15,       PAGE = 0,       ALIGN(4)
    .ebss            : > RAMLS5,       PAGE = 1
    .esysmem         : > RAMLS5,       PAGE = 1
    .cio             : > RAMLS0_4,     PAGE = 0
    .econst          : > FLASH_BANK1_SEC0_15,    PAGE = 0, ALIGN(4)
+   */
 #endif
 
    ramgs0           : > RAMGS0,    PAGE = 1
@@ -114,7 +116,8 @@ SECTIONS
                       RUN_SIZE(RamfuncsRunSize),
                       RUN_END(RamfuncsRunEnd),
                       PAGE = 0, ALIGN(4)
-#else					  
+#else			
+/*	 We need an ELF for Scrutiny	 
    .TI.ramfunc      : LOAD = FLASH_BANK1_SEC0_15,
                       RUN = RAMLS0_4,
                       LOAD_START(_RamfuncsLoadStart),
@@ -124,6 +127,7 @@ SECTIONS
                       RUN_SIZE(_RamfuncsRunSize),
                       RUN_END(_RamfuncsRunEnd),
                       PAGE = 0, ALIGN(4)
+   */
 #endif
 
 }
