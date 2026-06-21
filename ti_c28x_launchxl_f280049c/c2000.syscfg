@@ -15,6 +15,8 @@ const cputimer2 = cputimer.addInstance();
 const gpio      = scripting.addModule("/driverlib/gpio.js", {}, false);
 const gpio1     = gpio.addInstance();
 const gpio2     = gpio.addInstance();
+const gpio3     = gpio.addInstance();
+const gpio4     = gpio.addInstance();
 const sci       = scripting.addModule("/driverlib/sci.js", {}, false);
 const sci1      = sci.addInstance();
 
@@ -45,6 +47,16 @@ gpio1.gpioPin.$assign   = "boosterpack1.34";
 gpio2.$name           = "GPIO_Idle1SecDebug";
 gpio2.direction       = "GPIO_DIR_MODE_OUT";
 gpio2.gpioPin.$assign = "boosterpack1.33";
+
+gpio3.$name           = "LED4";
+gpio3.direction       = "GPIO_DIR_MODE_OUT";
+gpio3.gpioPin.$assign = "boosterpack1.12";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to LED4 \\(User LEDs\\) on the LaunchPad F280049C\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", gpio3, "gpioPin");
+
+gpio4.$name           = "LED5";
+gpio4.direction       = "GPIO_DIR_MODE_OUT";
+gpio4.gpioPin.$assign = "boosterpack2.52";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to LED5 \\(User LEDs\\) on the LaunchPad F280049C\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", gpio4, "gpioPin");
 
 sci1.$hardware             = system.deviceData.board.components.XDS_UART.subComponents.XDS_SCI_INST1;
 sci1.$name                 = "XDS_SCIA";

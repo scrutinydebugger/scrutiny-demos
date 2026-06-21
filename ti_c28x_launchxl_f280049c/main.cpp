@@ -4,11 +4,15 @@
 #include "device.h"
 #include "driverlib.h"
 #include "scrutiny_integration.hpp"
+#include "plant.hpp"
 
 #define DEBUG_PIN_1HZ_TOGGLE_PERIOD 5000000u // 500 msec in multiple of 100ns
+#define PLANT_TAU  0.25f
 
-extern bool scrutiny_init(uint32_t const sci_base);
-extern void scrutiny_idle_update(uint32_t timediff_100ns);
+static IIR1stOrder s_plant(0.001); // Will run in 1KHz task
+
+static volatile bool counter_enable = false;
+static volatile uint32_t counter = 0;
 
 inline uint32_t get_timestamp_100ns(void)
 {
@@ -26,11 +30,19 @@ void main(void)
     Board_init();               // Invoke syscfg generated code
     C2000Ware_libraries_init(); // We don't use this. Let it in case
 
+
+    GPIO_writePin(LED4, 1);
+    GPIO_writePin(LED5, 1);
+
     if (scrutiny_init(XDS_SCIA_BASE) == false)
     {
+        GPIO_writePin(LED4, 0);
+        GPIO_writePin(LED5, 0);
         while (1)
             ;
     }
+
+    s_plant.init(PLANT_TAU); // Time constant of 0.25sec
 
     EINT;
     ERTM;
@@ -47,7 +59,12 @@ void main(void)
         if ((timestamp - onesec_toggle_last_timestamp) >= DEBUG_PIN_1HZ_TOGGLE_PERIOD) // 500msec
         {
             GPIO_togglePin(GPIO_Idle1SecDebug); // J40 / Pin 33 (GPIO30)
+            GPIO_togglePin(LED4);               // Onboard LED (GPIO23)
             onesec_toggle_last_timestamp = timestamp;
+        }
+
+        if (counter_enable){
+            counter++;
         }
 
         scrutiny_idle_update(timestamp - last_timestamp);
@@ -57,10 +74,15 @@ void main(void)
 
 void INT_CPUTIMER_TASK_1K_ISR(void)
 {
+    static uint32_t isr_count=0;
+    static volatile float plant_input = 0.0f;   // Can be written by Scrutiny
+
+    isr_count++;
     // Toggle a pin to measure the load and frequency of this task with a logic analyzer
     GPIO_writePin(GPIO_task1KDebug, 1); // J40 / Pin 34 (GPIO58)
     for (volatile int i = 0; i < 300; i++)
         ;
+    s_plant.step(plant_input);
     task1KHz_LoopHandler.process();
     GPIO_writePin(GPIO_task1KDebug, 0);
 }

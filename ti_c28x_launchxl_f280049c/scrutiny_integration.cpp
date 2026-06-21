@@ -1,5 +1,6 @@
 #include "sci.h"
 #include "scrutiny.hpp"
+#include "board.h"
 #include <stdint.h>
 
 static uint32_t SCI_DEVICE = 0; // UART on which to talk. Given by main().
@@ -36,6 +37,37 @@ static scrutiny::AddressRange read_only_regions[] = {   // Don't put on the stac
 };
 // ======
 
+// ====== Runtime Published Values - We tie a LED to one. No need of debug symbol to find those. =====
+bool rpv_write_callback(const scrutiny::RuntimePublishedValue rpv, const scrutiny::AnyType *inval, scrutiny::LoopHandler* caller)
+{   
+    static_cast<void>(caller);
+    if (rpv.id == 0x1000){
+        GPIO_writePin(LED5, (inval->boolean) ? 0 : 1);
+    }
+    else {
+        return false;
+    }
+    return true;
+}
+
+bool rpv_read_callback(scrutiny::RuntimePublishedValue rpv, scrutiny::AnyType *outval, scrutiny::LoopHandler* caller)
+{   
+    static_cast<void>(caller);
+    if (rpv.id == 0x1000){
+        outval->boolean = (GPIO_readPin(LED5) == 0);
+    }
+    else {
+        return false;
+    }
+    return true;
+}
+
+scrutiny::RuntimePublishedValue rpvs[] = {
+    {0x1000, scrutiny::VariableType::boolean}
+};
+
+// =====
+
 bool scrutiny_init(uint32_t const sci_base)
 {
     SCI_DEVICE = sci_base;
@@ -46,6 +78,7 @@ bool scrutiny_init(uint32_t const sci_base)
     config.set_loops(loops, sizeof(loops) / sizeof(loops[0]));
     config.set_forbidden_address_range(forbidden_regions, sizeof(forbidden_regions)/sizeof(forbidden_regions[0]));
     config.set_readonly_address_range(read_only_regions, sizeof(read_only_regions)/sizeof(read_only_regions[0]));
+    config.set_published_values(rpvs, sizeof(rpvs)/sizeof(rpvs[0]), rpv_read_callback, rpv_write_callback);
     return main_handler.init(&config) == scrutiny::Status::SUCCESS;
 }
 
