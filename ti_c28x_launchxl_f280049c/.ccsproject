@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?ccsproject version="1.0"?>
+<projectOptions>
+	<ccsVariant value="50:Theia-based"/>
+	<ccsVersion value="70.5.1"/>
+	<deviceFamily value="C2000"/>
+	<executableActions value=""/>
+	<createSlaveProjects value=""/>
+	<templateProperties value="id=empty_sysconfig_launchpad.projectspec.ti_c28x_launchxl_f280049c"/>
+	<origin value="C:\ti\C2000Ware_26_00_00_00\driverlib\f28004x\examples\pinmux\CCS\empty_sysconfig_launchpad.projectspec"/>
+	<filesToOpen value=""/>
+	<connection value="common/targetdb/connections/TIXDS110_Connection.xml"/>
+	<isTargetConfigurationManual value="false"/>
+	<activeTargetConfiguration value="targetConfigs/TMS320F280049C.ccxml"/>
+</projectOptions>

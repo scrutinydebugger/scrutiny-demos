@@ -1,0 +1,11 @@
+{
+    "Plant/input" : {
+        "target" : "/static/main.cpp/INT_CPUTIMER_TASK_1K_ISR/plant_input"
+    }, 
+    "Plant/output" : {
+        "target" : "/static/main.cpp/s_plant/m_output"
+    }, 
+    "Plant/alpha" : {
+        "target" : "/static/main.cpp/s_plant/m_alpha"
+    } 
+}
