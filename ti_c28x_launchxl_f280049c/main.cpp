@@ -80,7 +80,7 @@ void INT_CPUTIMER_TASK_1K_ISR(void)
     isr_count++;
     // Toggle a pin to measure the load and frequency of this task with a logic analyzer
     GPIO_writePin(GPIO_task1KDebug, 1); // J40 / Pin 34 (GPIO58)
-    for (volatile int i = 0; i < 300; i++)
+    for (volatile int i = 0; i < 300; i++)  // Waste some cpu cycle
         ;
     s_plant.step(plant_input);
     task1KHz_LoopHandler.process();

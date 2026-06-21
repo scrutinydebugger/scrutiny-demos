@@ -1,6 +1,10 @@
 #Requires -Version 5.1
 $ErrorActionPreference = 'Stop'
 
+# This script executes the Scrutiny postbuild steps using powershell
+# Usage : powershell scrutiny_postbuild.ps1 <path_to_elf>
+# Can be invoked by CCS as a post-build step
+
 function fatal($msg, $code = 1) { Write-Error "[Error] $msg"; exit $code }
 function info($msg)             { Write-Host "[Info] $msg" }
 

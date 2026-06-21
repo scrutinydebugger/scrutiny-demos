@@ -1,4 +1,9 @@
 #/bin/bash 
+
+# This script executes the Scrutiny postbuild steps using bash
+# Usage : ./scrutiny_postbuild.sh <path_to_elf>
+# Can be invoked by CCS as a post-build step
+
 set -euo pipefail   # Stop on any error
 # Helper for logging
 fatal() { >&2 echo -e "[Error] $1"; exit ${2:-1}; }
@@ -41,7 +46,7 @@ scrutiny elf2varmap "${ELFFILE}"  \
         "/global/__TI*"     \
         "/global/std/*"     \
         "/global/_sys_memory/*"
-scrutiny add-alias ${WORKFOLDER} --file ../aliases/alias_hardware.json alias_plant.json
+scrutiny add-alias ${WORKFOLDER} --file ../aliases/alias_hardware.json ../aliases/alias_plant.json
 scrutiny make-metadata --project "C2000 Testapp" --version "1.0" --output "${WORKFOLDER}"   # Inject some metadata to identify the SFD more easily.
 scrutiny make-sfd "${WORKFOLDER}" "${SFD_FILENAME}"  --install                              # Create the final .sfd file
 
