@@ -93,7 +93,7 @@ To demonstrate how Runtime Published Values (RPVs) can be used, we define one wi
 2. Edit `c2000.sysconfig` to enable SCIA on pins 28/29 (UART through the debug probe).
 3. Edit the project configuration to select the XDS110 USB debug probe — the default value set by the project wizard is incorrect for this board.
 4. Delete all build configurations except `CPU1_FLASH`.
-5. Fetch Scrutiny and copy the default config (see ``init_scrutiny.[bat|sh]``).
+5. Fetch Scrutiny and copy the default config ``<root>/scrutiny-embedded/lib/inc/scrutiny_config.hpp.default`` -> ``<root>/scrutiny_config.hpp``
 6. Exclude all folders under `scrutiny-embedded` from the build, except the `lib` folder.
 7. Add include paths:
     - `${PROJECT_ROOT}/scrutiny-embedded/lib/inc`
