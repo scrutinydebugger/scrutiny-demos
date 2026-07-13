@@ -11,13 +11,15 @@ include(FetchContent)
 
 set(SCRUTINY_ENABLE_DATALOGGING 1)
 set(SCRUTINY_SUPPORT_64BITS 0) 
+set(SCRUTINY_SUPPORT_PROTECTED_REGIONS 0) 
 set(SCRUTINY_DATALOGGING_BUFFER_32BITS 0) 
 set(SCRUTINY_BUILD_CWRAPPER 0) 
+set(SCRUTINY_DATALOGGING_MAX_SIGNAL 8) 
 
 FetchContent_Declare(
   scrutiny-embedded
   GIT_REPOSITORY https://github.com/scrutinydebugger/scrutiny-embedded.git
-  GIT_TAG        v0.5.1
+  GIT_TAG        v0.7.1
 )
 FetchContent_MakeAvailable(scrutiny-embedded)
 

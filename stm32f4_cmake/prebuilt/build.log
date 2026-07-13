@@ -1,0 +1,148 @@
+$ ./scripts/build.sh 
+-- The C compiler identification is GNU 10.3.1
+-- The CXX compiler identification is GNU 10.3.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/arm-none-eabi-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/arm-none-eabi-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/arm-none-eabi-gcc
+-- Scrutiny option: SCRUTINY_BUILD_TEST=OFF
+-- Scrutiny option: SCRUTINY_ENABLE_DATALOGGING=1
+-- Scrutiny option: SCRUTINY_SUPPORT_64BITS=0
+-- Scrutiny option: SCRUTINY_SUPPORT_PROTECTED_REGIONS=1
+-- Scrutiny option: SCRUTINY_BUILD_CWRAPPER=1
+-- Scrutiny option: SCRUTINY_DATALOGGING_BUFFER_32BITS=OFF
+-- Scrutiny option: SCRUTINY_USE_ASAN=OFF
+-- Scrutiny option: SCRUTINY_DATALOGGING_MAX_SIGNAL=16
+-- Scrutiny option: SCRUTINY_REQUEST_MAX_PROCESS_TIME_US=100000
+-- Scrutiny option: SCRUTINY_COMM_RX_TIMEOUT_US=50000
+-- Scrutiny option: SCRUTINY_COMM_HEARTBEAT_TIMEOUT_US=5000000
+-- Scrutiny option: SCRUTINY_PROTOCOL_VERSION_MAJOR=1
+-- Scrutiny option: SCRUTINY_PROTOCOL_VERSION_MINOR=0
+-- Scrutiny option: SCRUTINY_DATALOGGING_ENCODING=SCRUTINY_DATALOGGING_ENCODING_RAW
+-- Scrutiny option: INSTALL_FOLDER=/home/py/scrutiny/scrutiny-demos/stm32f4_cmake/build/_deps/scrutiny-embedded-build/install
+-- PROJECT_BINARY_DIR=/home/py/scrutiny/scrutiny-demos/stm32f4_cmake/build/_deps/scrutiny-embedded-build/cwrapper
+-- Using scrutiny at /usr/local/bin/scrutiny
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/py/scrutiny/scrutiny-demos/stm32f4_cmake/build
+Scanning dependencies of target stm32cubemx
+[  2%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_software_id.cpp.obj
+[  2%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_loop_handler.cpp.obj
+[  4%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_config.cpp.obj
+[  5%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_main_handler.cpp.obj
+[  7%] Creating directories for 'scrutiny-elf-symdump'
+[  8%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/USB_DEVICE/Target/usbd_conf.c.obj
+[ 10%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/USB_DEVICE/App/usb_device.c.obj
+[ 11%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_common_codecs.cpp.obj
+[ 13%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/scrutiny_tools.cpp.obj
+[ 14%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/protocol/scrutiny_comm_handler.cpp.obj
+[ 16%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/USB_DEVICE/App/usbd_cdc_if.c.obj
+[ 17%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/USB_DEVICE/App/usbd_desc.c.obj
+[ 19%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/protocol/scrutiny_codec_v1_0.cpp.obj
+[ 20%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/USB_DEVICE/App/cdc_queue.c.obj
+[ 22%] No download step for 'scrutiny-elf-symdump'
+[ 23%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/protocol/scrutiny_protocol_definitions.cpp.obj
+[ 25%] No update step for 'scrutiny-elf-symdump'
+[ 26%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogging.cpp.obj
+[ 27%] No patch step for 'scrutiny-elf-symdump'
+[ 29%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/BSP/Components/lsm303dlhc/lsm303dlhc.c.obj
+[ 30%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogger.cpp.obj
+[ 32%] Performing configure step for 'scrutiny-elf-symdump'
+[ 33%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/BSP/stm32f411e_discovery.c.obj
+[ 35%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/BSP/stm32f411e_discovery_accelerometer.c.obj
+-- The C compiler identification is GNU 11.4.0
+[ 36%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Core/Src/stm32f4xx_it.c.obj
+[ 38%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogging_trigger.cpp.obj
+[ 41%] Building CXX object _deps/scrutiny-embedded-build/lib/CMakeFiles/scrutiny-embedded.dir/src/datalogging/scrutiny_datalogger_raw_encoder.cpp.obj
+[ 41%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+[ 42%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Core/Src/sysmem.c.obj
+[ 44%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Core/Src/system_stm32f4xx.c.obj
+[ 45%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c.obj
+[ 47%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Core/Src/syscalls.c.obj
+[ 48%] Building ASM object stm32cubemx/CMakeFiles/stm32cubemx.dir/startup_stm32f411xe.s.obj
+-- The CXX compiler identification is GNU 11.4.0
+[ 50%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c.obj
+-- Detecting C compiler ABI info
+[ 51%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c.obj
+[ 52%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+[ 54%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c.obj
+[ 55%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c.obj
+-- Detecting C compiler ABI info - done
+[ 57%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c.obj
+-- Check for working C compiler: /usr/bin/cc - skipped
+[ 58%] Linking CXX static library libscrutiny-embedded.a
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+[ 61%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c.obj
+[ 61%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+[ 64%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c.obj
+[ 64%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c.obj
+[ 64%] Built target scrutiny-embedded
+[ 66%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c.obj
+-- Detecting CXX compiler ABI info - done
+[ 67%] Building CXX object _deps/scrutiny-embedded-build/cwrapper/CMakeFiles/scrutiny-cwrapper_OBJ.dir/scrutiny_cwrapper.cpp.obj
+[ 69%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c.obj
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/py/scrutiny/scrutiny-demos/stm32f4_cmake/build/_deps/scrutiny-embedded-build/cwrapper/scrutiny-elf-symdump/src/scrutiny-elf-symdump-build
+[ 70%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+[ 72%] Performing build step for 'scrutiny-elf-symdump'
+[ 73%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+[ 75%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c.obj
+[ 76%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c.obj
+[ 25%] Building C object CMakeFiles/scrutiny-elf-symdump.dir/src/main.c.o
+[ 77%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c.obj
+[ 79%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c.obj
+[ 50%] Building C object CMakeFiles/scrutiny-elf-symdump.dir/src/elf.c.o
+[ 80%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c.obj
+[ 80%] Built target scrutiny-cwrapper_OBJ
+[ 75%] Building C object CMakeFiles/scrutiny-elf-symdump.dir/src/cmd.c.o
+[ 82%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c.obj
+[ 83%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c.obj
+[ 85%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c.obj
+[100%] Linking C executable scrutiny-elf-symdump
+[ 86%] Building C object stm32cubemx/CMakeFiles/stm32cubemx.dir/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c.obj
+[100%] Built target scrutiny-elf-symdump
+[ 88%] Performing install step for 'scrutiny-elf-symdump'
+Consolidate compiler generated dependencies of target scrutiny-elf-symdump
+[100%] Built target scrutiny-elf-symdump
+Install the project...
+-- Install configuration: ""
+-- Installing: /home/py/scrutiny/scrutiny-demos/stm32f4_cmake/build/_deps/scrutiny-embedded-build/cwrapper/scrutiny-elf-symdump/bin/scrutiny-elf-symdump
+[ 89%] Completed 'scrutiny-elf-symdump'
+[ 89%] Built target scrutiny-elf-symdump
+[ 91%] Generating generated/scrutiny_cwrapper_cpp_constants.h
+[ 91%] Built target SCRUTINY_CPP_CONSTANTS_TARGET
+[ 92%] Linking CXX static library libscrutiny-cwrapper.a
+[ 92%] Built target scrutiny-cwrapper
+[ 92%] Built target stm32cubemx
+[ 94%] Building C object CMakeFiles/stm32f4_demo.dir/src/scrutiny_integration.c.obj
+[ 95%] Building C object CMakeFiles/stm32f4_demo.dir/src/main.c.obj
+[ 97%] Linking CXX executable bin/stm32f4_demo.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       31328 B       128 KB     23.90%
+           FLASH:       33960 B       512 KB      6.48%
+[ 97%] Built target stm32f4_demo
+[100%] Generating bin/stm32f4_demo.sfd
+[100%] Generating bin/stm32f4_demo_tagged.elf
+Generating Scrutiny Firmware Description for stm32f4_demo
+[INFO] <tag-firmware-id> Binary bin/stm32f4_demo_tagged.elf tagged with firmware ID: 491c4b2221c635a1f21990d84bbb99cd
+Generating bin/stm32f4_demo_tagged.hex
+[100%] Built target stm32f4_demo_tagged_target
+[INFO] <get-firmware-id> Firmware ID 491c4b2221c635a1f21990d84bbb99cd written to /home/py/scrutiny/scrutiny-demos/stm32f4_cmake/build/_scrutiny_stm32f4_demo_sfd_workfolder/firmwareid
+[INFO] <make-metadata> Metadata file /home/py/scrutiny/scrutiny-demos/stm32f4_cmake/build/_scrutiny_stm32f4_demo_sfd_workfolder/metadata.json written
+[INFO] <make-sfd> SFD File bin/stm32f4_demo.sfd written
+[INFO] <make-sfd> bin/stm32f4_demo.sfd installed
+[100%] Built target stm32f4_demo_sfd_target
