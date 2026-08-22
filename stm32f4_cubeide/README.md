@@ -69,6 +69,10 @@ The one executed in the main loop has an offset of 0.1.
 - STM32CubeIDE v2.2+
 - STM32CubeMX
 
+## Prebuilt binary
+
+The prebuilt binary (ready to be flashed) and the Scrutiny Firmware File (.sfd) to be loaded onto the server can be found in the ``./prebuilt`` directory.
+
 ## Project creation steps
 
 In order to create this project, the following steps were taken:
