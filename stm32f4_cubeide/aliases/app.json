@@ -1,0 +1,8 @@
+{
+    "/Button KEY": {
+        "target": "/global/app/m_user_key_pressed"
+    },
+    "/LED Frequency": {
+        "target": "/global/Application/s_requested_led_freq"
+    }
+}

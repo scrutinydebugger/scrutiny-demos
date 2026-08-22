@@ -1,0 +1,43 @@
+{
+    "WaveGen/1KHz Wave Generator/Wave Shape": {
+        "target": "/global/app/m_isr_1khz_generator/wave_type"
+    },
+    "WaveGen/1KHz Wave Generator/Output": {
+        "target": "/global/app/m_isr_1khz_generator/m_output"
+    },
+    "WaveGen/1KHz Wave Generator/Enabled": {
+        "target": "/global/app/m_isr_1khz_generator/enabled"
+    },
+    "WaveGen/1KHz Wave Generator/Offset": {
+        "target": "/global/app/m_isr_1khz_generator/offset"
+    },
+    "WaveGen/1KHz Wave Generator/Frequency": {
+        "target": "/global/app/m_isr_1khz_generator/frequency"
+    },
+    "WaveGen/1KHz Wave Generator/Phase Shift": {
+        "target": "/global/app/m_isr_1khz_generator/phase_shift"
+    },
+
+    "WaveGen/Main Wave Generator/Wave Shape": {
+        "target": "/global/app/m_main_loop_generator/wave_type"
+    },
+    "WaveGen/Main Wave Generator/Output": {
+        "target": "/global/app/m_main_loop_generator/m_output"
+    },
+    "WaveGen/Main Wave Generator/Enabled": {
+        "target": "/global/app/m_main_loop_generator/enabled"
+    },
+    "WaveGen/Main Wave Generator/Offset": {
+        "target": "/global/app/m_main_loop_generator/offset"
+    },
+    "WaveGen/Main Wave Generator/Frequency": {
+        "target": "/global/app/m_main_loop_generator/frequency"
+    },
+    "WaveGen/Main Wave Generator/Phase Shift": {
+        "target": "/global/app/m_main_loop_generator/phase_shift"
+    },
+
+    "WaveGen/Sync": {
+        "target": "/global/app/m_sync_all_wavegen"
+    }
+}

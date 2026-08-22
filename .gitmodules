@@ -1,3 +1,6 @@
 [submodule "ti_c28x_launchxl_f280049c/scrutiny-embedded"]
 	path = ti_c28x_launchxl_f280049c/scrutiny-embedded
 	url = https://github.com/scrutinydebugger/scrutiny-embedded
+[submodule "stm32f4_cubeide/scrutiny-embedded"]
+	path = stm32f4_cubeide/scrutiny-embedded
+	url = https://github.com/scrutinydebugger/scrutiny-embedded

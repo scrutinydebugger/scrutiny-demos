@@ -1,0 +1,47 @@
+{
+    "folders": [
+        "Core"
+    ],
+    "include_patterns": [
+        "*.hpp",
+        "*.cpp",
+        "*.py"
+    ],
+    "exclude_patterns": [
+        "Debug/*",
+        "Release/*",
+        "Drivers/*",
+        "Core/Src/*.c",
+        "Core/Inc/*.h"
+    ],
+    "project": "Scrutiny Debugger",
+    "repo": "github.com/scrutinydebugger/scrutiny-demos",
+    "license": "MIT - See LICENSE file",
+    "copyright_owner": "Scrutiny Debugger",
+    "copyright_start_date": "2026",
+    "copyright_end_date": "2026",
+    "files": {
+        "Core/Inc/scrutiny_build_config.hpp": {
+            "docstring": "A header to be maintained for Scrutiny. Required for non-cmake integrations. Would be auto-generated with CMake."
+        },
+        "Core/Inc/scrutiny_rtt_integration.hpp": {
+            "docstring": "Class making the Scrutiny integration in this application through SEGGER RTT protocol"
+        },
+        "Core/Inc/wave_function_generator.hpp": {
+            "docstring": "A wave generator class use to showcase Scrutiny. Can generate a sine, triangle and square wave."
+        },
+        "Core/Inc/application.hpp": {
+            "docstring": "The high level application invoked from main"
+        },
+        "Core/Src/scrutiny_rtt_integration.cpp": {
+            "docstring": "Class making the Scrutiny integration in this application through SEGGER RTT protocol"
+        },
+        "Core/Src/wave_function_generator.cpp": {
+            "docstring": "A wave generator class use to showcase Scrutiny. Can generate a sine, triangle and square wave."
+        },
+        "Core/Src/application.cpp": {
+            "docstring": "The high level application invoked from main"
+        }
+    },
+    "authors": {}
+}
