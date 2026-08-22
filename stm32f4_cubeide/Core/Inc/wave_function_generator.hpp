@@ -1,10 +1,11 @@
 //    wave_function_generator.hpp
-//        A class that generate a periodic wave with common shapes
+//        A wave generator class use to showcase Scrutiny. Can generate a sine, triangle and
+//        square wave.
 //
-//   - License : MIT - See LICENSE file.
+//   - License : MIT - See LICENSE file
 //   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
 //
-//   Copyright (c) 2025 Scrutiny Debugger
+//    Copyright (c) 2026 Scrutiny Debugger
 
 #ifndef _WAVE_FUNCTION_GENERATOR_HPP
 #define _WAVE_FUNCTION_GENERATOR_HPP

@@ -1,3 +1,11 @@
+//    application.cpp
+//        The high level application invoked from main
+//
+//   - License : MIT - See LICENSE file
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//    Copyright (c) 2026 Scrutiny Debugger
+
 #include "application.hpp"
 
 #include "SEGGER_RTT.h"

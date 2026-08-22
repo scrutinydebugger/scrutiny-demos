@@ -1,3 +1,10 @@
+//    application.hpp
+//        The high level application invoked from main
+//
+//   - License : MIT - See LICENSE file
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//    Copyright (c) 2026 Scrutiny Debugger
 
 #ifndef SRC_APPLICATION_HPP_
 #define SRC_APPLICATION_HPP_

@@ -1,3 +1,12 @@
+//    wave_function_generator.cpp
+//        A wave generator class use to showcase Scrutiny. Can generate a sine, triangle and
+//        square wave.
+//
+//   - License : MIT - See LICENSE file
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//    Copyright (c) 2026 Scrutiny Debugger
+
 #include "wave_function_generator.hpp"
 #include <algorithm>
 #include <cmath>

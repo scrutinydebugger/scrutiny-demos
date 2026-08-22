@@ -1,3 +1,11 @@
+//    scrutiny_rtt_integration.hpp
+//        Class making the Scrutiny integration in this application through SEGGER RTT protocol
+//
+//   - License : MIT - See LICENSE file
+//   - Project : Scrutiny Debugger (github.com/scrutinydebugger/scrutiny-demos)
+//
+//    Copyright (c) 2026 Scrutiny Debugger
+
 #ifndef SRC_SCRUTINY_INTEGRATION_HPP_
 #define SRC_SCRUTINY_INTEGRATION_HPP_
 
