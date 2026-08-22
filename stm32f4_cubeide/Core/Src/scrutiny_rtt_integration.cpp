@@ -9,6 +9,10 @@
 #include "scrutiny.hpp"
 #include "SEGGER_RTT.h"
 
+#include <cstring>
+#include <algorithm>
+
+
 ScrutinyRTTIntegration::ScrutinyRTTIntegration(unsigned int const rtt_buffer) :
 	m_rtt_buffer(rtt_buffer),
 	m_main_handler(),
@@ -18,13 +22,14 @@ ScrutinyRTTIntegration::ScrutinyRTTIntegration(unsigned int const rtt_buffer) :
 
 }
 
-void ScrutinyRTTIntegration::init(void)
+void ScrutinyRTTIntegration::init(scrutiny::user_command_callback_t user_command)
 {
 	scrutiny::Config config;
 	config.set_buffers(m_rx_buffer, sizeof(m_rx_buffer), m_tx_buffer, sizeof(m_tx_buffer));
 	config.set_loops(m_loop_handlers, sizeof(m_loop_handlers)/sizeof(m_loop_handlers[0]));
 	config.display_name = "STM32F4 RTT demo";
-
+	config.set_datalogging_buffers(m_datalogging_buffer, sizeof(m_datalogging_buffer));
+	config.set_user_command_callback(user_command);
 	m_main_handler.init(&config);
 }
 
@@ -43,6 +48,7 @@ void ScrutinyRTTIntegration::update(uint32_t const timediff_100ns)
 	{
 		SEGGER_RTT_Write(m_rtt_buffer, buffer, nb_to_send);
 	}
+	m_idle_loop_handler.process(timediff_100ns);
 }
 
 void ScrutinyRTTIntegration::loop_1khz_exec(uint32_t const timediff_100ns)
