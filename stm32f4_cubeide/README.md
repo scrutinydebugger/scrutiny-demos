@@ -68,6 +68,7 @@ The one executed in the main loop has an offset of 0.1.
 
 - STM32CubeIDE v2.2+
 - STM32CubeMX
+- Scrutiny (v0.16+)
 
 ## Prebuilt binary
 
@@ -87,7 +88,7 @@ In order to create this project, the following steps were taken:
     - Add the ``inc`` folder as an include path
     - Copy ``scrutiny_build_config.hpp.default`` to ``scrutiny_build_config.hpp`` and edit the content.
 6. Enable debug symbols (-g option) in both Debug AND Release configurations
-7. Add ``-gdwarf-4`` as a compile flag everywhere because DWARF V5 (default) support is not very good.
+7. Add ``-gdwarf-4`` as a compile flag everywhere (v5 supported since Scrutiny @ v0.16).
 8. Add post-build step to invoke the scrutiny PowerShell scripts (an equivalent .sh is available for linux users)
 9. Modify the debug configuration to use the scrutiny tagged binary when flashing.
 10. Write the source code and include the RTT lib.
