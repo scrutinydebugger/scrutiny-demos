@@ -1,0 +1,123 @@
+{
+  "type": "dashboard",
+  "main_container": {
+    "type": "container",
+    "root_splitter": {
+      "type": "splitter",
+      "orientation": "vertical",
+      "sizes": [
+        550,
+        350
+      ],
+      "content": [
+        {
+          "type": "dock_area",
+          "dock_widgets": [
+            {
+              "type": "dock_widget",
+              "current_tab": true,
+              "component": {
+                "type": "component",
+                "title": "Continuous Graph",
+                "type_id": "continuous_graph",
+                "state": {
+                  "signals": [
+                    {
+                      "text": "Signals",
+                      "signals": [
+                        {
+                          "fqn": "alias:/Demo/Sine_Wave",
+                          "text": "Sine Wave"
+                        },
+                        {
+                          "fqn": "alias:/Demo/Cycle_Counter",
+                          "text": "Cycle Counter"
+                        }
+                      ]
+                    }
+                  ],
+                  "graph_width_sec": 10,
+                  "csv_logging": {
+                    "enable": false,
+                    "folder": "",
+                    "line_per_files": 10000,
+                    "prefix": ""
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "dock_area",
+          "dock_widgets": [
+            {
+              "type": "dock_widget",
+              "current_tab": true,
+              "component": {
+                "type": "component",
+                "title": "Watch Window",
+                "type_id": "watch",
+                "state": {
+                  "root": [
+                    {
+                      "type": "f",
+                      "txt": "ESP32 Demo",
+                      "expand": true,
+                      "children": [
+                        {
+                          "type": "w",
+                          "txt": "Cycle Counter",
+                          "fqn": "alias:/Demo/Cycle_Counter"
+                        },
+                        {
+                          "type": "w",
+                          "txt": "Sine Wave",
+                          "fqn": "alias:/Demo/Sine_Wave"
+                        },
+                        {
+                          "type": "w",
+                          "txt": "Heartbeat",
+                          "fqn": "alias:/Demo/Heartbeat"
+                        },
+                        {
+                          "type": "w",
+                          "txt": "Analog Read",
+                          "fqn": "alias:/Demo/Analog_Read"
+                        }
+                      ]
+                    }
+                  ],
+                  "cols": [
+                    "value",
+                    "type",
+                    "enum"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "sidebar_components": [
+      {
+        "type": "sidebar_component",
+        "sidebar_location": "right",
+        "component": {
+          "type": "component",
+          "title": "Variable List",
+          "type_id": "varlist",
+          "state": {}
+        },
+        "size": 160
+      }
+    ]
+  },
+  "windows": [],
+  "file_version": 1,
+  "scrutiny_version": "0.16.0",
+  "metadata": {
+    "created_on": "2026-10-19 18:30:00"
+  }
+}

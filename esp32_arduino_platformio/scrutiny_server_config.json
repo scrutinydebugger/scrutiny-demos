@@ -1,0 +1,20 @@
+{
+    "name": "ESP32 Arduino Demo",
+    "api": {
+        "client_interface_config": {
+            "host": "127.0.0.1",
+            "port": 8765
+        }
+    },
+    "device": {
+        "response_timeout": 1.0,
+        "link_type": "serial",
+        "link_config": {
+            "portname": "COM7",
+            "baudrate": 115200,
+            "stopbits": 1,
+            "databits": 8,
+            "parity": "none"
+        }
+    }
+}
