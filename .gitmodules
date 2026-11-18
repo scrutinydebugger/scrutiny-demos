@@ -4,3 +4,6 @@
 [submodule "stm32f4_cubeide/scrutiny-embedded"]
 	path = stm32f4_cubeide/scrutiny-embedded
 	url = https://github.com/scrutinydebugger/scrutiny-embedded
+[submodule "esp32_arduino_platformio/scrutiny-embedded"]
+	path = esp32_arduino_platformio/scrutiny-embedded
+	url = https://github.com/scrutinydebugger/scrutiny-embedded

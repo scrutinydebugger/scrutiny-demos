@@ -1,0 +1,8 @@
+.pio/
+.vscode/
+.idea/
+_scrutiny_work/
+__pycache__/
+*.pyc
+*.log
+.DS_Store

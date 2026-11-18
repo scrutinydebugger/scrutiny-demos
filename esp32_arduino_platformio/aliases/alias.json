@@ -1,0 +1,14 @@
+{
+    "Demo/Cycle_Counter": {
+        "target": "/global/g_cycle_counter"
+    },
+    "Demo/Sine_Wave": {
+        "target": "/global/g_sine_wave"
+    },
+    "Demo/Heartbeat": {
+        "target": "/global/g_heartbeat"
+    },
+    "Demo/Analog_Read": {
+        "target": "/global/g_analog_read"
+    }
+}

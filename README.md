@@ -10,4 +10,5 @@ A collection of demonstration project to showcase the Scrutiny Debugger framewor
 | [stm32f4_cmake](stm32f4_cmake)                            | CMake                     | C         | USB CDC Serial    | STM32F411 Discovery               |
 | [ti_c28x_launchxl_f280049c](ti_c28x_launchxl_f280049c)    | Code Composer (theia)     | C++       | Serial            | LaunchXL-F280049C                 |
 | [stm32f4_cubeide](stm32f4_cubeide)                        | STM32 Cube IDE (Eclipse)  | C++       | SEGGER RTT        | WeACT Black Pill v3.1 (STM32F4)   |
+| [esp32_arduino_platformio](esp32_arduino_platformio)      | PlatformIO                | C++       | Serial            | ESP32 Dev Module (ESP32-WROOM-32) |
 
